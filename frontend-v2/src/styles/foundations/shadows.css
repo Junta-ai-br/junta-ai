@@ -9,24 +9,20 @@
      Shadow Scale
      -------------------------------------------------------------------------- */
 
---shadow-none: none;
+  --shadow-none: none;
 
---shadow-xs:
-  0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
 
---shadow-sm:
-  0 4px 6px rgb(0 0 0 / 0.07),
-  0 2px 4px rgb(0 0 0 / 0.06);
+  /* --------------------------------------------------------------------------
+     Semantic Elevation
+     -------------------------------------------------------------------------- */
 
---shadow-md:
-  0 10px 15px rgb(0 0 0 / 0.10),
-  0 4px 6px rgb(0 0 0 / 0.05);
-
---shadow-brand:
-  0 8px 24px rgb(113 64 250 / 0.18);
-
-/* Reservados para evolução */
---shadow-lg:
---shadow-xl:
+  --shadow-rest: var(--shadow-xs);
+  --shadow-hover: var(--shadow-sm);
+  --shadow-floating: var(--shadow-md);
 
 }

@@ -7,7 +7,6 @@
 
 .header__theme {
   position: absolute;
-
   top: 2rem;
   right: var(--spacing-8);
 
@@ -27,15 +26,29 @@
   max-width: 1120px;
   margin: 0 auto;
 
-  padding: 1rem 1.5rem;
-  padding-inline: 2rem;
+  padding: 1rem 2rem;
 
-  border: 1px solid var(--border);
-  
-
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-24);
 
   background: var(--surface);
+
+  box-shadow: var(--shadow-rest);
+
+  transition:
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-normal) var(--ease-smooth);
+}
+
+.header__container:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--border),
+    var(--brand-primary) 5%
+  );
+
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
 }
 
 /* -------------------------------------------------------------------------- */
