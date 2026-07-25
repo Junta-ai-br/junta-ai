@@ -2,6 +2,17 @@
   position: relative;
   width: 100%;
   padding: 2rem var(--spacing-8);
+  padding-block: 2.5rem;
+}
+
+.header__theme {
+  position: absolute;
+
+  top: 2rem;
+  right: var(--spacing-8);
+
+  display: flex;
+  align-items: center;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -15,6 +26,16 @@
 
   max-width: 1120px;
   margin: 0 auto;
+
+  padding: 1rem 1.5rem;
+  padding-inline: 2rem;
+
+  border: 1px solid var(--border);
+  
+
+  border-radius: var(--radius-24);
+
+  background: var(--surface);
 }
 
 /* -------------------------------------------------------------------------- */
