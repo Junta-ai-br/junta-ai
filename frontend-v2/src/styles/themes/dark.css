@@ -30,7 +30,7 @@
   --text-primary: var(--gray-50);
   --text-secondary: var(--gray-400);
   --text-muted: var(--gray-500);
-  --text-inverse: var(--gray-950);
+  --text-inverse: var(--white);
 
   /* --------------------------------------------------------------------------
      Brand

@@ -127,4 +127,18 @@
 --radius-xl: 1.5rem;
 --radius-full: 9999px;
 
+/* --------------------------------------------------------------------------
+   Button
+   -------------------------------------------------------------------------- */
+
+--button-primary-bg: var(--brand-primary);
+--button-primary-bg-hover: var(--brand-primary-hover);
+--button-primary-bg-active: var(--brand-primary-active);
+
+--button-primary-text: var(--text-inverse);
+
+--button-secondary-bg: var(--surface);
+--button-secondary-text: var(--text-primary);
+
+
 }

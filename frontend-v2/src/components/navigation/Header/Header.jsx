@@ -3,19 +3,34 @@ import Logo from "@/components/branding/Logo";
 import Navbar from "@/components/navigation/Navbar";
 import ThemeSwitch from "../ThemeSwitch";
 
+import { useTheme } from "@/contexts/ThemeContext";
+import { THEMES } from "@/utils/theme";
+
 import "./Header.css";
 
 function Header() {
+  const { theme } = useTheme();
+
   return (
     <header className="header">
+      <ThemeSwitch />
+
       <div className="header__container">
-        <Logo variant="icon" width={48} />
+        <div className="header__brand">
+          <Logo
+            variant="horizontal"
+            wordmark={
+              theme === THEMES.DARK
+                ? "branca"
+                : "preta"
+            }
+            width={200}
+          />
+        </div>
 
         <Navbar />
 
-        <div className="header__controls">
-          <ThemeSwitch />
-
+        <div className="header__actions">
           <Button variant="primary">
             Criar conta
           </Button>
