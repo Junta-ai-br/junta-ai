@@ -6,10 +6,6 @@ import AppProviders from "./app/providers";
 
 import "./styles/global.css";
 
-import { initializeTheme } from "./utils/theme";
-
-initializeTheme();
-
 const root = document.getElementById("root");
 
 if (!root) {

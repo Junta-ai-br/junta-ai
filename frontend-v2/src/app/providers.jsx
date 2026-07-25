@@ -1,3 +1,9 @@
+import { ThemeProvider } from "@/contexts/ThemeContext";
+
 export default function AppProviders({ children }) {
-  return children;
+  return (
+    <ThemeProvider>
+      {children}
+    </ThemeProvider>
+  );
 }

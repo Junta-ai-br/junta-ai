@@ -3,11 +3,22 @@ import { Outlet } from "react-router-dom";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
 
+import { useTheme } from "@/contexts/ThemeContext";
+
 import "./LandingLayout.css";
 
 function LandingLayout() {
+  const { isSwitching } = useTheme();
+
   return (
-    <div className="landing-layout">
+    <div
+      className={[
+        "landing-layout",
+        isSwitching && "theme-switching",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <Header />
 
       <main>

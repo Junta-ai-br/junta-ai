@@ -1,17 +1,12 @@
-import { useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
-import { getTheme, toggleTheme, THEMES } from "@/utils/theme";
+import { useTheme } from "@/contexts/ThemeContext";
+import { THEMES } from "@/utils/theme";
 
 import "./ThemeSwitch.css";
 
 export default function ThemeSwitch() {
-  const [theme, setTheme] = useState(getTheme);
-
-  function handleToggleTheme() {
-    const nextTheme = toggleTheme();
-    setTheme(nextTheme);
-  }
+  const { theme, toggleTheme } = useTheme();
 
   const isDark = theme === THEMES.DARK;
 
@@ -19,7 +14,7 @@ export default function ThemeSwitch() {
     <button
       type="button"
       className={`theme-switch ${isDark ? "is-dark" : "is-light"}`}
-      onClick={handleToggleTheme}
+      onClick={toggleTheme}
       aria-label={`Alternar para tema ${isDark ? "claro" : "escuro"}`}
       aria-pressed={isDark}
     >

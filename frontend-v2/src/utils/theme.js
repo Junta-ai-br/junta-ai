@@ -42,17 +42,6 @@ export function initializeTheme() {
   applyTheme(getTheme());
 }
 
-export function toggleTheme() {
-  const nextTheme =
-    getTheme() === THEMES.DARK
-      ? THEMES.LIGHT
-      : THEMES.DARK;
-
-  setTheme(nextTheme);
-
-  return nextTheme;
-}
-
 export function isDarkTheme() {
   return getTheme() === THEMES.DARK;
 }

@@ -1,20 +1,36 @@
-import fullLogo from "@/assets/logos/logo-full.svg";
+import fullBranca from "@/assets/logos/logo-full-branca.svg";
+import fullPreta from "@/assets/logos/logo-full-preta.svg";
+
+import horizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
+import horizontalPreta from "@/assets/logos/logo-horizontal-preta.svg";
+
 import iconLogo from "@/assets/logos/logo-icon.svg";
 
 const logos = {
-  full: fullLogo,
+  full: {
+    branca: fullBranca,
+    preta: fullPreta,
+  },
+  horizontal: {
+    branca: horizontalBranca,
+    preta: horizontalPreta,
+  },
   icon: iconLogo,
 };
 
 export default function Logo({
-  variant = "full",
+  variant = "horizontal",
+  wordmark="preta",
   width = 180,
   height,
   alt = "Junta.ai",
   className = "",
   ...props
 }) {
-  const src = logos[variant] ?? fullLogo;
+  const src =
+    variant === "icon"
+      ? logos.icon
+      : logos[variant]?.[wordmark] ?? logos.horizontal.preta;
 
   return (
     <img
