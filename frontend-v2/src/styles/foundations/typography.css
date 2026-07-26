@@ -9,7 +9,7 @@
 
 :root {
   --heading-family: "Satoshi", sans-serif;
-  --body-family: "Geist", sans-serif;
+  --body-family: "Inter", sans-serif;
   --mono-family: "JetBrains Mono", monospace;
 }
 
@@ -18,15 +18,15 @@
    ========================================================================== */
 
 :root {
-  --font-caption: 0.75rem;    /* 12px */
-  --font-small: 0.875rem;     /* 14px */
-  --font-body: 1rem;          /* 16px */
-  --font-subtitle: 1.125rem;  /* 18px */
-  --font-title: 1.5rem;       /* 24px */
-  
-  --font-heading: clamp(2rem, 3vw, 2.25rem); /* 36px */
-  --font-display: clamp(2.5rem, 4vw, 3rem);  /* 48px */
-  --font-hero: clamp(3rem, 6vw, 4rem);       /* 64px */
+  --font-caption: 0.75rem;      /* 12px */
+  --font-small: 0.875rem;       /* 14px */
+  --font-body: 1rem;            /* 16px */
+  --font-subtitle: 1.125rem;    /* 18px */
+  --font-title: 1.5rem;         /* 24px */
+
+  --font-heading: clamp(2rem, 3vw, 2.5rem);
+  --font-display: clamp(2.75rem, 5vw, 3.75rem);
+  --font-hero: clamp(4rem, 7vw, 5.5rem);
 }
 
 /* ==========================================================================
@@ -46,10 +46,10 @@
    ========================================================================== */
 
 :root {
-  --line-height-tight: 1.2;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.7;
-  --line-height-loose: 1.9;
+  --line-height-tight: 1.1;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+  --line-height-loose: 2;
 }
 
 /* ==========================================================================
@@ -94,7 +94,6 @@ h6,
 .text-title,
 .text-subtitle {
   font-family: var(--heading-family);
-  font-weight: var(--font-bold);
   line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);
 }
@@ -102,39 +101,51 @@ h6,
 h1,
 .text-hero {
   font-size: var(--font-hero);
+  font-weight: var(--font-bold);
   letter-spacing: var(--letter-spacing-extra-tight);
 }
 
 h2,
 .text-display {
   font-size: var(--font-display);
+  font-weight: var(--font-semibold);
 }
 
 h3,
 .text-heading {
   font-size: var(--font-heading);
+  font-weight: var(--font-semibold);
 }
 
 h4,
 .text-title {
   font-size: var(--font-title);
+  font-weight: var(--font-semibold);
 }
 
 h5,
 .text-subtitle {
   font-size: var(--font-subtitle);
+  font-weight: var(--font-semibold);
 }
 
 h6 {
   font-size: var(--font-body);
+  font-weight: var(--font-semibold);
 }
 
 /* ==========================================================================
-   Body Text - Elements
+   Body Text
    ========================================================================== */
 
 p,
-.text-body,
+.text-body {
+  font-family: var(--body-family);
+  font-size: var(--font-body);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-relaxed);
+}
+
 span,
 button,
 input,
@@ -142,10 +153,6 @@ textarea,
 select,
 label {
   font-family: var(--body-family);
-}
-
-.text-body {
-  font-size: var(--font-body);
 }
 
 small,
