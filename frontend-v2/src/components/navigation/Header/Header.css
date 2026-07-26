@@ -7,8 +7,9 @@
 
 .header__theme {
   position: absolute;
-  top: 2rem;
-  right: var(--spacing-8);
+  top: calc(2rem - 2px);
+  transform: translateY(-50%);
+  right: 15rem;
 
   display: flex;
   align-items: center;
