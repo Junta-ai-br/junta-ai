@@ -1,309 +1,101 @@
-# Agente Financeiro do Grana.ai
+# Product-01 · Overview
 
-# AI Overview
-
-**Documento:** AI-001  
-**Versão:** 1.0  
-**Última atualização:** 03/07/2026  
-**Status:** Em desenvolvimento
-
-> Documento de visão geral do agente conversacional do Grana.ai.
-
----
-
-# Objetivo
-
-O Agente Financeiro do Grana.ai é um assistente conversacional especializado em finanças pessoais.
-
-Seu objetivo é permitir que o usuário registre movimentações financeiras utilizando linguagem natural e receba apoio para compreender sua situação financeira, organizar metas e tomar decisões mais conscientes sobre o próprio dinheiro.
-
-O agente não atua apenas como um chatbot. Ele é responsável por interpretar intenções, aplicar regras de negócio, acessar dados do usuário por meio de ferramentas (MCP) e gerar respostas contextualizadas.
+| Campo | Valor |
+|--------|-------|
+| **Documento** | Product-01 |
+| **Título** | Overview |
+| **Versão** | 1.0 |
+| **Status** | Implemented |
+| **Última atualização** | 01/08/2026 |
+| **Responsável** | Equipe Junta.ai |
 
 ---
 
-# Princípios do Produto
+# Visão Geral
 
-O comportamento do agente é guiado pelos seguintes princípios.
+O Junta.ai é uma plataforma de organização financeira que utiliza inteligência artificial para transformar conversas em ações práticas.
 
-## Simplicidade
+Em vez de depender de planilhas complexas ou aplicativos difíceis de utilizar, o usuário conversa naturalmente com um assistente inteligente que o ajuda a registrar movimentações, compreender sua situação financeira, acompanhar metas e construir hábitos mais conscientes ao longo do tempo.
 
-O usuário deve conseguir utilizar o sistema da mesma forma que conversa com outra pessoa.
-
-Exemplos:
-
-> "Gastei 35 no mercado."
-
-> "Recebi meu salário."
-
-> "Guardei 200 para viagem."
-
-Não é esperado que o usuário aprenda comandos específicos.
+Nosso objetivo não é apenas organizar informações financeiras, mas tornar essa experiência mais simples, acessível e tranquila para qualquer pessoa.
 
 ---
 
-## Inteligência sem complexidade
+# Nossa proposta
 
-Sempre que possível, o agente deve reduzir esforço do usuário.
+O Junta.ai foi criado para tornar a organização financeira mais humana.
 
-Isso inclui:
+Acreditamos que conversar sobre dinheiro pode ser mais simples do que aprender a utilizar ferramentas complexas. Por isso, colocamos a conversa no centro da experiência e utilizamos a inteligência artificial como uma facilitadora, nunca como uma substituta das decisões do usuário.
 
-- identificar automaticamente categorias;
-- interpretar valores monetários;
-- compreender correções;
-- reconhecer contexto recente;
-- evitar perguntas desnecessárias.
+A tecnologia existe para reduzir barreiras, não para criar novas.
 
 ---
 
-## Segurança
+# O problema que queremos resolver
 
-O agente nunca deve assumir informações financeiras quando houver baixa confiança na interpretação.
+Muitas pessoas desejam organizar melhor suas finanças, mas acabam desistindo por diferentes motivos.
 
-Nesses casos, deve solicitar confirmação antes de registrar qualquer informação.
+Algumas consideram planilhas complicadas.
 
----
+Outras se sentem sobrecarregadas por aplicativos cheios de gráficos e funcionalidades difíceis de compreender.
 
-## Transparência
+Também existem usuários que simplesmente não sabem por onde começar.
 
-As respostas devem deixar claro:
-
-- o que foi entendido;
-- quais dados serão registrados;
-- quando existir alguma incerteza.
-
-O usuário nunca deve perder controle sobre seus próprios dados.
+O Junta.ai busca oferecer uma alternativa mais simples: transformar uma conversa em um ponto de partida para desenvolver uma relação mais consciente com o próprio dinheiro.
 
 ---
 
-## Educação Financeira
+# Como o Junta.ai funciona
 
-O propósito do Grana.ai não é apenas registrar gastos.
+De forma geral, a experiência acontece em quatro etapas:
 
-O agente deve incentivar hábitos financeiros mais saudáveis através de:
+1. O usuário conversa naturalmente com o assistente.
+2. A inteligência artificial interpreta o contexto da conversa.
+3. As informações são organizadas automaticamente.
+4. O sistema apresenta sugestões, acompanhamentos e recursos para auxiliar a tomada de decisão.
 
-- feedbacks contextualizados;
-- alertas relevantes;
-- reconhecimento de boas práticas;
-- sugestões simples e acionáveis.
-
----
-
-# Papel do Agente
-
-O agente é responsável por:
-
-- interpretar mensagens em linguagem natural;
-- identificar intenções;
-- extrair informações financeiras;
-- aplicar regras de negócio;
-- consultar informações existentes;
-- executar operações através das ferramentas disponíveis;
-- gerar respostas claras e naturais.
-
-O agente não realiza persistência diretamente.
-
-Toda alteração de dados ocorre através das ferramentas disponibilizadas pelo backend.
+O usuário continua sendo responsável por suas escolhas. O papel do Junta.ai é oferecer apoio, contexto e organização.
 
 ---
 
-# Escopo
+# Público-alvo
 
-O agente possui responsabilidade sobre:
+O Junta.ai foi pensado para pessoas que desejam organizar melhor sua vida financeira, independentemente do seu nível de conhecimento sobre finanças.
 
-- receitas;
-- despesas;
-- metas financeiras;
-- contribuições para metas;
-- categorização;
-- memória conversacional;
-- recorrências;
-- saúde financeira;
-- geração de insights.
-
-Não fazem parte do escopo do agente:
-
-- autenticação;
-- autorização;
-- acesso direto ao banco de dados;
-- regras de infraestrutura;
-- persistência.
+O produto prioriza usuários que procuram uma experiência simples, intuitiva e acolhedora, sem exigir conhecimentos técnicos ou financeiros avançados.
 
 ---
 
-# Fluxo Geral
+# O papel da Inteligência Artificial
 
-Todo processamento segue o mesmo fluxo lógico.
+A inteligência artificial é parte da experiência, mas não o centro do produto.
 
-```text
-Mensagem do usuário
+Ela interpreta conversas, organiza informações e oferece recomendações quando apropriado.
 
-↓
-
-Identificação da intenção
-
-↓
-
-Extração dos dados financeiros
-
-↓
-
-Validação das informações
-
-↓
-
-Consulta de contexto (quando necessário)
-
-↓
-
-Execução da ferramenta adequada
-
-↓
-
-Geração da resposta
-```
-
-Cada etapa possui regras específicas documentadas nos próximos arquivos.
+As decisões continuam sendo do usuário.
 
 ---
 
-# Capacidades
+# O que você encontrará nesta documentação
 
-O agente deve ser capaz de realizar:
+A documentação do Junta.ai está organizada para facilitar o entendimento do produto e do projeto.
 
-## Registro financeiro
+Cada documento responde a uma pergunta específica, evitando informações repetidas e tornando a navegação mais simples para toda a equipe.
 
-- registrar receitas;
-- registrar despesas;
-- registrar metas;
-- contribuir para metas existentes.
+Nos próximos documentos você encontrará informações sobre:
 
----
-
-## Consulta
-
-Responder perguntas como:
-
-- saldo atual;
-- gastos por categoria;
-- evolução financeira;
-- metas;
-- histórico;
-- saúde financeira.
+- Visão do produto
+- Filosofia do Junta.ai
+- Princípios que orientam as decisões
+- Público-alvo
+- Jornada do usuário
+- Funcionalidades
+- Roadmap do produto
 
 ---
 
-## Correções
+## Histórico de versões
 
-Permitir alterações naturais.
-
-Exemplos:
-
-> "Era alimentação."
-
-> "Na verdade foram 80."
-
-> "Isso era uma meta."
-
----
-
-## Memória Conversacional
-
-O agente mantém contexto suficiente para permitir continuidade da conversa sem exigir repetição de informações.
-
----
-
-## Insights
-
-Quando apropriado, o agente pode fornecer observações como:
-
-- concentração de gastos;
-- excesso de despesas;
-- evolução das metas;
-- comportamento financeiro;
-- oportunidades de economia.
-
-Os insights nunca devem ser alarmistas.
-
-Devem sempre possuir fundamento nos dados registrados.
-
----
-
-# Estruturação das Respostas:
-
-As respostas do agente devem seguir os seguintes princípios:
-
-- linguagem simples;
-- frases curtas;
-- tom acolhedor;
-- objetividade;
-- clareza.
-
-O agente evita:
-
-- textos excessivamente longos;
-- linguagem técnica;
-- julgamentos sobre hábitos financeiros.
-
----
-
-# Papel da Inteligência Artificial
-
-A IA é utilizada para interpretar linguagem natural e apoiar a conversa.
-
-Entretanto, decisões críticas são controladas por regras determinísticas definidas pelo sistema.
-
-Sempre que possível:
-
-Linguagem Natural
-
-↓
-
-Parser
-
-↓
-
-Regras de Negócio
-
-↓
-
-Ferramenta
-
-↓
-
-Resposta
-
-Esse modelo reduz ambiguidades e torna o comportamento do sistema previsível.
-
----
-
-# Integração com o Sistema (em desenvolvimento)
-
-O agente integra-se ao restante da aplicação através da arquitetura baseada em ferramentas (MCP).
-
-A IA nunca acessa diretamente:
-
-- banco de dados;
-- serviços internos;
-- APIs.
-
-Toda interação ocorre através de ferramentas previamente definidas.
-
----
-
-# Próximos Documentos
-
-Este documento apresenta apenas a visão geral.
-
-Os detalhes serão separados em documentos específicos:
-
-- system.md
-- intents.md
-- parser.md
-- categorization.md
-- memory.md
-- recurring.md
-- goals.md
-- health-score.md
-- tools.md
-- guardrails.md
-- examples.md
+| Versão | Data | Alterações |
+|---------|------|------------|
+| **1.0** | 01/08/2026 | Criação inicial do documento. |
