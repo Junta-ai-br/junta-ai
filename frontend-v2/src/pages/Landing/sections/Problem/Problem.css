@@ -1,0 +1,268 @@
+.problem {
+  padding-block: clamp(10rem, 14vw, 14rem);
+}
+
+.problem__container {
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header */
+/* -------------------------------------------------------------------------- */
+
+.problem__header {
+  max-width: 760px;
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.problem__divider {
+  width: min(420px, 70%);
+  height: 1px;
+
+  margin: 0 auto 4rem;
+
+  background: var(--border);
+}
+
+.problem__eyebrow {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 3rem;
+
+  color: var(--brand-accent);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.problem__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(3.2rem, 5vw, 4.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+
+  text-wrap: balance;
+}
+
+.problem__title span {
+  display: block;
+  margin-top: 3.5rem;
+}
+
+.problem__title strong {
+  color: var(--brand-primary);
+  font-weight: inherit;
+}
+
+.problem__description {
+  max-width: 68ch;
+
+  margin: 3rem auto 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-subtitle);
+  line-height: 1.8;
+
+  text-wrap: pretty;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Conversation */
+/* -------------------------------------------------------------------------- */
+
+.problem__conversation {
+  position: relative;
+
+  width: 100%;
+  height: 720px;
+
+  margin-top: 9rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bubble */
+/* -------------------------------------------------------------------------- */
+
+.bubble {
+  position: absolute;
+
+  padding: 1.4rem 1.8rem;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-2xl);
+
+  box-shadow: var(--shadow-rest);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bubble Layout */
+/* -------------------------------------------------------------------------- */
+
+/* Primeira conversa */
+
+.bubble--left {
+  top: 0;
+  left: 0;
+
+  max-width: 360px;
+
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.bubble--left-secondary {
+  top: 110px;
+  left: 60px;
+
+  max-width: 360px;
+
+  border-top-left-radius: var(--radius-md);
+}
+
+/* Segunda conversa */
+
+.bubble--center {
+  top: 210px;
+  right: 40px;
+
+  max-width: 420px;
+
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.bubble--center-secondary {
+  top: 320px;
+  right: 0;
+
+  max-width: 430px;
+
+  border-top-right-radius: var(--radius-md);
+}
+
+/* Terceira conversa */
+
+.bubble--right {
+  top: 470px;
+  left: 120px;
+
+  max-width: 420px;
+
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.bubble--right-secondary {
+  top: 585px;
+  left: 180px;
+
+  max-width: 500px;
+
+  border-top-left-radius: var(--radius-md);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Typography */
+/* -------------------------------------------------------------------------- */
+
+.bubble__text {
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+  line-height: 1.65;
+
+  text-wrap: pretty;
+}
+
+.bubble__text--highlight {
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tablet */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+  .problem {
+    padding-block: 8rem;
+  }
+
+  .problem__conversation {
+    position: static;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    height: auto;
+
+    margin-top: 5rem;
+  }
+
+  .bubble {
+    position: static;
+
+    width: 100%;
+    max-width: 680px;
+
+    margin: 0 auto;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 576px) {
+  .problem {
+    padding-block: 7rem;
+  }
+
+  .problem__container {
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .problem__divider {
+    width: 180px;
+    margin-bottom: 2rem;
+  }
+
+  .problem__eyebrow {
+    margin-bottom: 1.5rem;
+  }
+
+  .problem__title {
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
+  }
+
+  .problem__title span {
+    margin-top: 2rem;
+  }
+
+  .problem__description {
+    margin-top: 2rem;
+    font-size: var(--font-body);
+  }
+
+  .bubble {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .bubble__text {
+    font-size: 1rem;
+  }
+}

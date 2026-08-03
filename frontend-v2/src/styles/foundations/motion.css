@@ -4,9 +4,9 @@
    ========================================================================== */
 
 :root {
-
   /* --------------------------------------------------------------------------
      Transition Duration
+     Utilizadas principalmente para hover, focus e active.
      -------------------------------------------------------------------------- */
 
   --transition-instant: 75ms;
@@ -17,7 +17,17 @@
   --transition-none: none;
 
   /* --------------------------------------------------------------------------
-     Transition Timing
+     Transition Delay
+     -------------------------------------------------------------------------- */
+
+  --delay-none: 0ms;
+  --delay-xs: 75ms;
+  --delay-sm: 150ms;
+  --delay-md: 250ms;
+  --delay-lg: 400ms;
+
+  /* --------------------------------------------------------------------------
+     Easing
      -------------------------------------------------------------------------- */
 
   --ease-linear: linear;
@@ -26,32 +36,79 @@
   --ease-out: ease-out;
   --ease-in-out: ease-in-out;
 
-   /* Interface */
-   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Interface */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 
-   /* Objetos físicos */
-   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Movimentos suaves */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 
-   /* Movimentos com mais destaque */
-   --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
-   --ease-default: var(--ease-standard);
+  /* Ênfase */
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --ease-default: var(--ease-standard);
 
   /* --------------------------------------------------------------------------
      Animation Duration
+     Utilizadas principalmente pelo Motion.
      -------------------------------------------------------------------------- */
 
   --animation-fast: 200ms;
   --animation-normal: 400ms;
   --animation-slow: 600ms;
 
+  /* --------------------------------------------------------------------------
+     Motion Distance
+     Distâncias padrão utilizadas em animações.
+     -------------------------------------------------------------------------- */
+
+  --motion-distance-xs: 4px;
+  --motion-distance-sm: 8px;
+  --motion-distance-md: 16px;
+  --motion-distance-lg: 24px;
+  --motion-distance-xl: 40px;
+
+  /* --------------------------------------------------------------------------
+     Blur
+     Utilizado em animações de reveal.
+     -------------------------------------------------------------------------- */
+
+  --motion-blur-sm: 2px;
+  --motion-blur-md: 4px;
+  --motion-blur-lg: 8px;
+
+  /* --------------------------------------------------------------------------
+     Floating
+     Utilizado em animações leves de elementos decorativos.
+     -------------------------------------------------------------------------- */
+
+  --floating-distance: 4px;
+  --floating-duration: 6000ms;
 }
 
 /* --------------------------------------------------------------------------
-   Keyframes
+   Generic Keyframes
+   Apenas animações genéricas reutilizáveis.
    -------------------------------------------------------------------------- */
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+
+    scroll-behavior: auto !important;
   }
 }

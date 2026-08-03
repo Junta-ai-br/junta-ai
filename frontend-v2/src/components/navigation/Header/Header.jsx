@@ -13,32 +13,29 @@ function Header() {
 
   return (
     <header className="header">
-  <div className="header__theme">
-    <ThemeSwitch />
-  </div>
+      <div className="header__theme">
+        <ThemeSwitch />
+      </div>
 
-  <div className="header__container">
-    <div className="header__brand">
-      <Logo
-        variant="horizontal"
-        wordmark={
-          theme === THEMES.DARK
-            ? "branca"
-            : "preta"
-        }
-        width={200}
-      />
-    </div>
+      <div className="header__container">
+        <div className="header__brand">
+          <Logo
+            variant="horizontal"
+            wordmark={theme === THEMES.DARK ? "branca" : "preta"}
+            width={200}
+          />
+        </div>
 
-    <Navbar />
+        <Navbar />
 
-    <div className="header__actions">
-      <Button variant="primary">
-        Começar agora
-      </Button>
-    </div>
-  </div>
-</header>
+        <div className="header__actions">
+          <a href="/login" className="navbar__link">
+            Login
+          </a>
+          <Button variant="primary">Começar agora</Button>
+        </div>
+      </div>
+    </header>
   );
 }
 
