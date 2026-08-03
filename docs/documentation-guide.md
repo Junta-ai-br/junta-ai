@@ -10,7 +10,7 @@ A documentação é organizada por áreas de conhecimento para facilitar a colab
 
 ---
 
-## 👋 Novo no projeto?
+## 👋 Para que serve cada doc?
 
 | Ordem | Área | Objetivo |
 |-------|----------|-----------------------------|
