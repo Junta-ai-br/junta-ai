@@ -94,10 +94,10 @@ Atualmente o projeto encontra-se em processo de reestruturação arquitetural, e
 
 </p>
 
-## Frontend
+## Frontend (em desenvolvimento)
 
 - React
-- TypeScript *(sujeito a ajustes conforme evolução do projeto)*
+- JavaScript 
 - Vite
 
 ## Backend
