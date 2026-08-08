@@ -1,4 +1,5 @@
 import "./Problem.css";
+import Bubble from "../../../../components/common/Bubble";
 
 export default function Problem() {
   return (
@@ -30,41 +31,49 @@ export default function Problem() {
 
         <div className="problem__conversation">
 
-          <article className="bubble bubble--left">
-            <p className="bubble__text">
-              Você sabe quanto gastou.
-            </p>
-          </article>
+          <Bubble
+            size="md"
+            className="bubble--left"
+          >
+            Você sabe quanto gastou.
+          </Bubble>
 
-          <article className="bubble bubble--left-secondary">
-            <p className="bubble__text bubble__text--highlight">
-              Mas sabe por que gastou?
-            </p>
-          </article>
+          <Bubble
+            size="md"
+            className="bubble--left-secondary"
+          >
+            <strong>Mas sabe por que gastou?</strong>
+          </Bubble>
 
-          <article className="bubble bubble--center">
-            <p className="bubble__text">
-              Números mostram o que aconteceu.
-            </p>
-          </article>
+          <Bubble
+            size="lg"
+            className="bubble--center"
+          >
+            Números mostram o que aconteceu.
+          </Bubble>
 
-          <article className="bubble bubble--center-secondary">
-            <p className="bubble__text bubble__text--highlight">
-              Contexto explica por que aconteceu.
-            </p>
-          </article>
+          <Bubble
+            size="lg"
+            className="bubble--center-secondary"
+          >
+            <strong>Contexto explica por que aconteceu.</strong>
+          </Bubble>
 
-          <article className="bubble bubble--right">
-            <p className="bubble__text">
-              Você não precisa de mais gráficos.
-            </p>
-          </article>
+          <Bubble
+            size="md"
+            className="bubble--right"
+          >
+            Você não precisa de mais gráficos.
+          </Bubble>
 
-          <article className="bubble bubble--right-secondary">
-            <p className="bubble__text bubble__text--highlight">
+          <Bubble
+            size="xl"
+            className="bubble--right-secondary"
+          >
+            <strong>
               Você precisa de alguém que converse com você.
-            </p>
-          </article>
+            </strong>
+          </Bubble>
 
         </div>
 
