@@ -61,7 +61,7 @@ export default function Solution() {
 
             <div className="solution__step-content">
               <h3 className="solution__step-title">
-                Decida com mais clareza
+                Decida com mais consciência
               </h3>
 
               <p className="solution__step-description">

@@ -3,7 +3,7 @@ import Bubble from "../../../../components/common/Bubble";
 
 export default function Problem() {
   return (
-    <section className="problem" id="problem">
+    <section className="problem">
       <div className="problem__container">
 
         <header className="problem__header">
@@ -15,7 +15,10 @@ export default function Problem() {
           </span>
 
           <h2 className="problem__title">
-            Você não precisa ser melhor com dinheiro.
+            A gente aprende a ganhar dinheiro.
+            <span>
+              Mas nem sempre entende e sabe o que faz com ele.
+            </span>
             <span>
               Você precisa de mais <strong>clareza.</strong>
             </span>
