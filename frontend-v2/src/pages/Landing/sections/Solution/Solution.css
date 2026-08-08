@@ -1,0 +1,318 @@
+/* ==========================================================================
+Solution Section
+Landing Page · Junta.ai
+========================================================================== */
+
+.solution {
+  padding-block: clamp(9rem, 13vw, 13rem);
+}
+
+.solution__container {
+  width: min(1200px, calc(100% - 3rem));
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(0, 1.6fr);
+  column-gap: clamp(4rem, 7vw, 7rem);
+}
+
+/* --------------------------------------------------------------------------
+Intro
+-------------------------------------------------------------------------- */
+
+.solution__intro {
+  align-self: start;
+
+  position: sticky;
+  top: 6rem;
+}
+
+.solution__eyebrow {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 2rem;
+
+  color: var(--brand-accent);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.solution__title {
+  max-width: 100%;
+
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(2.8rem, 4vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+
+  text-wrap: balance;
+}
+
+.solution__title strong {
+  color: var(--brand-primary);
+  font-weight: inherit;
+}
+
+.solution__description {
+  max-width: 38ch;
+
+  margin: 2rem 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-subtitle);
+  line-height: 1.7;
+
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+Steps
+-------------------------------------------------------------------------- */
+
+.solution__steps {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4.5rem;
+
+  padding-block: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+Step
+-------------------------------------------------------------------------- */
+
+.solution__step {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  column-gap: 1.5rem;
+
+  align-items: start;
+}
+
+/* --------------------------------------------------------------------------
+Timeline
+-------------------------------------------------------------------------- */
+
+/*
+Cada etapa desenha a conexão até o centro do próximo número.
+
+Como o último passo não possui ::after, a linha termina exatamente
+no centro do 04.
+*/
+
+.solution__step:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+  z-index: 0;
+
+  top: 1.5rem;
+  bottom: -7.5rem;
+  left: 1.5rem;
+
+  width: 1px;
+
+  background: rgba(56, 163, 165, 0.42);
+}
+
+/* --------------------------------------------------------------------------
+Step Number
+-------------------------------------------------------------------------- */
+
+.solution__step-number {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3rem;
+  height: 3rem;
+
+  border: 1px solid rgba(56, 163, 165, 0.7);
+  border-radius: 50%;
+
+  background: var(--background);
+
+  color: var(--brand-accent);
+
+  font-size: 0.75rem;
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.02em;
+
+  box-shadow: 0 0 0 4px var(--background);
+}
+
+/* --------------------------------------------------------------------------
+Step Content
+-------------------------------------------------------------------------- */
+
+.solution__step-content {
+  padding-top: 0.2rem;
+}
+
+.solution__step-title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(1.25rem, 1.5vw, 1.5rem);
+  font-weight: var(--font-semibold);
+
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.solution__step-description {
+  max-width: 68ch;
+
+  margin: 0.75rem 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-body);
+  line-height: 1.7;
+
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+Tablet
+-------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+  .solution {
+    padding-block: 8rem;
+  }
+
+  .solution__container {
+    grid-template-columns: 1fr;
+    row-gap: 5rem;
+  }
+
+  .solution__intro {
+    position: static;
+
+    max-width: 680px;
+  }
+
+  .solution__title {
+    max-width: 560px;
+  }
+
+  .solution__description {
+    max-width: 60ch;
+  }
+
+  .solution__steps {
+    max-width: 760px;
+  }
+
+  /*
+  No tablet, o gap continua sendo controlado pelo fluxo vertical.
+  A conexão precisa acompanhar essa nova distância.
+  */
+
+  .solution__step:not(:last-child)::after {
+    bottom: -7.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+Mobile
+-------------------------------------------------------------------------- */
+
+@media (max-width: 576px) {
+  .solution {
+    padding-block: 7rem;
+  }
+
+  .solution__container {
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .solution__intro {
+    max-width: 100%;
+  }
+
+  .solution__eyebrow {
+    margin-bottom: 1.5rem;
+  }
+
+  .solution__title {
+    max-width: 100%;
+
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
+  }
+
+  .solution__description {
+    margin-top: 1.5rem;
+
+    font-size: var(--font-body);
+  }
+
+  .solution__steps {
+    gap: 3rem;
+  }
+
+  /* ------------------------------------------------------------------------
+  Timeline · Mobile
+  ------------------------------------------------------------------------ */
+
+  .solution__step:not(:last-child)::after {
+    top: 1.25rem;
+    bottom: -5.5rem;
+    left: 1.25rem;
+  }
+
+  .solution__step {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: 1rem;
+  }
+
+  /* ------------------------------------------------------------------------
+  Step Number
+  ------------------------------------------------------------------------ */
+
+  .solution__step-number {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    font-size: 0.7rem;
+
+    box-shadow: 0 0 0 3px var(--background);
+  }
+
+  /* ------------------------------------------------------------------------
+  Step Content
+  ------------------------------------------------------------------------ */
+
+  .solution__step-content {
+    padding-top: 0.1rem;
+  }
+
+  .solution__step-title {
+    font-size: 1.15rem;
+  }
+
+  .solution__step-description {
+    margin-top: 0.6rem;
+
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
