@@ -150,3 +150,6 @@ vite.config.ts.timestamp-*
 
 # Distribution
 dist-ssr
+
+# Obsidian (configuração pessoal)
+brain/.obsidian/workspace.json
