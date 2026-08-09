@@ -14,7 +14,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "lucide-react": "^1.25.0",
+    "radix-ui": "^1.6.7",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1"

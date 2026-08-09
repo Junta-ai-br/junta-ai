@@ -3,7 +3,6 @@ import Problem from './sections/Problem';
 import Solution from './sections/Solution';
 import Features from './sections/Features';
 import Showcase from './sections/Showcase';
-import Testimonials from './sections/Testimonials';
 import FAQ from './sections/FAQ';
 import CTA from './sections/CTA';
 
@@ -17,7 +16,6 @@ export default function Landing() {
       <Solution />
       <Features />
       <Showcase />
-      <Testimonials />
       <FAQ />
       <CTA />
     </>
