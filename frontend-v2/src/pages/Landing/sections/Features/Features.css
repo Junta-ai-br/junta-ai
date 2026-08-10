@@ -7,6 +7,10 @@
   padding-block: clamp(9rem, 13vw, 13rem);
 }
 
+/* --------------------------------------------------------------------------
+   Container
+   -------------------------------------------------------------------------- */
+
 .features__container {
   width: min(1040px, calc(100% - 3rem));
   margin: 0 auto;
@@ -170,9 +174,9 @@
 
   border-radius: 1rem;
 
-  background: rgba(7, 8, 18, 0.38);
+  background: var(--background);
 
-  border: 1px solid rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border);
 
   color: var(--text-primary);
 }
@@ -216,7 +220,7 @@
 .conversation__message--agent {
   align-self: flex-start;
 
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--surface);
 
   color: var(--text-secondary);
 
@@ -282,7 +286,7 @@
 
   border-radius: 999px;
 
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--border);
 
   overflow: hidden;
 }
@@ -363,7 +367,7 @@
 
   border-radius: 50%;
 
-  background: var(--surface);
+  background: var(--background);
 }
 
 .categories__donut-center {
@@ -496,7 +500,7 @@
 
   padding-bottom: 0.35rem;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--border);
 }
 
 .dashboard__chart span {
@@ -544,7 +548,7 @@
 
   padding-bottom: 0.7rem;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--border);
 
   color: var(--text-secondary);
 
@@ -783,7 +787,7 @@
   border: 1px dashed rgba(113, 64, 250, 0.25);
   border-radius: 999px;
 
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-tertiary);
 
   font-size: 0.62rem;
 
