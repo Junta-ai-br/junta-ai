@@ -1,0 +1,167 @@
+/* ==========================================================================
+Showcase Section
+Landing Page · Junta.ai
+========================================================================== */
+
+.showcase {
+  position: relative;
+
+  padding-block: clamp(9rem, 13vw, 13rem);
+
+  background: var(--background);
+}
+
+/* --------------------------------------------------------------------------
+Container
+-------------------------------------------------------------------------- */
+
+.showcase__container {
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+Header
+-------------------------------------------------------------------------- */
+
+.showcase__header {
+  max-width: 760px;
+
+  margin: 0 auto 5rem;
+
+  text-align: center;
+}
+
+.showcase__eyebrow {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 1.75rem;
+
+  color: var(--brand-accent);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.showcase__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
+  font-weight: var(--font-bold);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+
+  text-wrap: balance;
+}
+
+.showcase__title span {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+Demo Area
+-------------------------------------------------------------------------- */
+
+.showcase__demo {
+  width: min(960px, 100%);
+  min-height: 560px;
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  background: var(--surface);
+
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+Temporary Placeholder
+-------------------------------------------------------------------------- */
+
+.showcase__placeholder {
+  width: 100%;
+  min-height: 560px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase__placeholder-label {
+  color: var(--text-tertiary);
+
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-small);
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------------------
+Tablet
+-------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+  .showcase {
+    padding-block: 8rem;
+  }
+
+  .showcase__header {
+    margin-bottom: 4rem;
+  }
+
+  .showcase__demo {
+    min-height: 500px;
+  }
+
+  .showcase__placeholder {
+    min-height: 500px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+Mobile
+-------------------------------------------------------------------------- */
+
+@media (max-width: 576px) {
+  .showcase {
+    padding-block: 7rem;
+  }
+
+  .showcase__container {
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .showcase__header {
+    margin-bottom: 3rem;
+  }
+
+  .showcase__eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .showcase__title {
+    font-size: clamp(2.3rem, 9vw, 3.2rem);
+    line-height: 1.05;
+  }
+
+  .showcase__demo {
+    min-height: 460px;
+
+    border-radius: var(--radius-md);
+  }
+
+  .showcase__placeholder {
+    min-height: 460px;
+  }
+}

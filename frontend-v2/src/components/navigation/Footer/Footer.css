@@ -1,0 +1,27 @@
+.footer {
+  width: 100%;
+
+  border-top: 1px solid var(--border);
+
+  background-color: var(--background);
+}
+
+.footer__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--spacing-4);
+
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-8);
+}
+
+.footer__copyright {
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-sm);
+  text-align: center;
+}

@@ -1,0 +1,216 @@
+/* ==========================================================================
+   DESIGN SYSTEM
+   Foundation · Typography
+   ========================================================================== */
+
+/* ==========================================================================
+   Font Families
+   ========================================================================== */
+
+:root {
+  --heading-family: "Satoshi", sans-serif;
+  --body-family: "Inter", sans-serif;
+  --mono-family: "JetBrains Mono", monospace;
+}
+
+/* ==========================================================================
+   Font Sizes
+   ========================================================================== */
+
+:root {
+  --font-caption: 0.75rem;      /* 12px */
+  --font-small: 0.875rem;       /* 14px */
+  --font-body: 1rem;            /* 16px */
+  --font-subtitle: 1.125rem;    /* 18px */
+  --font-title: 1.5rem;         /* 24px */
+
+  --font-heading: clamp(2rem, 3vw, 2.5rem);
+  --font-display: clamp(2.75rem, 5vw, 3.75rem);
+  --font-hero: clamp(4rem, 7vw, 5.5rem);
+}
+
+/* ==========================================================================
+   Font Weights
+   ========================================================================== */
+
+:root {
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+}
+
+/* ==========================================================================
+   Line Heights
+   ========================================================================== */
+
+:root {
+  --line-height-tight: 1.1;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+  --line-height-loose: 2;
+}
+
+/* ==========================================================================
+   Letter Spacing
+   ========================================================================== */
+
+:root {
+  --letter-spacing-extra-tight: -0.04em;
+  --letter-spacing-tight: -0.03em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+}
+
+/* ==========================================================================
+   Base Typography
+   ========================================================================== */
+
+body {
+  font-family: var(--body-family);
+  font-size: var(--font-body);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-normal);
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   Headings Styles
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.text-hero,
+.text-display,
+.text-heading,
+.text-title,
+.text-subtitle {
+  font-family: var(--heading-family);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h1,
+.text-hero {
+  font-size: var(--font-hero);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--letter-spacing-extra-tight);
+}
+
+h2,
+.text-display {
+  font-size: var(--font-display);
+  font-weight: var(--font-semibold);
+}
+
+h3,
+.text-heading {
+  font-size: var(--font-heading);
+  font-weight: var(--font-semibold);
+}
+
+h4,
+.text-title {
+  font-size: var(--font-title);
+  font-weight: var(--font-semibold);
+}
+
+h5,
+.text-subtitle {
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-semibold);
+}
+
+h6 {
+  font-size: var(--font-body);
+  font-weight: var(--font-semibold);
+}
+
+/* ==========================================================================
+   Body Text
+   ========================================================================== */
+
+p,
+.text-body {
+  font-family: var(--body-family);
+  font-size: var(--font-body);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-relaxed);
+}
+
+span,
+button,
+input,
+textarea,
+select,
+label {
+  font-family: var(--body-family);
+}
+
+small,
+.text-small {
+  font-size: var(--font-small);
+}
+
+caption,
+.text-caption {
+  font-size: var(--font-caption);
+}
+
+/* ==========================================================================
+   Font Weight Utilities
+   ========================================================================== */
+
+.font-light {
+  font-weight: var(--font-light);
+}
+
+.font-regular {
+  font-weight: var(--font-regular);
+}
+
+.font-medium {
+  font-weight: var(--font-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-bold);
+}
+
+/* ==========================================================================
+   Text Alignment Utilities
+   ========================================================================== */
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* ==========================================================================
+   Monospace
+   ========================================================================== */
+
+code,
+pre,
+.font-mono {
+  font-family: var(--mono-family);
+}

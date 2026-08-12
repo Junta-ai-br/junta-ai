@@ -1,0 +1,261 @@
+/* ==========================================================================
+Problem Section
+Landing Page · Junta.ai
+========================================================================== */
+
+.problem {
+  padding-block: clamp(10rem, 14vw, 14rem);
+}
+
+.problem__container {
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+Header
+-------------------------------------------------------------------------- */
+
+.problem__header {
+  max-width: 980px;
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.problem__divider {
+  width: min(420px, 70%);
+  height: 1px;
+
+  margin: 0 auto 4rem;
+
+  background: var(--border);
+}
+
+.problem__eyebrow {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 3rem;
+
+  color: var(--brand-accent);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.problem__title {
+  max-width: 900px;
+
+  margin: 0 auto;
+
+  color: var(--text-primary);
+
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+
+  text-wrap: balance;
+}
+
+.problem__title span {
+  display: block;
+
+  margin-top: 2.75rem;
+}
+
+.problem__title strong {
+  color: var(--brand-primary);
+  font-weight: inherit;
+}
+
+.problem__description {
+  max-width: 68ch;
+
+  margin: 3rem auto 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-subtitle);
+  line-height: 1.8;
+
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+Conversation
+-------------------------------------------------------------------------- */
+
+/*
+A composição usa Grid para manter os Bubbles dentro do fluxo da página.
+
+O Bubble continua sendo um componente independente.
+O Problem controla apenas:
+
+- posição
+- largura
+- composição
+
+Dessa forma, a seção cresce naturalmente conforme o conteúdo.
+*/
+
+.problem__conversation {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 1.5rem;
+  row-gap: 2rem;
+
+  width: 100%;
+
+  margin-top: 9rem;
+}
+
+/* --------------------------------------------------------------------------
+Bubble 01
+-------------------------------------------------------------------------- */
+
+.bubble--left {
+  grid-column: 1 / span 4;
+  grid-row: 1;
+
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+Bubble 02
+-------------------------------------------------------------------------- */
+
+.bubble--left-secondary {
+  grid-column: 2 / span 4;
+  grid-row: 2;
+
+  width: 100%;
+
+  margin-top: -10px;
+}
+
+/* --------------------------------------------------------------------------
+Bubble 03
+-------------------------------------------------------------------------- */
+
+.bubble--center {
+  grid-column: 8 / span 5;
+  grid-row: 3;
+
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+Bubble 04
+-------------------------------------------------------------------------- */
+
+.bubble--center-secondary {
+  grid-column: 9 / span 4;
+  grid-row: 4;
+
+  width: min(430px, 100%);
+}
+
+/* --------------------------------------------------------------------------
+Bubble 05
+-------------------------------------------------------------------------- */
+
+.bubble--right {
+  grid-column: 2 / span 5;
+  grid-row: 5;
+
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+Bubble 06
+-------------------------------------------------------------------------- */
+
+.bubble--right-secondary {
+  grid-column: 4 / span 5;
+  grid-row: 6;
+
+  width: min(540px, 100%);
+}
+
+/* --------------------------------------------------------------------------
+Tablet
+-------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+  .problem {
+    padding-block: 8rem;
+  }
+
+  .problem__header {
+    max-width: 760px;
+  }
+
+  .problem__title {
+    max-width: 720px;
+  }
+
+  .problem__conversation {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1.25rem;
+
+    margin-top: 5rem;
+  }
+
+  .problem__conversation > .bubble {
+    width: 100%;
+    max-width: 680px;
+
+    margin-inline: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+Mobile
+-------------------------------------------------------------------------- */
+
+@media (max-width: 576px) {
+  .problem {
+    padding-block: 7rem;
+  }
+
+  .problem__container {
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .problem__header {
+    max-width: 100%;
+  }
+
+  .problem__divider {
+    width: 180px;
+
+    margin-bottom: 2rem;
+  }
+
+  .problem__eyebrow {
+    margin-bottom: 1.5rem;
+  }
+
+  .problem__title {
+    max-width: 100%;
+
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
+    line-height: 1.05;
+  }
+
+  .problem__title span {
+    margin-top: 2rem;
+  }
+
+  .problem__description {
+    margin-top: 2rem;
+
+    font-size: var(--font-body);
+  }
+}

@@ -1,0 +1,114 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  padding: 0.75rem 1.5rem;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+
+  font: inherit;
+  font-weight: 600;
+  line-height: 1;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+/* ==========================================================================
+   Sizes
+   ========================================================================== */
+
+.button--sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.button--md {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.button--lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* ==========================================================================
+   Variants
+   ========================================================================== */
+
+.button--primary {
+  background: var(--brand-primary);
+  color: var(--text-inverse);
+}
+
+.button--primary:hover:not(:disabled) {
+  background: var(--brand-primary-hover);
+}
+
+.button--primary:active:not(:disabled) {
+  background: var(--brand-primary-active);
+}
+
+.button--accent {
+  background: var(--brand-accent);
+  color: var(--text-inverse);
+}
+
+.button--accent:hover:not(:disabled) {
+  background: var(--brand-accent-hover);
+}
+
+.button--accent:active:not(:disabled) {
+  background: var(--brand-accent-active);
+}
+
+.button--secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.button--secondary:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.button--ghost:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+/* ==========================================================================
+   States
+   ========================================================================== */
+
+.button:disabled {
+  background: var(--disabled-bg);
+  border-color: var(--disabled-border);
+  color: var(--disabled-text);
+
+  cursor: not-allowed;
+}
+
+.button--loading {
+  pointer-events: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
