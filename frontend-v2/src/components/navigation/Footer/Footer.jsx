@@ -1,4 +1,4 @@
-import Logo from "@/components/branding/Logo";
+import Logo from "@/components/branding/logo";
 
 import { useTheme } from "@/contexts/ThemeContext";
 import { THEMES } from "@/utils/theme";
