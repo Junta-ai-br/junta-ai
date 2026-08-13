@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button";
-import Logo from "@/components/branding/Logo";
+import Logo from "@/components/branding/logo";
 import Navbar from "@/components/navigation/Navbar";
 import ThemeSwitch from "../ThemeSwitch";
 
