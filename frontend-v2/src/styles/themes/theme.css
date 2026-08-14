@@ -1,0 +1,141 @@
+/* ==========================================================================
+   DESIGN SYSTEM
+   Theme
+   Semantic Tokens
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     Brand
+     -------------------------------------------------------------------------- */
+
+  --brand-primary: var(--purple-500);
+  --brand-primary-hover: var(--purple-600);
+  --brand-primary-active: var(--purple-700);
+
+  --brand-accent: var(--aqua-500);
+  --brand-accent-hover: var(--aqua-600);
+  --brand-accent-active: var(--aqua-700);
+
+  /* --------------------------------------------------------------------------
+     Background
+     -------------------------------------------------------------------------- */
+
+  --background: var(--gray-50);
+
+  --surface: var(--white);
+  --surface-elevated: var(--gray-100);
+
+  --surface-hover: var(--gray-200);
+
+  /* --------------------------------------------------------------------------
+     Border
+     -------------------------------------------------------------------------- */
+
+  --border: var(--gray-300);
+  --border-strong: var(--gray-400);
+
+  /* Containers premium */
+  --border-subtle: #eef2f7;
+
+  /* --------------------------------------------------------------------------
+     Typography
+     -------------------------------------------------------------------------- */
+
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-500);
+  --text-muted: var(--gray-400);
+
+  --text-inverse: var(--white);
+
+  /* --------------------------------------------------------------------------
+     Status
+     -------------------------------------------------------------------------- */
+
+  --success: var(--green-500);
+  --success-hover: var(--green-600);
+  --success-surface: var(--green-50);
+  --success-text: var(--green-700);
+
+  --warning: var(--amber-500);
+  --warning-hover: var(--amber-600);
+  --warning-surface: var(--amber-50);
+  --warning-text: var(--amber-700);
+
+  --error: var(--red-500);
+  --error-hover: var(--red-600);
+  --error-surface: var(--red-50);
+  --error-text: var(--red-700);
+
+  --info: var(--blue-500);
+  --info-hover: var(--blue-600);
+  --info-surface: var(--blue-50);
+  --info-text: var(--blue-700);
+
+  /* --------------------------------------------------------------------------
+     Interactive
+     -------------------------------------------------------------------------- */
+
+  --link: var(--brand-primary);
+  --link-hover: var(--brand-primary-hover);
+
+  --focus-ring: var(--brand-primary);
+
+  /* --------------------------------------------------------------------------
+     Disabled
+     -------------------------------------------------------------------------- */
+
+  --disabled-bg: var(--gray-200);
+  --disabled-border: var(--gray-300);
+  --disabled-text: var(--gray-400);
+
+  /* --------------------------------------------------------------------------
+     Overlay
+     -------------------------------------------------------------------------- */
+
+  --overlay: var(--overlay-dark);
+
+  /* --------------------------------------------------------------------------
+     Gradients
+     -------------------------------------------------------------------------- */
+
+  --gradient-primary: var(--gradient-brand);
+  --gradient-brand-purple: var(--gradient-purple);
+
+  /* --------------------------------------------------------------------------
+   Selection
+   -------------------------------------------------------------------------- */
+
+  --selection-bg: var(--purple-200);
+  --selection-text: var(--gray-950);
+
+  /* --------------------------------------------------------------------------
+   Surface States
+   -------------------------------------------------------------------------- */
+
+  --surface-active: var(--gray-100);
+  --surface-selected: var(--purple-50);
+
+  /* --------------------------------------------------------------------------
+   Radius
+   -------------------------------------------------------------------------- */
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* --------------------------------------------------------------------------
+   Button
+   -------------------------------------------------------------------------- */
+
+  --button-primary-bg: var(--brand-primary);
+  --button-primary-bg-hover: var(--brand-primary-hover);
+  --button-primary-bg-active: var(--brand-primary-active);
+
+  --button-primary-text: var(--text-inverse);
+
+  --button-secondary-bg: var(--surface);
+  --button-secondary-text: var(--text-primary);
+}

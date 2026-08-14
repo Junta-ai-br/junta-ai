@@ -1,0 +1,80 @@
+.header {
+  position: relative;
+  width: 100%;
+  padding: 2rem var(--spacing-8);
+  padding-block: 2.5rem;
+}
+
+.header__theme {
+  position: absolute;
+  top: calc(2rem - 2px);
+  transform: translateY(-50%);
+  right: 15rem;
+
+  display: flex;
+  align-items: center;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Container */
+/* -------------------------------------------------------------------------- */
+
+.header__container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+  max-width: 1120px;
+  margin: 0 auto;
+
+  padding: 1rem 2rem;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-24);
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow-rest);
+
+  transition:
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-normal) var(--ease-smooth);
+}
+
+.header__container:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--border),
+    var(--brand-primary) 5%
+  );
+
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Brand */
+/* -------------------------------------------------------------------------- */
+
+.header__brand {
+  justify-self: start;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Navigation */
+/* -------------------------------------------------------------------------- */
+
+.navbar {
+  justify-self: center;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Actions */
+/* -------------------------------------------------------------------------- */
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 1.5rem;
+}

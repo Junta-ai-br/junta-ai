@@ -1,0 +1,131 @@
+/* ==========================================================================
+   DESIGN SYSTEM
+   Global
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Foundation
+   -------------------------------------------------------------------------- */
+
+@import "./foundations/reset.css";
+@import "./foundations/colors.css";
+@import "./foundations/typography.css";
+@import "./foundations/spacing.css";
+@import "./foundations/radius.css";
+@import "./foundations/shadows.css";
+@import "./foundations/motion.css";
+
+/* --------------------------------------------------------------------------
+   Themes
+   -------------------------------------------------------------------------- */
+
+@import "./themes/theme.css";
+@import "./themes/light.css";
+@import "./themes/dark.css";
+@import "./themes/transitions.css";
+
+
+/* ==========================================================================
+   Document
+   ========================================================================== */
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+
+  transition:
+    background-color var(--transition-normal) var(--ease-default),
+    color var(--transition-normal) var(--ease-default);
+
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+/* ==========================================================================
+   Placeholder
+   ========================================================================== */
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Scrollbar
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+
+  transition: background-color var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ==========================================================================
+   Focus
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Disabled
+   ========================================================================== */
+
+:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-disabled);
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+
+    scroll-behavior: auto !important;
+  }
+
+}

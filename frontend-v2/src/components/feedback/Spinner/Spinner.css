@@ -1,0 +1,57 @@
+/* ==========================================================================
+   COMPONENT
+   Spinner
+   ========================================================================== */
+
+.spinner {
+  display: inline-block;
+
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 50%;
+
+  animation: spin var(--animation-normal) var(--ease-linear) infinite;
+
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Variants
+   -------------------------------------------------------------------------- */
+
+.spinner--primary {
+  border-color: var(--border);
+  border-top-color: var(--brand-primary);
+}
+
+.spinner--accent {
+  border-color: var(--border);
+  border-top-color: var(--brand-accent);
+}
+
+.spinner--neutral {
+  border-color: var(--border);
+  border-top-color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Sizes
+   -------------------------------------------------------------------------- */
+
+.spinner--sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 2px;
+}
+
+.spinner--md {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-width: 3px;
+}
+
+.spinner--lg {
+  width: 2rem;
+  height: 2rem;
+  border-width: 4px;
+}
