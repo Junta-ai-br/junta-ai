@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, LogOut, SendHorizontal } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  LogOut,
+  SendHorizontal,
+  TrendingUp,
+  TrendingDown,
+  WalletCards,
+} from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeContext";
 import { THEMES } from "@/utils/theme";
@@ -23,7 +32,9 @@ export default function Assistente() {
 
   const isDark = theme === THEMES.DARK;
 
-  const logo = isDark ? logoHorizontalBranca : logoHorizontalPreta;
+  const logo = isDark
+    ? logoHorizontalBranca
+    : logoHorizontalPreta;
 
   /* ------------------------------------------------------------------------
      User
@@ -58,6 +69,147 @@ export default function Assistente() {
         : "assistant__summary-value--neutral";
 
   /* ------------------------------------------------------------------------
+     Mock Financial Widgets
+     ------------------------------------------------------------------------ */
+
+  /*
+   * TODO(DATA):
+   * Substituir pelos dados vindos do backend.
+   */
+
+  const goal = {
+    name: "Reserva de emergência",
+    current: 4200,
+    target: 6000,
+    percentage: 70,
+    remaining: 1800,
+  };
+
+  const financialHealth = {
+    score: 82,
+    status: "Ótimo",
+  };
+
+  const monthlyOverview = {
+    total: "R$ 1.890,50",
+
+    /*
+     * Saldo referente à visão do mês.
+     *
+     * TODO(DATA):
+     * Esse valor deverá ser calculado a partir das receitas e
+     * despesas do período vindas do backend.
+     */
+    balance: 1890.5,
+
+    categories: [
+      {
+        name: "Moradia",
+        percentage: 32,
+        color: "#7140FA",
+        emoji: "🏠",
+      },
+      {
+        name: "Alimentação",
+        percentage: 24,
+        color: "#9B78FF",
+        emoji: "🍔",
+      },
+      {
+        name: "Lazer",
+        percentage: 18,
+        color: "#B9A2FF",
+        emoji: "🎮",
+      },
+      {
+        name: "Transporte",
+        percentage: 14,
+        color: "#38A3A5",
+        emoji: "🚗",
+      },
+      {
+        name: "Outros",
+        percentage: 12,
+        color: "#4B357F",
+        emoji: "📦",
+      },
+    ],
+
+    transactions: [
+      {
+        description: "Mercado",
+        category: "Alimentação",
+        emoji: "🛒",
+        value: "R$ 120,00",
+        type: "expense",
+      },
+      {
+        description: "Uber",
+        category: "Transporte",
+        emoji: "🚗",
+        value: "R$ 24,00",
+        type: "expense",
+      },
+      {
+        description: "Streaming",
+        category: "Assinaturas",
+        emoji: "📺",
+        value: "R$ 39,90",
+        type: "expense",
+      },
+      {
+        description: "Salário",
+        category: "Receita",
+        emoji: "💰",
+        value: "R$ 4.250,00",
+        type: "income",
+      },
+    ],
+  };
+
+  /* ------------------------------------------------------------------------
+     Monthly Balance
+     ------------------------------------------------------------------------ */
+
+  const monthlyBalanceClass =
+    monthlyOverview.balance > 0
+      ? "assistant__widget-month-value--positive"
+      : monthlyOverview.balance < 0
+        ? "assistant__widget-month-value--negative"
+        : "assistant__widget-month-value--neutral";
+
+  const monthlyBalanceFormatted =
+    `${monthlyOverview.balance > 0 ? "+" : monthlyOverview.balance < 0 ? "-" : ""} ` +
+    `R$ ${Math.abs(monthlyOverview.balance).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+
+  /* ------------------------------------------------------------------------
+     Donut
+     ------------------------------------------------------------------------ */
+
+  /*
+   * Constrói o conic-gradient do donut a partir das categorias.
+   */
+
+  const donutGradient = (() => {
+    let currentPosition = 0;
+
+    const segments = monthlyOverview.categories.map(
+      (category) => {
+        const start = currentPosition;
+
+        currentPosition += category.percentage;
+
+        return `${category.color} ${start}% ${currentPosition}%`;
+      }
+    );
+
+    return `conic-gradient(${segments.join(", ")})`;
+  })();
+
+  /* ------------------------------------------------------------------------
      Navigation
      ------------------------------------------------------------------------ */
 
@@ -67,13 +219,16 @@ export default function Assistente() {
 
   return (
     <main className="assistant">
+
       {/* ==================================================================
           Navigation
           ================================================================== */}
 
       <header className="assistant__navbar">
         <div className="assistant__navbar-inner">
+
           {/* Logo */}
+
           <Link
             to="/assistente"
             className="assistant__logo"
@@ -84,9 +239,12 @@ export default function Assistente() {
           </Link>
 
           {/* Navigation */}
+
           <nav
             className={`assistant__navigation ${
-              isMenuOpen ? "assistant__navigation--open" : ""
+              isMenuOpen
+                ? "assistant__navigation--open"
+                : ""
             }`}
             aria-label="Navegação principal"
           >
@@ -114,7 +272,6 @@ export default function Assistente() {
               Relatórios
             </Link>
 
-            {/* Mobile */}
             <Link
               to="/perfil"
               className="assistant__nav-link assistant__nav-link--mobile-only"
@@ -135,18 +292,21 @@ export default function Assistente() {
                 closeMenu();
               }}
             >
-              <LogOut size={16} strokeWidth={1.8} aria-hidden="true" />
+              <LogOut
+                size={16}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
 
               <span>Sair</span>
             </button>
           </nav>
 
           {/* Actions */}
+
           <div className="assistant__navbar-actions">
-            {/* Theme */}
             <ThemeSwitch />
 
-            {/* User */}
             <button
               type="button"
               className="assistant__user"
@@ -164,23 +324,39 @@ export default function Assistente() {
                 </span>
               )}
 
-              <span className="assistant__user-name">{user.name}</span>
+              <span className="assistant__user-name">
+                {user.name}
+              </span>
 
-              <ChevronDown size={16} strokeWidth={1.8} aria-hidden="true" />
+              <ChevronDown
+                size={16}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
             </button>
 
-            {/* Mobile menu */}
             <button
               type="button"
               className="assistant__menu-toggle"
-              aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-label={
+                isMenuOpen
+                  ? "Fechar menu"
+                  : "Abrir menu"
+              }
               aria-expanded={isMenuOpen}
-              onClick={() => setIsMenuOpen((current) => !current)}
+              onClick={() =>
+                setIsMenuOpen(
+                  (current) => !current
+                )
+              }
             >
               {isMenuOpen ? (
                 <X size={21} strokeWidth={1.8} />
               ) : (
-                <Menu size={21} strokeWidth={1.8} />
+                <Menu
+                  size={21}
+                  strokeWidth={1.8}
+                />
               )}
             </button>
           </div>
@@ -193,35 +369,77 @@ export default function Assistente() {
 
       <section className="assistant__intro">
         <h1 className="assistant__title">
-          Quais as novidades de hoje, {user.name}?
+          Como posso ajudar hoje, {user.name}?
         </h1>
-
-        <p className="assistant__description">
-          Fale do seu jeito. O Junta.ai acompanha a conversa.
-        </p>
       </section>
 
       {/* ==================================================================
           Financial Summary
           ================================================================== */}
 
-      <section className="assistant__summary" aria-label="Resumo financeiro">
-        <article className="assistant__summary-card assistant__summary-card--income">
-          <span className="assistant__summary-label">Receitas</span>
+      <section
+        className="assistant__summary"
+        aria-label="Resumo financeiro"
+      >
 
-          <strong className="assistant__summary-value">R$ 4.250,00</strong>
+        {/* Receitas */}
+
+        <article className="assistant__summary-card assistant__summary-card--income">
+          <div className="assistant__summary-icon">
+            <TrendingUp
+              size={22}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+          </div>
+
+          <span className="assistant__summary-label">
+            Receitas
+          </span>
+
+          <strong className="assistant__summary-value">
+            R$ 4.250,00
+          </strong>
         </article>
+
+        {/* Despesas */}
 
         <article className="assistant__summary-card assistant__summary-card--expense">
-          <span className="assistant__summary-label">Despesas</span>
+          <div className="assistant__summary-icon">
+            <TrendingDown
+              size={22}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+          </div>
 
-          <strong className="assistant__summary-value">R$ 1.890,50</strong>
+          <span className="assistant__summary-label">
+            Despesas
+          </span>
+
+          <strong className="assistant__summary-value">
+            R$ 1.890,50
+          </strong>
         </article>
 
-        <article className="assistant__summary-card">
-          <span className="assistant__summary-label">Saldo</span>
+        {/* Saldo */}
 
-          <strong className={`assistant__summary-value ${balanceClass}`}>
+        <article className="assistant__summary-card assistant__summary-card--balance">
+          <div className="assistant__summary-icon">
+            <WalletCards
+              size={22}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+          </div>
+
+          <span className="assistant__summary-label">
+            Saldo
+          </span>
+
+          <strong
+            className={`assistant__summary-value ${balanceClass}`}
+          >
             R$ 2.359,50
           </strong>
         </article>
@@ -232,6 +450,7 @@ export default function Assistente() {
           ================================================================== */}
 
       <section className="assistant__workspace">
+
         {/* ----------------------------------------------------------------
             Conversation
             ---------------------------------------------------------------- */}
@@ -241,10 +460,9 @@ export default function Assistente() {
           aria-label="Conversa com o Junta.ai"
         >
           <div className="assistant__conversation-content">
-            {/* TODO(CREWAI):
-                As mensagens serão alimentadas pelo agente. */}
 
             <div className="assistant__conversation-placeholder">
+
               <span
                 className="assistant__conversation-placeholder-icon"
                 aria-hidden="true"
@@ -256,27 +474,36 @@ export default function Assistente() {
                 />
               </span>
 
-              <h2>Por onde começamos?</h2>
+              <h2>
+                Por onde começamos?
+              </h2>
 
               <p>
-                Conte o que está acontecendo com seu dinheiro. Eu acompanho a
-                conversa.
+                Conte o que está acontecendo com seu dinheiro.
+                Eu acompanho a conversa.
               </p>
 
               <div className="assistant__suggestions">
-                <button type="button">Registrar um gasto</button>
+                <button type="button">
+                  Registrar um gasto
+                </button>
 
-                <button type="button">Ver meus gastos</button>
+                <button type="button">
+                  Ver meus gastos
+                </button>
 
-                <button type="button">Criar uma meta</button>
+                <button type="button">
+                  Criar uma meta
+                </button>
               </div>
+
             </div>
           </div>
 
-          {/* TODO(CREWAI):
-              Conectar o envio da mensagem ao backend/agente. */}
-
-          <form className="assistant__composer">
+          <form
+            className="assistant__composer"
+            onSubmit={(event) => event.preventDefault()}
+          >
             <input
               type="text"
               className="assistant__composer-input"
@@ -289,7 +516,11 @@ export default function Assistente() {
               className="assistant__composer-button"
               aria-label="Enviar mensagem"
             >
-              <SendHorizontal size={18} strokeWidth={2} aria-hidden="true" />
+              <SendHorizontal
+                size={18}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
             </button>
           </form>
         </section>
@@ -302,41 +533,222 @@ export default function Assistente() {
           className="assistant__sidebar"
           aria-label="Resumo da sua vida financeira"
         >
-          {/* Metas */}
-          <section className="assistant__widget">
-            <span className="assistant__widget-label">Metas</span>
 
-            <h2 className="assistant__widget-title">Seus objetivos</h2>
+          {/* ==============================================================
+              Metas
+              ============================================================== */}
 
-            {/* TODO(DATA): Substituir pelo widget real */}
-            <div className="assistant__widget-placeholder">Widget de metas</div>
-          </section>
+          <section className="assistant__widget assistant__widget--goals">
 
-          {/* Saúde Financeira */}
-          <section className="assistant__widget">
-            <span className="assistant__widget-label">Saúde financeira</span>
+            <div className="assistant__widget-header">
+              <div>
+                <span className="assistant__widget-label">
+                  Metas
+                </span>
 
-            <h2 className="assistant__widget-title">Como você está indo</h2>
+                <h2 className="assistant__widget-title">
+                  {goal.name}
+                </h2>
+              </div>
 
-            {/* TODO(DATA): Substituir pelo widget real */}
-            <div className="assistant__widget-placeholder">
-              Widget de saúde financeira
+              <strong className="assistant__widget-value">
+                {goal.percentage}%
+              </strong>
             </div>
+
+            <div className="assistant__goal-progress">
+              <span
+                style={{
+                  width: `${goal.percentage}%`,
+                }}
+              />
+            </div>
+
+            <div className="assistant__widget-footer">
+              <span>
+                R${" "}
+                {goal.current.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+
+              <span>
+                de R${" "}
+                {goal.target.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+
+            <p className="assistant__widget-caption">
+              R${" "}
+              {goal.remaining.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              })}{" "}
+              restantes
+            </p>
+
           </section>
 
-          {/* Mini Dashboard */}
+          {/* ==============================================================
+              Saúde Financeira
+              ============================================================== */}
+
+          <section className="assistant__widget assistant__widget--health">
+
+            <span className="assistant__widget-label">
+              Saúde financeira
+            </span>
+
+            <h2 className="assistant__widget-title">
+              Como você está indo
+            </h2>
+
+            <div className="assistant__health-content">
+              <strong className="assistant__health-score">
+                {financialHealth.score}
+              </strong>
+
+              <span className="assistant__health-status">
+                {financialHealth.status}
+              </span>
+            </div>
+
+            <div className="assistant__health-progress">
+              <span
+                style={{
+                  width: `${financialHealth.score}%`,
+                }}
+              />
+            </div>
+
+          </section>
+
+          {/* ==============================================================
+              Visão do Mês
+              ============================================================== */}
+
           <section className="assistant__widget assistant__widget--dashboard">
-            <span className="assistant__widget-label">Visão do mês</span>
 
-            <h2 className="assistant__widget-title">Seus números</h2>
+            <div className="assistant__widget-header">
+              <div>
+                <span className="assistant__widget-label">
+                  Visão do mês
+                </span>
 
-            {/* TODO(DATA):
-                Gerado a partir das transações alimentadas no chat. */}
-            <div className="assistant__widget-placeholder">Mini dashboard</div>
+                <h2 className="assistant__widget-title">
+                  Seus números
+                </h2>
+              </div>
 
-            <div className="assistant__expenses-placeholder">
-              Últimas despesas
+              <strong
+                className={`assistant__widget-month-value ${monthlyBalanceClass}`}
+              >
+                {monthlyBalanceFormatted}
+              </strong>
             </div>
+
+            {/* Donut */}
+
+            <div className="assistant__month-overview">
+
+              <div
+                className="assistant__month-donut"
+                style={{
+                  background: donutGradient,
+                }}
+                aria-label="Distribuição dos gastos por categoria"
+              >
+                <span>
+                  {monthlyOverview.categories.length}
+                </span>
+              </div>
+
+              <div className="assistant__category-list">
+                {monthlyOverview.categories.map(
+                  (category) => (
+                    <div
+                      className="assistant__category"
+                      key={category.name}
+                    >
+                      <span
+                        className="assistant__category-dot"
+                        style={{
+                          backgroundColor:
+                            category.color,
+                        }}
+                        aria-hidden="true"
+                      />
+
+                      <span className="assistant__category-emoji">
+                        {category.emoji}
+                      </span>
+
+                      <span className="assistant__category-name">
+                        {category.name}
+                      </span>
+
+                      <strong>
+                        {category.percentage}%
+                      </strong>
+                    </div>
+                  )
+                )}
+              </div>
+
+            </div>
+
+            {/* Últimos lançamentos */}
+
+            <div className="assistant__transactions">
+
+              <span className="assistant__transactions-title">
+                Últimos lançamentos
+              </span>
+
+              <div className="assistant__transactions-list">
+
+                {monthlyOverview.transactions.map(
+                  (transaction, index) => (
+                    <div
+                      className="assistant__transaction"
+                      key={`${transaction.description}-${index}`}
+                    >
+                      <div className="assistant__transaction-icon">
+                        <span aria-hidden="true">
+                          {transaction.emoji}
+                        </span>
+                      </div>
+
+                      <div className="assistant__transaction-info">
+                        <strong>
+                          {transaction.description}
+                        </strong>
+
+                        <span>
+                          {transaction.category}
+                        </span>
+                      </div>
+
+                      <strong
+                        className={`assistant__transaction-value ${
+                          transaction.type === "income"
+                            ? "assistant__transaction-value--income"
+                            : "assistant__transaction-value--expense"
+                        }`}
+                      >
+                        {transaction.type === "income"
+                          ? "+"
+                          : "-"}{" "}
+                        {transaction.value}
+                      </strong>
+                    </div>
+                  )
+                )}
+
+              </div>
+            </div>
+
           </section>
         </aside>
       </section>
