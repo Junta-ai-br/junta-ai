@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import "./CTA.css";
 
 export default function CTA() {
@@ -35,9 +37,9 @@ export default function CTA() {
           </p>
         </header>
 
-        <a
+        <Link
           className="cta__button"
-          href="#assistente"
+          to="/assistente"
         >
           <span>Começar uma conversa</span>
 
@@ -47,7 +49,7 @@ export default function CTA() {
           >
             →
           </span>
-        </a>
+        </Link>
 
         <p className="cta__microcopy">
           Sem planilhas. Sem complicação. No seu ritmo.

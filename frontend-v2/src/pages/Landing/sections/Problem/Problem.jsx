@@ -3,7 +3,7 @@ import Bubble from "../../../../components/common/Bubble";
 
 export default function Problem() {
   return (
-    <section className="problem">
+    <section className="problem" id="problem">
       <div className="problem__container">
 
         <header className="problem__header">
