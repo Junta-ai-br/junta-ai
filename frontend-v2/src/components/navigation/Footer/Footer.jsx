@@ -5,7 +5,7 @@ import Logo from "@/components/branding/logo";
 import { useTheme } from "@/contexts/ThemeContext";
 import { THEMES } from "@/utils/theme";
 
-import footerColumns from "./FooterColumns";
+import footerColumns from "./footerColumns";
 
 import "./Footer.css";
 
