@@ -23,6 +23,18 @@
   align-items: center;
 }
 
+.header__logo-button {
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Container */
 /* -------------------------------------------------------------------------- */
