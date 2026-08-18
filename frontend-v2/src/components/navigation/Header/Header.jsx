@@ -1,4 +1,6 @@
 import Button from "@/components/common/Button";
+import { Link } from "react-router-dom";
+
 import Logo from "@/components/branding/logo";
 import Navbar from "@/components/navigation/Navbar";
 import ThemeSwitch from "../ThemeSwitch";
@@ -33,6 +35,13 @@ function Header() {
             Login
           </a>
           <Button variant="primary">Começar agora</Button>
+
+          <Link
+            to="/assistente"
+            className="button button--primary header__cta"
+          >
+            Começar agora
+          </Link>
         </div>
       </div>
     </header>

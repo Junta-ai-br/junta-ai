@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Hero.css";
 
 function Hero() {
@@ -24,6 +25,9 @@ function Hero() {
             <a href="#" className="button button--primary">
               Experimentar o Junta.ai
             </a>
+            <Link to="/assistente" className="button button--primary">
+              Experimentar o Junta.ai
+            </Link>
 
             <a href="#problem" className="button button--secondary">
               Conhecer a proposta
@@ -34,6 +38,9 @@ function Hero() {
         <div className="hero__preview">
           <div className="hero__preview-placeholder">
             <span className="hero__preview-label">Prévia da interface</span>
+            <span className="hero__preview-label">
+              Prévia da interface
+            </span>
           </div>
         </div>
       </div>
@@ -41,4 +48,5 @@ function Hero() {
   );
 }
 
+export default Hero;
 export default Hero;

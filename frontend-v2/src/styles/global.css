@@ -14,6 +14,7 @@
 @import "./foundations/radius.css";
 @import "./foundations/shadows.css";
 @import "./foundations/motion.css";
+@import "../components/common/Button/Button.css";
 
 /* --------------------------------------------------------------------------
    Themes

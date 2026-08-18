@@ -1,3 +1,8 @@
+/* ==========================================================================
+   Hero Section
+   Landing Page · Junta.ai
+   ========================================================================== */
+
 .hero {
   padding-block: clamp(8rem, 11vw, 11rem);
 }
@@ -52,12 +57,38 @@
   width: 8px;
   height: 8px;
 
+  flex: 0 0 auto;
+
   border-radius: 50%;
 
   background: var(--brand-accent);
 
   box-shadow: 0 0 12px
     color-mix(in srgb, var(--brand-accent) 60%, transparent);
+  box-shadow:
+    0 0 12px
+    color-mix(in srgb, var(--brand-accent) 60%, transparent);
+
+  animation: hero-status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hero-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+
+    box-shadow:
+      0 0 12px
+      color-mix(in srgb, var(--brand-accent) 60%, transparent);
+  }
+
+  50% {
+    opacity: 0.45;
+
+    box-shadow:
+      0 0 0 4px
+      color-mix(in srgb, var(--brand-accent) 0%, transparent);
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -197,6 +228,16 @@
   height: 100%;
 
   object-fit: cover;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Reduced Motion */
+/* -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__badge-dot {
+    animation: none;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
