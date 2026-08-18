@@ -37,6 +37,9 @@ export default function CTA() {
           </p>
         </header>
 
+        <a
+          className="cta__button"
+          href="#assistente"
         <Link
           className="cta__button"
           to="/assistente"
@@ -49,6 +52,7 @@ export default function CTA() {
           >
             →
           </span>
+        </a>
         </Link>
 
         <p className="cta__microcopy">

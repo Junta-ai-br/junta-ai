@@ -1,3 +1,4 @@
+import Button from "@/components/common/Button";
 import { Link } from "react-router-dom";
 
 import Logo from "@/components/branding/logo";
@@ -33,6 +34,7 @@ function Header() {
           <a href="/login" className="navbar__link">
             Login
           </a>
+          <Button variant="primary">Começar agora</Button>
 
           <Link
             to="/assistente"

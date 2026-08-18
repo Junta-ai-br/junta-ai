@@ -12,6 +12,7 @@ import "./Features.css";
 
 export default function Features() {
   return (
+    <section className="features" id="features">
     <section className="features" id="recursos">
       <div className="features__container">
         {/* ------------------------------------------------------------------
