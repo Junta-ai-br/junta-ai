@@ -1,6 +1,3 @@
-import "./FAQ.css";
-import { Accordion } from "radix-ui";
-
 import { Accordion } from "radix-ui";
 
 import "./FAQ.css";
@@ -52,9 +49,6 @@ const questions = [
 
 export default function FAQ() {
   return (
-    <section className="faq">
-      <div className="faq__container">
-
     <section className="faq" id="duvidas">
       <div className="faq__container">
         <div className="faq__divider" />
@@ -112,15 +106,6 @@ export default function FAQ() {
           <span className="faq__contact-text">
             Ainda ficou alguma dúvida?
           </span>
-
-          <a
-            className="faq__contact-link"
-            href="#contato"
-          >
-            Entre em contato
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
 
           <span className="faq__contact-link">
             Entre em contato

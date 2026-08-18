@@ -1,6 +1,3 @@
-import "./Bubble.css";
-import clsx from "clsx";
-
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import clsx from "clsx";
@@ -13,19 +10,6 @@ export default function Bubble({
   variant = "primary",
   align = "left",
   className,
-}) {
-  return (
-    <article
-      className={clsx(
-        "bubble",
-        `bubble--${size}`,
-        `bubble--${variant}`,
-        `bubble--align-${align}`,
-        className
-      )}
-    >
-      <p className="bubble__text">{children}</p>
-    </article>
   delay = 0,
   floatDelay = 0,
 }) {

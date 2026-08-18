@@ -1,8 +1,4 @@
 .header {
-  position: relative;
-  width: 100%;
-  padding: 2rem var(--spacing-8);
-  padding-block: 2.5rem;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -71,7 +67,6 @@
     var(--border),
     var(--brand-primary) 5%
   );
-  border-color: color-mix(in srgb, var(--border), var(--brand-primary) 5%);
 
   box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
@@ -102,7 +97,6 @@
   align-items: center;
   justify-self: end;
   gap: 1.5rem;
-}
 }
 
 .header__cta {
