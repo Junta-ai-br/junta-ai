@@ -1,4 +1,3 @@
-import Button from "@/components/common/Button";
 import { Link } from "react-router-dom";
 
 import Logo from "@/components/branding/logo";
@@ -13,6 +12,13 @@ import "./Header.css";
 function Header() {
   const { theme } = useTheme();
 
+  function handleLogoClick() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
   return (
     <header className="header">
       <div className="header__theme">
@@ -21,11 +27,18 @@ function Header() {
 
       <div className="header__container">
         <div className="header__brand">
-          <Logo
-            variant="horizontal"
-            wordmark={theme === THEMES.DARK ? "branca" : "preta"}
-            width={200}
-          />
+          <button
+            type="button"
+            className="header__logo-button"
+            onClick={handleLogoClick}
+            aria-label="Voltar ao topo"
+          >
+            <Logo
+              variant="horizontal"
+              wordmark={theme === THEMES.DARK ? "branca" : "preta"}
+              width={200}
+            />
+          </button>
         </div>
 
         <Navbar />
@@ -34,7 +47,6 @@ function Header() {
           <a href="/login" className="navbar__link">
             Login
           </a>
-          <Button variant="primary">Começar agora</Button>
 
           <Link
             to="/assistente"

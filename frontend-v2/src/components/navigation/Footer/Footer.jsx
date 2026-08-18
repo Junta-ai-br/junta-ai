@@ -18,8 +18,8 @@ function GithubIcon({ size = 18 }) {
 }
 
 const socialLinks = [
-  { label: "GitHub", href: "https://github.com/danieli-dutra/junta-ai", icon: GithubIcon },
-  { label: "E-mail", href: "mailto:contato@juntaai.com", icon: Mail },
+  { label: "GitHub", href: "https://github.com/Junta-ai-br/junta-ai", icon: GithubIcon },
+  { label: "E-mail", href: "mailto:contato.junta.ai@gmail.com", icon: Mail },
 ];
 
 function scrollToTop() {
