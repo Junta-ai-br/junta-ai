@@ -3,6 +3,11 @@ import Bubble from "../../../../components/common/Bubble";
 
 export default function Problem() {
   return (
+    <section className="problem">
+      <div className="problem__container">
+
+        <header className="problem__header">
+
     <section className="problem" id="problem">
       <div className="problem__container">
         <header className="problem__header">
@@ -27,6 +32,14 @@ export default function Problem() {
             Poucos ajudam você a entender o que eles realmente significam
             para a sua vida.
           </p>
+
+        </header>
+
+        <div className="problem__conversation">
+
+          <Bubble
+            size="md"
+            className="bubble--left"
         </header>
 
         <div className="problem__conversation">
@@ -85,6 +98,9 @@ export default function Problem() {
               Você precisa de alguém que converse com você.
             </strong>
           </Bubble>
+
+        </div>
+
         </div>
       </div>
     </section>
