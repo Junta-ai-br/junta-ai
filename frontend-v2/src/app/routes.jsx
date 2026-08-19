@@ -8,6 +8,11 @@ import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
 import Relatorios from "@/pages/Relatorios";
 import Perfil from "@/pages/Perfil";
+import Planos from "@/pages/Planos";
+import Sobre from "@/pages/Sobre";
+import Contato from "@/pages/Contato";
+import Privacidade from "@/pages/Privacidade";
+import Termos from "@/pages/Termos";
 
 function AppRoutes() {
   return (
@@ -15,6 +20,11 @@ function AppRoutes() {
       {/* Área pública */}
       <Route element={<LandingLayout />}>
         <Route path="/" element={<Landing />} />
+        <Route path="/planos" element={<Planos />} />
+        <Route path="/sobre" element={<Sobre />} />
+        <Route path="/contato" element={<Contato />} />
+        <Route path="/privacidade" element={<Privacidade />} />
+        <Route path="/termos" element={<Termos />} />
       </Route>
 
       {/* Área autenticada (futuramente protegida por PrivateRoute) */}
