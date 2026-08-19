@@ -2,7 +2,7 @@ const footerColumns = [
   {
     title: "Produto",
     links: [
-      { label: "Recursos", href: "/#features" },
+      { label: "Recursos", href: "/#recursos" },
       { label: "Como funciona", href: "/#como-funciona" },
       { label: "Planos", href: "/planos" },
       { label: "Atualizações", href: "/#atualizacoes" },
