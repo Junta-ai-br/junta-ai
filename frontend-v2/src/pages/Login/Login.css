@@ -1,0 +1,110 @@
+.login-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.72fr);
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+.login-page__panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(100%, 31rem);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+.login-page__brand {
+  align-self: flex-start;
+  margin-bottom: clamp(3rem, 10vh, 7rem);
+}
+
+.login-page__brand:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+.login-page__intro {
+  margin-bottom: var(--space-8);
+}
+
+.login-page__eyebrow {
+  margin-bottom: var(--space-3);
+  color: var(--brand-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-page h1 {
+  margin: 0 0 var(--space-3);
+  color: var(--text-primary);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.1;
+}
+
+.login-page__intro > p:last-child {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.login-page__privacy {
+  margin: var(--space-6) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.login-page__privacy a {
+  color: var(--link);
+}
+
+.login-page__aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
+  padding: clamp(2rem, 6vw, 6rem);
+  background:
+    linear-gradient(145deg, rgba(77, 48, 145, 0.95), rgba(34, 22, 71, 0.98)),
+    var(--brand-primary);
+  color: var(--text-inverse);
+}
+
+.login-page__aside-mark {
+  margin-bottom: auto;
+  color: rgba(255, 255, 255, 0.2);
+  font-family: Georgia, serif;
+  font-size: clamp(10rem, 24vw, 22rem);
+  font-weight: 700;
+  line-height: 0.7;
+}
+
+.login-page__aside p {
+  max-width: 18rem;
+  margin: 0;
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.15;
+}
+
+@media (max-width: 720px) {
+  .login-page {
+    display: block;
+  }
+
+  .login-page__panel {
+    min-height: 100vh;
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .login-page__brand {
+    margin-bottom: clamp(3rem, 12vh, 5rem);
+  }
+
+  .login-page__aside {
+    display: none;
+  }
+}
