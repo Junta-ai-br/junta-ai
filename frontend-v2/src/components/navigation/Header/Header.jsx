@@ -4,7 +4,7 @@ import Logo from "@/components/branding/logo";
 import Navbar from "@/components/navigation/Navbar";
 import ThemeSwitch from "../ThemeSwitch";
 
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/contexts/useTheme";
 import { THEMES } from "@/utils/theme";
 
 import "./Header.css";

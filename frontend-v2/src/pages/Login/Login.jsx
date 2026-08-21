@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import Logo from "@/components/branding/logo";
 import LoginForm from "@/components/Login/LoginForm";
 
@@ -9,28 +7,30 @@ import "@/components/Login/LoginForm.css";
 export default function Login() {
   return (
     <main className="login-page">
-      <div className="login-page__panel">
-        <Link to="/" className="login-page__brand" aria-label="Ir para a página inicial">
-          <Logo variant="horizontal" wordmark="branca" width={164} />
-        </Link>
-
-        <div className="login-page__intro">
-          <p className="login-page__eyebrow">Bem-vindo de volta</p>
-          <h1>Entre na sua conta</h1>
-          <p>Use seu e-mail e a chave de acesso para continuar.</p>
-        </div>
-
-        <LoginForm />
-
-        <p className="login-page__privacy">
-          Ao entrar, você concorda com nossos <Link to="/termos">Termos de uso</Link> e <Link to="/privacidade">Política de privacidade</Link>.
+      <aside className="login-page__brand-panel" aria-label="Sobre a Junta.ai">
+        <Logo variant="horizontal" wordmark="branca" width={164} />
+        <p className="login-page__eyebrow">JUNTA.AI · FINANÇAS</p>
+        <h1>Seu dinheiro,<br /><em>em movimento.</em></h1>
+        <p className="login-page__brand-description">
+          Um espaço claro para organizar o que importa e avançar com intenção.
         </p>
-      </div>
-
-      <aside className="login-page__aside" aria-hidden="true">
-        <span className="login-page__aside-mark">J</span>
-        <p>Clareza para as decisões que movem a sua vida.</p>
+        <div className="login-page__brand-line" aria-hidden="true" />
+        <p className="login-page__brand-footer">
+          Clareza para as decisões que movem a sua vida.
+        </p>
       </aside>
+
+      <section className="login-page__panel" aria-labelledby="login-title">
+        <div className="login-page__card">
+          <div className="login-page__mobile-brand" aria-hidden="true">
+            <Logo variant="horizontal" wordmark="preta" width={136} />
+          </div>
+          <LoginForm />
+          <p className="login-page__privacy">
+            Ao continuar, você concorda com nossos termos de uso e política de privacidade.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
