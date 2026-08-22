@@ -13,6 +13,7 @@ import Sobre from "@/pages/Sobre";
 import Contato from "@/pages/Contato";
 import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
+import Login from "@/pages/Login/Login";
 
 function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ function AppRoutes() {
 
       {/* Área autenticada (futuramente protegida por PrivateRoute) */}
       <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
         <Route path="/assistente" element={<Assistente />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />

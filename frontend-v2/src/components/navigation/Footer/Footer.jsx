@@ -2,7 +2,7 @@ import { Mail, ArrowUp } from "lucide-react";
 
 import Logo from "@/components/branding/logo";
 
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/contexts/useTheme";
 import { THEMES } from "@/utils/theme";
 
 import footerColumns from "./footerColumns";

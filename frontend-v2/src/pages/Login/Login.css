@@ -1,0 +1,111 @@
+.login-page {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(28rem, 1.1fr);
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+.login-page__brand-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
+  padding: clamp(2rem, 6vw, 6rem);
+  background: linear-gradient(145deg, var(--purple-700), var(--gray-950));
+  color: var(--text-inverse);
+}
+
+.login-page__brand-panel > img {
+  align-self: flex-start;
+  margin-bottom: auto;
+}
+
+.login-page__eyebrow,
+.login-form__eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--brand-primary);
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-page__brand-panel .login-page__eyebrow {
+  color: var(--purple-200);
+}
+
+.login-page__brand-panel h1 {
+  max-width: 27rem;
+  margin: 0 0 var(--space-5);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.02;
+}
+
+.login-page__brand-panel h1 em {
+  color: var(--aqua-300);
+  font-style: normal;
+}
+
+.login-page__brand-description,
+.login-page__brand-footer {
+  max-width: 22rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: var(--line-height-normal);
+}
+
+.login-page__brand-line {
+  width: 3rem;
+  height: 2px;
+  margin: clamp(3rem, 8vh, 6rem) 0 var(--space-5);
+  background: var(--aqua-400);
+}
+
+.login-page__brand-footer {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: var(--font-small);
+}
+
+.login-page__panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: clamp(2rem, 6vw, 6rem);
+}
+
+.login-page__card {
+  width: min(100%, 28rem);
+}
+
+.login-page__mobile-brand {
+  display: none;
+}
+
+.login-page__privacy {
+  margin: var(--space-8) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-caption);
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .login-page {
+    display: block;
+  }
+
+  .login-page__brand-panel {
+    display: none;
+  }
+
+  .login-page__panel {
+    min-height: 100vh;
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .login-page__mobile-brand {
+    display: block;
+    margin-bottom: clamp(3rem, 12vh, 5rem);
+  }
+}

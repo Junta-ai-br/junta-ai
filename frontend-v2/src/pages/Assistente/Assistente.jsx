@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/contexts/useTheme";
 import { THEMES } from "@/utils/theme";
 
 import logoHorizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
@@ -245,17 +245,14 @@ export default function Assistente() {
      ========================================================================== */
 
   const donutGradient = (() => {
-    let currentPosition = 0;
+    const segments = monthlyOverview.categories.map((category, index) => {
+      const start = monthlyOverview.categories
+        .slice(0, index)
+        .reduce((total, currentCategory) => total + currentCategory.percentage, 0);
+      const end = start + category.percentage;
 
-    const segments = monthlyOverview.categories.map(
-      (category) => {
-        const start = currentPosition;
-
-        currentPosition += category.percentage;
-
-        return `${category.color} ${start}% ${currentPosition}%`;
-      }
-    );
+      return `${category.color} ${start}% ${end}%`;
+    });
 
     return `conic-gradient(${segments.join(", ")})`;
   })();
