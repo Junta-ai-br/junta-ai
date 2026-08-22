@@ -13,7 +13,9 @@ import Sobre from "@/pages/Sobre";
 import Contato from "@/pages/Contato";
 import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
+
 import Login from "@/pages/Login/Login";
+import Cadastro from "@/pages/Cadastro/Cadastro";
 
 function AppRoutes() {
   return (
@@ -28,9 +30,11 @@ function AppRoutes() {
         <Route path="/termos" element={<Termos />} />
       </Route>
 
-      {/* Área autenticada (futuramente protegida por PrivateRoute) */}
+      {/* Área de autenticação e área interna */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+
         <Route path="/assistente" element={<Assistente />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
