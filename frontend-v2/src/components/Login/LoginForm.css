@@ -1,101 +1,229 @@
+/* ==========================================================================
+   Login Form
+   ========================================================================== */
+
 .login-form__heading {
-  margin-bottom: var(--space-8);
+  margin: 0 0 28px;
 }
+
+
+/* ==========================================================================
+   Eyebrow
+   ========================================================================== */
+
+.login-form__eyebrow {
+  margin: 0 0 10px;
+
+  color: var(--brand-primary);
+
+  font-family: "Geist", sans-serif;
+  font-size: 0.75rem;
+  font-weight: var(--font-semibold);
+
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+
+/* ==========================================================================
+   Heading
+   ========================================================================== */
 
 .login-form__heading h2,
 .login-form__success h2 {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 12px;
+
   color: var(--text-primary);
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  line-height: 1.08;
+
+  font-family: "Santoshi", "Geist", sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.15rem);
+  font-weight: var(--font-semibold);
+
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .login-form__heading > p:last-child,
 .login-form__success > p:not(.login-form__eyebrow) {
   margin: 0;
+
   color: var(--text-secondary);
+
+  font-family: "Geist", sans-serif;
+  font-size: 0.95rem;
+  font-weight: var(--font-regular);
+
   line-height: 1.6;
 }
 
-.login-form__eyebrow {
-  color: var(--brand-primary);
-}
+
+/* ==========================================================================
+   Google
+   ========================================================================== */
 
 .login-form__google,
 .login-form__submit {
   width: 100%;
 }
 
+.login-form__google {
+  min-height: 48px;
+}
+
 .login-form__google-icon {
   width: 1.25rem;
   height: 1.25rem;
+
+  flex-shrink: 0;
 }
+
+
+/* ==========================================================================
+   Divider
+   ========================================================================== */
 
 .login-form__divider {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  margin: var(--space-6) 0;
+
+  gap: 12px;
+
+  margin: 24px 0;
+
   color: var(--text-muted);
+
+  font-family: "Geist", sans-serif;
   font-size: var(--font-small);
+
+  line-height: 1.4;
+
   text-align: center;
 }
 
 .login-form__divider::before,
 .login-form__divider::after {
   flex: 1;
+
   height: 1px;
+
   background: var(--border);
+
   content: "";
 }
+
+
+/* ==========================================================================
+   Fields
+   ========================================================================== */
 
 .login-form__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-7);
+
+  gap: 20px;
 }
 
 .login-form__fields--email {
-  gap: var(--spacing-32);
+  gap: 20px;
 }
 
+
+/* ==========================================================================
+   Submit
+   ========================================================================== */
+
+.login-form__submit {
+  min-height: 48px;
+
+  margin-top: 2px;
+}
+
+
+/* ==========================================================================
+   Messages
+   ========================================================================== */
+
 .login-form__message {
-  min-height: 1.5rem;
-  margin-top: var(--space-4);
+  min-height: 0;
+
+  margin-top: 12px;
+
   color: var(--success-text);
+
+  font-family: "Geist", sans-serif;
   font-size: var(--font-small);
+
   line-height: 1.45;
+}
+
+.login-form__message:empty {
+  display: none;
 }
 
 .login-form__message.is-error {
   color: var(--error-text);
 }
 
+
+/* ==========================================================================
+   Code Actions
+   ========================================================================== */
+
 .login-form__code-actions {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-4);
+  align-items: center;
+
+  gap: 16px;
+
+  margin-top: 4px;
 }
+
+
+/* ==========================================================================
+   Text Buttons
+   ========================================================================== */
 
 .login-form__text-button {
   padding: 0;
+
   border: 0;
+
   background: transparent;
+
   color: var(--link);
+
   font: inherit;
+  font-family: "Geist", sans-serif;
   font-size: var(--font-small);
   font-weight: var(--font-semibold);
+
+  line-height: 1.4;
+
   cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    text-decoration 0.2s ease;
 }
 
 .login-form__text-button:hover:not(:disabled) {
   color: var(--link-hover);
+
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .login-form__text-button:disabled {
   color: var(--disabled-text);
+
+  cursor: not-allowed;
 }
+
+
+/* ==========================================================================
+   Success
+   ========================================================================== */
 
 .login-form__success {
   text-align: center;
@@ -104,18 +232,39 @@
 .login-form__success-icon {
   display: grid;
   place-items: center;
+
   width: 3.5rem;
   height: 3.5rem;
-  margin: 0 auto var(--space-6);
+
+  margin: 0 auto 24px;
+
   border-radius: var(--radius-full);
+
   background: var(--success-surface);
   color: var(--success-text);
+
   font-size: 1.75rem;
   font-weight: var(--font-bold);
 }
 
 .login-form__success .login-form__text-button {
-  margin-top: var(--space-6);
+  margin-top: 24px;
+}
+
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 560px) {
+  .login-form__heading {
+    margin-bottom: 24px;
+  }
+
+  .login-form__heading h2,
+  .login-form__success h2 {
+    font-size: 1.9rem;
+  }
 }
 
 @media (max-width: 480px) {
