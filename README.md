@@ -7,7 +7,7 @@
 ![Build](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Backend](https://img.shields.io/badge/Backend-Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot)
 ![AI](https://img.shields.io/badge/AI-CrewAI-7B3FE4?style=for-the-badge)
-![Database](https://img.shields.io/badge/Database-PostgreSQL%20%7C%20MySQL-336791?style=for-the-badge&logo=postgresql)
+![Database](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql)
 ![Security](https://img.shields.io/badge/Security-Secure%20Development-7140FA?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
@@ -21,7 +21,7 @@
 
 O **Junta.ai** é um assistente financeiro conversacional que transforma conversas em organização, contexto e decisões mais conscientes sobre dinheiro.
 
-Em vez de depender exclusivamente de planilhas, formulários ou interfaces complexas, o usuário pode conversar naturalmente sobre sua vida financeira enquanto a aplicação organiza informações, acompanha objetivos e apresenta insights de forma simples e contextualizada.
+Em vez de depender exclusivamente de planilhas, formulários ou interfaces complexas, a proposta é permitir que o usuário converse naturalmente sobre sua vida financeira enquanto a aplicação organiza informações, acompanha objetivos e apresenta insights de forma simples e contextualizada.
 
 A proposta combina **Inteligência Artificial, desenvolvimento Full Stack, desenvolvimento seguro e uma experiência centrada no usuário** para tornar a organização financeira mais acessível e menos intimidante.
 
@@ -50,52 +50,54 @@ Mais do que um novo nome, Junta.ai representa uma nova visão de produto.
 
 # 💜 Nossa Filosofia
 
-> O Junta.ai não existe para controlar as finanças do usuário.
+> **O Junta.ai não existe para controlar as finanças do usuário.**
 >
 > Ele existe para ajudá-lo a desenvolver uma relação mais consciente e tranquila com o próprio dinheiro.
 
-Acreditamos que conversar pode ser mais natural do que preencher planilhas.
+O produto foi pensado para apoiar o usuário sem assumir uma postura de cobrança ou julgamento.
 
-Por isso, a Inteligência Artificial atua como uma parceira que organiza informações, oferece contexto e apoia decisões, sempre preservando a autonomia do usuário.
+A experiência busca combinar:
 
----
+- autonomia;
+- clareza;
+- contexto;
+- planejamento;
+- baixa fricção;
+- transparência;
+- segurança;
+- respeito às escolhas do usuário.
 
-# 🎯 Princípios do Produto
-
-- 💬 **Conversa antes de formulários.**
-- 🔎 **Clareza antes da complexidade.**
-- 🤖 **Inteligência que apoia, não substitui.**
-- 🧠 **Contexto antes de recomendações genéricas.**
-- 🔐 **Segurança e privacidade desde o desenvolvimento.**
-- 🔎 **Transparência em todas as recomendações.**
-- 👤 **O usuário mantém sempre o controle.**
-- 💜 **A experiência deve reduzir a ansiedade financeira.**
+O objetivo é que a tecnologia ajude o usuário a compreender melhor sua situação financeira e tomar suas próprias decisões.
 
 ---
 
-# ✨ Principais Funcionalidades
+# 🎯 Principais Funcionalidades
 
-O MVP está sendo desenvolvido em torno de uma experiência financeira conversacional.
+As funcionalidades abaixo fazem parte do escopo planejado do MVP e estão sendo implementadas progressivamente.
 
 ### 💬 Conversação em linguagem natural
 
-O usuário poderá interagir com o Junta.ai utilizando linguagem natural para registrar informações e conversar sobre sua situação financeira.
+O usuário poderá registrar informações financeiras por meio de uma conversa, utilizando linguagem natural.
 
-### 💰 Registro inteligente de movimentações
+### 💰 Registro de receitas e despesas
 
-Receitas e despesas poderão ser registradas através da conversa, reduzindo a necessidade de preenchimento manual de formulários.
+O sistema deverá interpretar as informações fornecidas pelo usuário e transformá-las em registros financeiros estruturados.
 
-### 🏷️ Categorização de transações
+### 🧠 Organização inteligente
 
-As movimentações serão organizadas automaticamente de acordo com seu contexto.
+As movimentações poderão ser classificadas e organizadas automaticamente a partir do contexto fornecido pelo usuário.
 
 ### 🎯 Metas financeiras
 
-O usuário poderá criar e acompanhar objetivos financeiros diretamente através da experiência conversacional.
+O usuário poderá definir objetivos financeiros, acompanhar seu progresso e utilizar diferentes cenários para planejar o alcance de suas metas.
 
-### 📊 Visão financeira contextualizada
+### 📊 Dashboard financeiro
 
-A aplicação apresentará informações relevantes sobre a situação financeira do usuário através de dashboards e widgets.
+Informações financeiras serão apresentadas por meio de indicadores e visualizações que facilitem a compreensão da situação financeira.
+
+### 🧭 Saúde financeira
+
+O sistema poderá utilizar indicadores financeiros e informações fornecidas pelo usuário para apresentar uma visão contextualizada de sua situação.
 
 ### 🧠 Recomendações contextualizadas
 
@@ -109,7 +111,7 @@ O sistema será capaz de organizar o histórico financeiro e utilizar essas info
 
 # 🤖 Inteligência Artificial
 
-A experiência conversacional do Junta.ai está sendo projetada para utilizar um **agente de Inteligência Artificial baseado em CrewAI**.
+A experiência conversacional do Junta.ai está sendo projetada para utilizar um **agente de Inteligência Artificial estruturado e orquestrado com CrewAI**.
 
 A proposta é que o agente não funcione apenas como uma interface de conversa, mas como uma camada de inteligência capaz de interpretar as mensagens do usuário e acionar os recursos necessários para processar as informações financeiras.
 
@@ -125,7 +127,9 @@ Chat do Junta.ai
 Backend / API
    │
    ▼
-Agente de IA
+Orquestração de IA
+   │
+   │  CrewAI
    │
    ├── Interpretação da mensagem
    ├── Identificação da intenção
@@ -178,7 +182,7 @@ docs/
 
 ---
 
-# 🏗️ Arquitetura
+# 🏗️ Arquitetura Conceitual
 
 A aplicação está sendo estruturada como uma arquitetura Full Stack, separando responsabilidades entre interface, backend, inteligência artificial, persistência de dados e requisitos de segurança.
 
@@ -198,8 +202,8 @@ A aplicação está sendo estruturada como uma arquitetura Full Stack, separando
                  │                           │
                  ▼                           ▼
        ┌──────────────────┐        ┌──────────────────┐
-       │   Agente de IA   │        │ Banco de Dados   │
-       │     CrewAI       │        │ PostgreSQL/MySQL │
+       │   Orquestração   │        │ Banco de Dados   │
+       │     CrewAI       │        │    PostgreSQL    │
        └──────────────────┘        └──────────────────┘
 
              ┌──────────────────────────────────┐
@@ -217,7 +221,7 @@ A arquitetura encontra-se em evolução e será refinada conforme a implementaç
 
 <p align="center">
 
-<img src="https://skillicons.dev/icons?i=react,javascript,vite,java,spring,postgres,mysql,git,github,vscode" />
+<img src="https://skillicons.dev/icons?i=react,javascript,vite,java,spring,postgres,git,github,vscode" />
 
 </p>
 
@@ -238,15 +242,12 @@ A arquitetura encontra-se em evolução e será refinada conforme a implementaç
 ## Inteligência Artificial
 
 - CrewAI
-- Agentes de IA
+- Orquestração de agentes
 - LLMs
 
 ## Banco de Dados
 
 - PostgreSQL
-- MySQL
-
-> A definição do banco de dados definitivo ainda faz parte da evolução da arquitetura.
 
 ## Segurança
 
@@ -279,9 +280,9 @@ Atualmente, as principais frentes incluem:
 - 🎨 Design System
 - 💻 Desenvolvimento da interface em React
 - 💬 Experiência conversacional
-- 🤖 Estruturação do agente de IA
+- 🤖 Estruturação e orquestração do agente de IA
 - ⚙️ Desenvolvimento do backend
-- 🗄️ Definição e implementação da persistência de dados
+- 🗄️ Implementação da persistência de dados
 - 🔐 Desenvolvimento seguro
 - 🧪 Estratégia de testes
 - 👤 Autenticação e autorização
@@ -320,14 +321,14 @@ Atualmente, as principais frentes incluem:
 | 📚 Definição da visão do produto | ✅ |
 | 🔄 Evolução Grana AI → Junta.ai | ✅ |
 | 📐 Arquitetura inicial | ✅ |
-| 🎨 Design System | 🚧 |
+| 🎨 Design System | ✅ |
 | 💻 Estrutura Frontend | 🚧 |
 | 💬 Experiência Conversacional | 🚧 |
 | 🤖 Agente de IA | 🚧 |
 | ⚙️ Backend | 🚧 |
 | 🔐 Desenvolvimento Seguro | 🚧 |
-| 💾 Persistência de Dados | ⏳ |
-| 👤 Autenticação e Autorização | ⏳ |
+| 💾 Persistência de Dados | 🚧 |
+| 👤 Autenticação e Autorização | 🚧 |
 | 🧪 Testes | ⏳ |
 | 🚀 MVP | ⏳ |
 
@@ -349,6 +350,7 @@ junta-ai/
 ├── docs/
 │   ├── ai/
 │   ├── product/
+│   ├── research/
 │   ├── security/
 │   ├── technical/
 │   └── testing/
@@ -385,11 +387,12 @@ As principais decisões adotadas até o momento incluem:
 - Design System próprio.
 - Suporte a Light Mode e Dark Mode.
 - Experiência centrada em IA conversacional.
+- CrewAI como framework de orquestração do agente.
+- PostgreSQL como banco de dados.
 - Desenvolvimento incremental.
 - Documentação contínua.
 - Versionamento com Git e GitHub.
-- Separação entre documentação de produto, IA, segurança, arquitetura e testes.
-- Agente de IA estruturado com CrewAI.
+- Separação entre documentação de produto, pesquisa, IA, segurança, arquitetura e testes.
 - Desenvolvimento seguro incorporado ao ciclo de desenvolvimento.
 - Segurança considerada desde a arquitetura, e não apenas após a implementação.
 - Evolução progressiva da arquitetura conforme o MVP é implementado.
@@ -411,6 +414,9 @@ O projeto é desenvolvido utilizando práticas inspiradas em metodologias ágeis
 - Revisão contínua de decisões arquiteturais
 - **Secure Development Lifecycle (SDL)**
 - Segurança considerada durante planejamento, desenvolvimento e testes
+- Pesquisa e validação utilizadas para apoiar decisões de produto
+
+A documentação de Research registra evidências, insights, hipóteses e resultados de validações, mantendo uma separação entre o que foi observado, o que foi inferido e o que ainda precisa ser testado.
 
 ---
 
@@ -421,12 +427,24 @@ Toda a documentação oficial está sendo organizada na pasta **`/docs`**.
 | Área | Descrição |
 |---|---|
 | 📍 Roadmap | Evolução das funcionalidades e prioridades |
-| 📐 Product | Visão, princípios e estratégia do produto |
+| 📐 Product | Visão, princípios e especificações do produto |
+| 🔎 Research | Pesquisas, evidências, hipóteses e validações |
 | 🤖 AI | Comportamento, arquitetura e decisões relacionadas ao agente |
 | 🔐 Security | Princípios, requisitos e decisões relacionadas à segurança |
 | 🏗️ Technical | Arquitetura, APIs e infraestrutura |
 | 🧪 Testing | Estratégia e documentação de testes |
 | 📝 Changelog | Histórico de evolução do projeto |
+
+### 🔎 Research
+
+A documentação de Research registra as pesquisas utilizadas para apoiar decisões de desenvolvimento, incluindo:
+
+- fundamentação em literatura e pesquisas acadêmicas;
+- análise geral do mercado;
+- insights e hipóteses;
+- testes e validações com usuários.
+
+A pesquisa orienta o desenvolvimento, mas não é tratada como verdade absoluta. Hipóteses devem ser confrontadas com novas evidências e testes.
 
 ### 🔐 Segurança
 
