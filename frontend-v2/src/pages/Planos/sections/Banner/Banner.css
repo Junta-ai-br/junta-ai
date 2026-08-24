@@ -1,0 +1,115 @@
+/* ==========================================================================
+   Planos · Closing Banner
+   ========================================================================== */
+
+.planos-banner {
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+}
+
+.planos-banner__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-32);
+  flex-wrap: wrap;
+
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: var(--spacing-48);
+
+  border-radius: var(--radius-24);
+
+  background: var(--gradient-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Brand
+   -------------------------------------------------------------------------- */
+
+.planos-banner__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-24);
+}
+
+.planos-banner__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+
+  width: 3.5rem;
+  height: 3.5rem;
+
+  border-radius: var(--radius-16);
+
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--white);
+}
+
+.planos-banner__icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.planos-banner__title {
+  margin: 0;
+
+  color: var(--white);
+
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: var(--font-bold);
+}
+
+.planos-banner__subtitle {
+  margin: var(--spacing-4) 0 0;
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: var(--font-subtitle);
+}
+
+/* --------------------------------------------------------------------------
+   Button
+   -------------------------------------------------------------------------- */
+
+.planos-banner__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  padding: var(--spacing-12) var(--spacing-24);
+
+  border-radius: var(--radius-full);
+
+  background: var(--gray-950);
+  color: var(--white);
+
+  font-size: var(--font-body);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: transform var(--transition-fast) ease;
+}
+
+.planos-banner__button:hover {
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  .planos-banner__container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-32);
+  }
+
+  .planos-banner__button {
+    width: 100%;
+    justify-content: center;
+  }
+}

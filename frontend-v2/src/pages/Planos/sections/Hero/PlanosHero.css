@@ -1,0 +1,226 @@
+/* ==========================================================================
+   Planos · Hero Section
+   ========================================================================== */
+
+.planos-hero {
+  padding-top: clamp(6rem, 9vw, 9rem);
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+}
+
+.planos-hero__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--spacing-64);
+
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+
+.planos-hero__eyebrow {
+  display: inline-flex;
+
+  margin-bottom: var(--spacing-24);
+
+  color: var(--brand-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.planos-hero__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  font-weight: var(--font-bold);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.planos-hero__title span {
+  display: block;
+}
+
+.planos-hero__title-highlight {
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.planos-hero__description {
+  max-width: 42ch;
+
+  margin: var(--spacing-24) 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-subtitle);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Preview
+   -------------------------------------------------------------------------- */
+
+.planos-hero__preview {
+  display: flex;
+  justify-content: center;
+}
+
+.planos-hero__phone {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+
+  width: min(360px, 100%);
+  padding: var(--spacing-32) var(--spacing-24);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-24);
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow-floating);
+}
+
+.planos-hero__phone-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto var(--spacing-8);
+
+  border-radius: var(--radius-16);
+
+  background: var(--gradient-primary);
+  color: var(--white);
+}
+
+.planos-hero__phone-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.planos-hero__bubble {
+  max-width: 85%;
+  padding: var(--spacing-12) var(--spacing-16);
+
+  border-radius: var(--radius-16);
+
+  font-size: var(--font-small);
+  line-height: var(--line-height-normal);
+}
+
+.planos-hero__bubble--user {
+  align-self: flex-start;
+
+  border: 1px solid var(--border);
+  border-bottom-left-radius: var(--radius-4);
+
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+}
+
+.planos-hero__bubble--agent {
+  align-self: flex-end;
+
+  border-bottom-right-radius: var(--radius-4);
+
+  background: var(--brand-primary);
+  color: var(--white);
+}
+
+.planos-hero__summary {
+  margin-top: var(--spacing-8);
+  padding: var(--spacing-16);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-16);
+
+  background: var(--surface-elevated);
+}
+
+.planos-hero__summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: var(--spacing-12);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-caption);
+  font-weight: var(--font-medium);
+}
+
+.planos-hero__summary-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  padding-block: var(--spacing-4);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-small);
+}
+
+.planos-hero__summary-row strong {
+  margin-left: auto;
+
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
+}
+
+.planos-hero__summary-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+
+  border-radius: var(--radius-full);
+}
+
+.planos-hero__summary-dot--income {
+  background: var(--brand-primary);
+}
+
+.planos-hero__summary-dot--expense {
+  background: var(--brand-accent);
+}
+
+.planos-hero__summary-dot--balance {
+  background: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .planos-hero__container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .planos-hero__description {
+    margin-inline: auto;
+  }
+
+  .planos-hero__preview {
+    margin-top: var(--spacing-32);
+  }
+}

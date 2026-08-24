@@ -1,0 +1,205 @@
+/* ==========================================================================
+   Sobre · Hero Section
+   ========================================================================== */
+
+.sobre-hero {
+  padding-top: clamp(6rem, 9vw, 9rem);
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+}
+
+.sobre-hero__container {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: var(--spacing-64);
+
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+
+.sobre-hero__eyebrow {
+  display: inline-flex;
+
+  margin-bottom: var(--spacing-24);
+
+  color: var(--brand-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sobre-hero__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(2.25rem, 4.2vw, 3.25rem);
+  font-weight: var(--font-bold);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.sobre-hero__title-highlight {
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sobre-hero__paragraph {
+  max-width: 46ch;
+
+  margin: var(--spacing-16) 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-body);
+  line-height: var(--line-height-normal);
+}
+
+.sobre-hero__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  margin-top: var(--spacing-32);
+  padding: var(--spacing-12) var(--spacing-20);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+
+  transition:
+    border-color var(--transition-fast) ease,
+    background-color var(--transition-fast) ease;
+}
+
+.sobre-hero__back:hover {
+  border-color: var(--brand-primary);
+  background: var(--surface-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Illustration
+   -------------------------------------------------------------------------- */
+
+.sobre-hero__illustration {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  aspect-ratio: 1;
+  width: min(420px, 100%);
+  margin: 0 auto;
+}
+
+.sobre-hero__ring {
+  position: absolute;
+
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-full);
+}
+
+.sobre-hero__ring--outer {
+  inset: 0;
+}
+
+.sobre-hero__ring--inner {
+  inset: 15%;
+}
+
+.sobre-hero__logo {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 6rem;
+  height: 6rem;
+
+  border-radius: var(--radius-24);
+
+  background: var(--gradient-primary);
+  color: var(--white);
+
+  box-shadow: var(--shadow-floating);
+}
+
+.sobre-hero__logo svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.sobre-hero__avatar {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.75rem;
+  height: 2.75rem;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+
+  background: var(--surface);
+  color: var(--text-secondary);
+
+  box-shadow: var(--shadow-rest);
+}
+
+.sobre-hero__avatar--1 {
+  top: 6%;
+  left: 22%;
+}
+
+.sobre-hero__avatar--2 {
+  top: 12%;
+  right: 4%;
+}
+
+.sobre-hero__avatar--3 {
+  bottom: 10%;
+  left: 2%;
+}
+
+.sobre-hero__avatar--4 {
+  bottom: 4%;
+  right: 20%;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .sobre-hero__container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .sobre-hero__paragraph {
+    margin-inline: auto;
+  }
+
+  .sobre-hero__illustration {
+    margin-top: var(--spacing-32);
+  }
+}
