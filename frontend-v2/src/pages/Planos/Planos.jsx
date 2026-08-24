@@ -1,27 +1,17 @@
-import "./Planos.css";
+import PlanosHero from "./sections/Hero";
+import PlanCard from "./sections/PlanCard";
+import Community from "./sections/Community";
+import Feedback from "./sections/Feedback";
+import Banner from "./sections/Banner";
 
-function Planos() {
+export default function Planos() {
   return (
-    <main className="page">
-      <div className="page__container">
-        <header className="page__header">
-          <span className="page__eyebrow">Planos</span>
-
-          <h1 className="page__title">
-            Nossos Planos
-          </h1>
-
-          <p className="page__description">
-            Conteúdo em desenvolvimento.
-          </p>
-        </header>
-
-        <div className="page__content">
-          {/* Conteúdo da política será desenvolvido pela equipe. */}
-        </div>
-      </div>
-    </main>
+    <>
+      <PlanosHero />
+      <PlanCard />
+      <Community />
+      <Feedback />
+      <Banner />
+    </>
   );
 }
-
-export default Planos;

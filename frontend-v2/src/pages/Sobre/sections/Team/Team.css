@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Sobre · Team Section
+   ========================================================================== */
+
+.team {
+  padding-bottom: clamp(6rem, 9vw, 8rem);
+}
+
+.team__container {
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Intro
+   -------------------------------------------------------------------------- */
+
+.team__intro {
+  max-width: 640px;
+  margin: 0 auto var(--spacing-48);
+
+  text-align: center;
+}
+
+.team__eyebrow {
+  display: inline-flex;
+
+  margin-bottom: var(--spacing-16);
+
+  color: var(--brand-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.team__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: var(--font-bold);
+}
+
+.team__description {
+  margin: var(--spacing-12) 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-body);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Grid
+   -------------------------------------------------------------------------- */
+
+.team__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-24);
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: var(--spacing-24);
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-16);
+
+  background: var(--surface);
+
+  text-align: center;
+
+  transition: border-color var(--transition-fast) ease;
+}
+
+.team-card:hover {
+  border-color: var(--border-strong);
+}
+
+.team-card__avatar {
+  width: 6rem;
+  height: 6rem;
+  margin-bottom: var(--spacing-16);
+
+  border-radius: var(--radius-full);
+  border: 2px solid var(--border);
+
+  background: var(--surface-elevated);
+
+  object-fit: cover;
+}
+
+.team-card__name {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+}
+
+.team-card__role {
+  margin: var(--spacing-4) 0 var(--spacing-16);
+
+  color: var(--brand-primary);
+
+  font-size: var(--font-caption);
+  line-height: 1.4;
+}
+
+.team-card__links {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.team-card__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2rem;
+  height: 2rem;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-8);
+
+  color: var(--text-secondary);
+
+  transition:
+    border-color var(--transition-fast) ease,
+    color var(--transition-fast) ease;
+}
+
+.team-card__link:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+  .team__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .team__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

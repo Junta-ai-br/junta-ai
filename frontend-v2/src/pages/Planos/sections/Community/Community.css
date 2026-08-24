@@ -1,0 +1,123 @@
+/* ==========================================================================
+   Planos · Community Section
+   ========================================================================== */
+
+.community {
+  padding-bottom: clamp(6rem, 9vw, 8rem);
+}
+
+.community__container {
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Intro
+   -------------------------------------------------------------------------- */
+
+.community__intro {
+  max-width: 640px;
+  margin-bottom: var(--spacing-48);
+}
+
+.community__eyebrow {
+  display: inline-flex;
+
+  margin-bottom: var(--spacing-16);
+
+  color: var(--brand-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.community__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: var(--font-semibold);
+  line-height: 1.2;
+}
+
+.community__title strong {
+  color: var(--brand-primary);
+  font-weight: inherit;
+}
+
+.community__description {
+  max-width: 56ch;
+
+  margin: var(--spacing-16) 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-body);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Grid
+   -------------------------------------------------------------------------- */
+
+.community__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-24);
+}
+
+.community-card {
+  padding: var(--spacing-32);
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-16);
+
+  background: var(--surface);
+}
+
+.community-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: var(--spacing-16);
+
+  border-radius: var(--radius-12);
+
+  background: var(--surface-elevated);
+  color: var(--brand-primary);
+}
+
+.community-card__title {
+  margin: 0 0 var(--spacing-8);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-semibold);
+}
+
+.community-card__description {
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-small);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .community__grid {
+    grid-template-columns: 1fr;
+  }
+}
