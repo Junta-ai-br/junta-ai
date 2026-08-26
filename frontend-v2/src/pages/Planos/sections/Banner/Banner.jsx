@@ -16,8 +16,8 @@ function Banner() {
           </div>
         </div>
 
-        <a href="/" className="planos-banner__button">
-          <span>Conheça o Junta.ai</span>
+        <a href="/cadastro" className="planos-banner__button">
+          <span>Teste o Junta.ai</span>
           <span aria-hidden="true">→</span>
         </a>
       </div>

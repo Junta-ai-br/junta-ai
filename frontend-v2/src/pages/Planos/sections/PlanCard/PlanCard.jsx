@@ -1,4 +1,5 @@
 import { CheckCircle, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import Button from "@/components/common/Button";
 import logoIcon from "@/assets/logos/logo-icon.svg";
@@ -34,13 +35,15 @@ function PlanCard() {
               <span className="plan-card__price-value">R$ 0</span>
             </div>
 
-            <Button
-              variant="primary"
-              size="lg"
-              className="plan-card__cta"
-            >
-              Começar agora
-            </Button>
+            <Link to="/cadastro">
+              <Button
+                variant="primary"
+                size="lg"
+                className="plan-card__cta"
+              >
+                Começar agora
+              </Button>
+            </Link>
           </div>
 
           <div className="plan-card__details">
