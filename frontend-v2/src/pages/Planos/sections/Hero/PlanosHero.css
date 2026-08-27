@@ -57,13 +57,31 @@
 }
 
 .planos-hero__description {
-  max-width: 42ch;
+  max-width: 48ch;
 
   margin: var(--spacing-24) 0 0;
 
   color: var(--text-secondary);
 
   font-size: var(--font-subtitle);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-relaxed);
+}
+
+/* --------------------------------------------------------------------------
+   Support Text
+   -------------------------------------------------------------------------- */
+
+.planos-hero__support {
+  display: block;
+
+  margin-top: var(--spacing-16);
+
+  color: var(--brand-primary);
+
+  font-family: var(--body-family);
+  font-size: 1.25rem;
+  font-weight: var(--font-semibold);
   line-height: var(--line-height-normal);
 }
 
@@ -105,6 +123,10 @@
     margin-inline: auto;
   }
 
+  .planos-hero__support {
+    margin-inline: auto;
+  }
+
   .planos-hero__preview {
     margin-top: 0;
   }
@@ -130,5 +152,10 @@
 
   .planos-hero__description {
     font-size: var(--font-body);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .planos-hero__support {
+    font-size: var(--font-subtitle);
   }
 }

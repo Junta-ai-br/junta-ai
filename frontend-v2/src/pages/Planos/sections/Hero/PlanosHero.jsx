@@ -16,9 +16,13 @@ function PlanosHero() {
           </h1>
 
           <p className="planos-hero__description">
-            Converse com o Junta.ai, explore a experiência e veja como organizar
-            sua vida financeira pode ser mais simples.
+            Converse com o Junta.ai, explore seus recursos e veja na prática
+            como ele pode ajudar você a entender melhor sua vida financeira.
           </p>
+
+          <span className="planos-hero__support">
+            Comece sem compromisso.
+          </span>
         </div>
 
         <div className="planos-hero__preview">
