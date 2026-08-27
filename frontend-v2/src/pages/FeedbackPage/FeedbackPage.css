@@ -4,6 +4,7 @@
 
 .feedback-page {
   min-height: calc(100vh - var(--header-height, 80px));
+
   padding: var(--spacing-96) var(--spacing-24);
 
   background: var(--gray-50);
@@ -12,11 +13,14 @@
 .feedback-page__container {
   width: 100%;
   max-width: 1120px;
+
   margin: 0 auto;
 
   display: grid;
   grid-template-columns: minmax(280px, 0.85fr) minmax(420px, 1.15fr);
+
   gap: var(--spacing-80);
+
   align-items: start;
 }
 
@@ -30,6 +34,7 @@
 
 .feedback-page__eyebrow {
   display: inline-block;
+
   margin-bottom: var(--spacing-16);
 
   font-family: var(--body-family);
@@ -43,6 +48,7 @@
 
 .feedback-page__title {
   max-width: 520px;
+
   margin: 0;
 
   font-family: var(--heading-family);
@@ -62,6 +68,7 @@
 
 .feedback-page__description {
   max-width: 480px;
+
   margin: var(--spacing-24) 0 0;
 
   font-family: var(--body-family);
@@ -79,6 +86,7 @@
 .feedback-page__form {
   width: 100%;
   box-sizing: border-box;
+
   padding: var(--spacing-32);
 
   border: 1px solid var(--gray-200);
@@ -107,12 +115,14 @@
 .feedback-page__fields {
   display: flex;
   flex-direction: column;
+
   gap: var(--spacing-24);
 }
 
 .feedback-page__field {
   display: flex;
   flex-direction: column;
+
   gap: var(--spacing-8);
 }
 
@@ -206,6 +216,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: var(--spacing-8);
 }
 
@@ -213,13 +224,41 @@
    Success
    ========================================================================== */
 
+/*
+ * Quando o feedback é enviado, a página deixa de usar o layout
+ * de duas colunas e passa a centralizar o estado de sucesso
+ * horizontal e verticalmente na área disponível.
+ */
+
+.feedback-page--success {
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--spacing-48) var(--spacing-24);
+}
+
+.feedback-page--success .feedback-page__container {
+  width: 100%;
+  max-width: 760px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto;
+}
+
 .feedback-page__success {
   width: 100%;
   max-width: 640px;
-  margin: 0 auto;
-  padding: var(--spacing-64) var(--spacing-32);
 
   box-sizing: border-box;
+
+  margin: 0 auto;
+  padding: var(--spacing-64) var(--spacing-32);
 
   text-align: center;
 
@@ -236,6 +275,7 @@
 .feedback-page__success-icon {
   width: 52px;
   height: 52px;
+
   margin: 0 auto var(--spacing-24);
 
   display: flex;
@@ -262,6 +302,7 @@
 
 .feedback-page__success-description {
   max-width: 480px;
+
   margin: var(--spacing-16) auto 0;
 
   font-family: var(--body-family);
@@ -371,7 +412,7 @@
 }
 
 /* ==========================================================================
-   Responsive
+   Responsive · Tablet
    ========================================================================== */
 
 @media (max-width: 900px) {
@@ -383,6 +424,7 @@
     max-width: 680px;
 
     grid-template-columns: 1fr;
+
     gap: var(--spacing-48);
   }
 
@@ -397,7 +439,22 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /*
+   * O estado de sucesso continua centralizado no tablet.
+   */
+  .feedback-page--success {
+    padding: var(--spacing-48) var(--spacing-20);
+  }
+
+  .feedback-page--success .feedback-page__container {
+    max-width: 680px;
+  }
 }
+
+/* ==========================================================================
+   Responsive · Mobile
+   ========================================================================== */
 
 @media (max-width: 520px) {
   .feedback-page {
@@ -414,6 +471,10 @@
 
   .feedback-page__submit {
     width: 100%;
+  }
+
+  .feedback-page--success {
+    padding: var(--spacing-32) var(--spacing-16);
   }
 
   .feedback-page__success {

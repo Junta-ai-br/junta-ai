@@ -69,7 +69,7 @@ function FeedbackPage() {
 
   if (isSubmitted) {
     return (
-      <section className="feedback-page">
+      <section className="feedback-page feedback-page--success">
         <div className="feedback-page__container">
           <div className="feedback-page__success">
             <div className="feedback-page__success-icon">
@@ -77,16 +77,18 @@ function FeedbackPage() {
             </div>
 
             <span className="feedback-page__eyebrow">
-              Feedback enviado
+              Feedback recebido
             </span>
 
             <h1 className="feedback-page__success-title">
-              Obrigada por compartilhar.
+              Sua voz ajuda a construir o Junta.ai.
             </h1>
 
             <p className="feedback-page__success-description">
-              Seu feedback chegou até a gente e faz parte da construção do
-              Junta.ai.
+              Obrigado por compartilhar sua experiência.
+              <br />
+              Cada mensagem nos ajuda a entender o que faz sentido para quem
+              usa o Junta.ai e onde podemos melhorar.
             </p>
 
             <Button
