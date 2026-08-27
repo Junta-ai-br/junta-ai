@@ -1,19 +1,72 @@
-import { ArrowLeft, User } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import logoIcon from "@/assets/logos/logo-icon.svg";
+
+import miniAva1 from "@/assets/avatares/mini/mini-ava-1.png";
+import miniAva2 from "@/assets/avatares/mini/mini-ava-2.png";
+import miniAva3 from "@/assets/avatares/mini/mini-ava-3.png";
+import miniAva4 from "@/assets/avatares/mini/mini-ava-4.png";
+import miniAva5 from "@/assets/avatares/mini/mini-ava-5.png";
+import miniAva6 from "@/assets/avatares/mini/mini-ava-6.png";
+
 import "./SobreHero.css";
+
+const orbitPeople = [
+  {
+    id: 1,
+    orbit: "outer",
+    image: miniAva1,
+    alt: "Avatar abstrato de uma pessoa",
+  },
+  {
+    id: 2,
+    orbit: "outer",
+    image: miniAva2,
+    alt: "Avatar abstrato de uma pessoa",
+  },
+  {
+    id: 3,
+    orbit: "outer",
+    image: miniAva3,
+    alt: "Avatar abstrato de uma pessoa",
+  },
+  {
+    id: 4,
+    orbit: "middle",
+    image: miniAva4,
+    alt: "Avatar abstrato de uma pessoa",
+  },
+  {
+    id: 5,
+    orbit: "middle",
+    image: miniAva5,
+    alt: "Avatar abstrato de uma pessoa",
+  },
+  {
+    id: 6,
+    orbit: "middle",
+    image: miniAva6,
+    alt: "Avatar abstrato de uma pessoa",
+  },
+];
 
 function SobreHero() {
   return (
     <section className="sobre-hero" id="sobre-hero">
       <div className="sobre-hero__container">
         <div className="sobre-hero__content">
-          <span className="sobre-hero__eyebrow">Quem somos</span>
+          <span className="sobre-hero__eyebrow">
+            Quem somos
+          </span>
 
           <h1 className="sobre-hero__title">
-            10 pessoas. Diferentes histórias.
+            11 pessoas. Diferentes histórias.
             <br />
-            Um mesmo <span className="sobre-hero__title-highlight">desafio.</span>
+            Um mesmo{" "}
+            <span className="sobre-hero__title-highlight">
+              desafio.
+            </span>
           </h1>
 
           <p className="sobre-hero__paragraph">
@@ -30,32 +83,41 @@ function SobreHero() {
 
           <Link to="/" className="sobre-hero__back">
             <ArrowLeft size={18} strokeWidth={2} />
-            Voltar para a página inicial
+            <span>Voltar para a página inicial</span>
           </Link>
         </div>
 
-        <div className="sobre-hero__illustration" aria-hidden="true">
+        <div className="sobre-hero__visual" aria-hidden="true">
+          <div className="sobre-hero__glow" />
+
           <span className="sobre-hero__ring sobre-hero__ring--outer" />
+          <span className="sobre-hero__ring sobre-hero__ring--middle" />
           <span className="sobre-hero__ring sobre-hero__ring--inner" />
 
+          <span className="sobre-hero__particle sobre-hero__particle--1" />
+          <span className="sobre-hero__particle sobre-hero__particle--2" />
+          <span className="sobre-hero__particle sobre-hero__particle--3" />
+          <span className="sobre-hero__particle sobre-hero__particle--4" />
+          <span className="sobre-hero__particle sobre-hero__particle--5" />
+
           <div className="sobre-hero__logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 4 4 9M4 9l5 5M4 9h9a6 6 0 0 1 0 12h-1" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <img src={logoIcon} alt="" />
           </div>
 
-          <span className="sobre-hero__avatar sobre-hero__avatar--1">
-            <User size={18} strokeWidth={1.8} />
-          </span>
-          <span className="sobre-hero__avatar sobre-hero__avatar--2">
-            <User size={18} strokeWidth={1.8} />
-          </span>
-          <span className="sobre-hero__avatar sobre-hero__avatar--3">
-            <User size={18} strokeWidth={1.8} />
-          </span>
-          <span className="sobre-hero__avatar sobre-hero__avatar--4">
-            <User size={18} strokeWidth={1.8} />
-          </span>
+          <div className="sobre-hero__people">
+            {orbitPeople.map((person) => (
+              <div
+                key={person.id}
+                className={`sobre-hero__avatar sobre-hero__avatar--${person.orbit}`}
+              >
+                <img
+                  src={person.image}
+                  alt={person.alt}
+                  className="sobre-hero__avatar-image"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
