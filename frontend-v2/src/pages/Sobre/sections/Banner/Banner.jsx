@@ -1,4 +1,5 @@
 import "./Banner.css";
+import logoIcon from "../../../../assets/logos/logo-icon.svg";
 
 function Banner() {
   return (
@@ -6,15 +7,19 @@ function Banner() {
       <div className="sobre-banner__container">
         <div className="sobre-banner__brand">
           <span className="sobre-banner__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 4 4 9M4 9l5 5M4 9h9a6 6 0 0 1 0 12h-1" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <img src={logoIcon} alt="" />
           </span>
 
           <h2 className="sobre-banner__title">
-            Construído por pessoas,
-            <br />
-            pensado para pessoas.
+            <span className="sobre-banner__line">
+              Construído com{" "}
+              <span className="sobre-banner__highlight">propósito</span>,
+            </span>
+
+            <span className="sobre-banner__line">
+              pensado para{" "}
+              <span className="sobre-banner__highlight">transformar</span>.
+            </span>
           </h2>
         </div>
 
