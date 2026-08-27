@@ -88,7 +88,7 @@ function SobreHero() {
           </p>
 
           <p className="sobre-hero__paragraph">
-            Somos um grupo de estudantes movidos por aprendizado, colaboração e
+            Somos um grupo de desenvolvedores movidos por aprendizado, colaboração e
             vontade de criar algo que realmente faça sentido na vida das
             pessoas.
           </p>
