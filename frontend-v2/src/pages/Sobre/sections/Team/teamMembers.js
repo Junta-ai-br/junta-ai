@@ -5,6 +5,7 @@ import avatarGenerico from "../../../../assets/avatares/equipe/ava-generico.png"
 import avatarGenericoF from "../../../../assets/avatares/equipe/ava-generico-f.png";
 import avatarLari from "../../../../assets/avatares/equipe/ava-lari.png";
 import avatarSimone from "../../../../assets/avatares/equipe/ava-simone.png";
+import avatarRenan from "../../../../assets/avatares/equipe/ava-renan.png";
 
 const teamMembers = [
   // -------------------------------------------------------------------------
@@ -82,7 +83,7 @@ const teamMembers = [
   {
     name: "Renan Estrela",
     role: "Front-end • Login • Autenticação",
-    avatar: avatarGenerico,
+    avatar: avatarRenan,
     linkedin: "#",
     github: "#",
   },
@@ -97,7 +98,7 @@ const teamMembers = [
 
   {
     name: "Simone Frez",
-    role: "Dev Full Stack • Java • Spring Boot • SQL • Tests",
+    role: "Back-end • Java • Spring Boot • API REST • Tests",
     avatar: avatarSimone,
     linkedin: "https://www.linkedin.com/in/simone-da-silva-645337138/",
     github: "https://github.com/SimoneFrez",
