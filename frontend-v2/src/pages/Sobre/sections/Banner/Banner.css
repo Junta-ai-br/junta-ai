@@ -7,6 +7,10 @@
 }
 
 .sobre-banner__container {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,13 +23,51 @@
   border: 2px solid transparent;
   border-radius: var(--radius-24);
 
-  background:
-    linear-gradient(var(--gray-900), var(--gray-900)) padding-box,
-    linear-gradient(
-      90deg,
-      var(--brand-primary),
-      var(--brand-accent)
-    ) border-box;
+  background: var(--gray-900);
+}
+
+/* --------------------------------------------------------------------------
+   Animated Border
+   -------------------------------------------------------------------------- */
+
+.sobre-banner__animated-border {
+  position: absolute;
+  inset: -100%;
+
+  width: 300%;
+  height: 300%;
+
+  background: conic-gradient(
+    from 0deg,
+    var(--brand-primary),
+    var(--brand-accent),
+    var(--brand-primary),
+    var(--brand-accent),
+    var(--brand-primary)
+  );
+
+  pointer-events: none;
+  z-index: 0;
+
+  will-change: transform;
+}
+
+/*
+ * Cria a área interna do banner por cima do gradiente,
+ * deixando somente os 2px da borda visíveis.
+ */
+.sobre-banner__container::after {
+  content: "";
+
+  position: absolute;
+  inset: 2px;
+
+  border-radius: calc(var(--radius-24) - 2px);
+
+  background: var(--gray-900);
+
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -33,6 +75,9 @@
    -------------------------------------------------------------------------- */
 
 .sobre-banner__brand {
+  position: relative;
+  z-index: 1;
+
   display: flex;
   align-items: center;
   gap: var(--spacing-24);
@@ -96,6 +141,9 @@
    -------------------------------------------------------------------------- */
 
 .sobre-banner__description {
+  position: relative;
+  z-index: 1;
+
   flex: 0 1 300px;
 
   max-width: 300px;
@@ -112,6 +160,9 @@
    -------------------------------------------------------------------------- */
 
 .sobre-banner__button {
+  position: relative;
+  z-index: 1;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -229,5 +280,16 @@
 
   .sobre-banner__title {
     font-size: 1.3rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced Motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre-banner__animated-border {
+    animation: none !important;
+    transform: none !important;
   }
 }
