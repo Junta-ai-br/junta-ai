@@ -517,7 +517,14 @@
     gap: var(--spacing-40);
   }
 
+  .sobre-hero__content {
+    width: 100%;
+    max-width: 420px;
+    transform: translateX(-8px);
+  }
+
   .sobre-hero__title {
+    max-width: 420px;
     font-size: clamp(2rem, 9vw, 2.5rem);
   }
 
@@ -546,6 +553,14 @@
     width: 3rem;
     height: 3rem;
   }
+
+  /*
+   * Pequena redução da composição orbital.
+   * Não altera ângulos, raios ou lógica do Motion.
+   */
+  .sobre-motion__orbit-group {
+    transform: scale(0.90);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -557,7 +572,7 @@
     width: 460px;
     max-width: none;
 
-    margin-left: 50%;
+    margin-left: 46%;
     transform: translateX(-50%);
   }
 
@@ -581,6 +596,7 @@
     height: 2.75rem;
   }
 }
+
 /* --------------------------------------------------------------------------
    Reduced Motion
    -------------------------------------------------------------------------- */
