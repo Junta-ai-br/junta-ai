@@ -498,7 +498,7 @@
   }
 
   .sobre-hero__visual {
-    width: min(440px, 90vw);
+    width: min(500px, 100%);
   }
 }
 
@@ -522,7 +522,7 @@
   }
 
   .sobre-hero__visual {
-    width: min(360px, 92vw);
+    width: min(460px, 100vw);
   }
 
   .sobre-hero__logo {
@@ -554,7 +554,11 @@
 
 @media (max-width: 400px) {
   .sobre-hero__visual {
-    width: min(330px, 92vw);
+    width: 460px;
+    max-width: none;
+
+    margin-left: 50%;
+    transform: translateX(-50%);
   }
 
   .sobre-hero__avatar--outer {
@@ -577,7 +581,6 @@
     height: 2.75rem;
   }
 }
-
 /* --------------------------------------------------------------------------
    Reduced Motion
    -------------------------------------------------------------------------- */
