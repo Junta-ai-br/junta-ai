@@ -18,7 +18,64 @@ function GithubIcon(props) {
   );
 }
 
+function TeamCard({ member, featured = false }) {
+  const { name, role, avatar, linkedin, github } = member;
+
+  return (
+    <article
+      className={`team-card${featured ? " team-card--featured" : ""}`}
+    >
+      <div className="team-card__avatar-wrapper">
+        <img
+          className="team-card__avatar"
+          src={avatar}
+          alt={`Avatar de ${name}`}
+          width={112}
+          height={112}
+          loading="lazy"
+        />
+      </div>
+
+      <div className="team-card__content">
+        <h3 className="team-card__name">{name}</h3>
+
+        <p className="team-card__role">{role}</p>
+      </div>
+
+      <div className="team-card__links">
+        <a
+          href={linkedin}
+          className="team-card__link"
+          aria-label={`LinkedIn de ${name}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <LinkedinIcon width={16} height={16} aria-hidden="true" />
+        </a>
+
+        <a
+          href={github}
+          className="team-card__link"
+          aria-label={`GitHub de ${name}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GithubIcon width={16} height={16} aria-hidden="true" />
+        </a>
+      </div>
+    </article>
+  );
+}
+
 function Team() {
+  const featuredMembers = teamMembers.slice(0, 3);
+
+  const regularMembers = [...teamMembers.slice(3)].sort((a, b) =>
+    a.name.localeCompare(b.name, "pt-BR", {
+      sensitivity: "base",
+    }),
+  );
+
   return (
     <section className="team" id="equipe">
       <div className="team__container">
@@ -33,39 +90,22 @@ function Team() {
           </p>
         </header>
 
-        <div className="team__grid">
-          {teamMembers.map(({ name, role, avatar, linkedin, github }) => (
-            <article className="team-card" key={name}>
-              <img
-                className="team-card__avatar"
-                src={avatar}
-                alt={`Avatar de ${name}`}
-                width={96}
-                height={96}
-                loading="lazy"
-              />
+        <div className="team__featured">
+          {featuredMembers.map((member) => (
+            <TeamCard
+              key={member.name}
+              member={member}
+              featured
+            />
+          ))}
+        </div>
 
-              <h3 className="team-card__name">{name}</h3>
-              <p className="team-card__role">{role}</p>
-
-              <div className="team-card__links">
-                <a
-                  href={linkedin}
-                  className="team-card__link"
-                  aria-label={`LinkedIn de ${name}`}
-                >
-                  <LinkedinIcon width={16} height={16} />
-                </a>
-
-                <a
-                  href={github}
-                  className="team-card__link"
-                  aria-label={`GitHub de ${name}`}
-                >
-                  <GithubIcon width={16} height={16} />
-                </a>
-              </div>
-            </article>
+        <div className="team__members">
+          {regularMembers.map((member) => (
+            <TeamCard
+              key={member.name}
+              member={member}
+            />
           ))}
         </div>
       </div>

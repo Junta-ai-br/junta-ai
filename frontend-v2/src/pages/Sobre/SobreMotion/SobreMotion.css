@@ -1,0 +1,204 @@
+/* ==========================================================================
+   Sobre · Motion
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Orbit Group
+   -------------------------------------------------------------------------- */
+
+.sobre-motion__orbit-group {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 0;
+  height: 0;
+
+  transform-origin: center center;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+/* --------------------------------------------------------------------------
+   Orbit Avatar
+   -------------------------------------------------------------------------- */
+
+.sobre-motion__orbit-avatar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 0;
+  height: 0;
+
+  /*
+   * O avatar é distribuído pela circunferência usando:
+   *
+   * 1. rotação até o ângulo definido;
+   * 2. deslocamento pelo raio;
+   * 3. centralização do próprio avatar.
+   */
+
+  transform:
+    rotate(var(--orbit-angle))
+    translateX(var(--orbit-radius));
+
+  transform-origin: center center;
+
+  pointer-events: none;
+}
+
+.sobre-motion__orbit-avatar-position {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: max-content;
+  height: max-content;
+
+  transform: translate(-50%, -50%);
+
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Avatar Content
+   -------------------------------------------------------------------------- */
+
+.sobre-motion__orbit-avatar-content {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translate(-50%, -50%);
+
+  pointer-events: auto;
+
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Banner
+   ========================================================================== */
+
+.sobre-motion__banner {
+  position: relative;
+
+  isolation: isolate;
+}
+
+/* --------------------------------------------------------------------------
+   Animated Border
+   -------------------------------------------------------------------------- */
+
+.sobre-motion__banner-border {
+  position: absolute;
+
+  inset: -3px;
+
+  border-radius: calc(var(--radius-24) + 3px);
+
+  background: conic-gradient(
+    from 0deg,
+    var(--brand-primary),
+    var(--brand-accent),
+    var(--brand-primary),
+    var(--brand-accent),
+    var(--brand-primary)
+  );
+
+  pointer-events: none;
+
+  z-index: -1;
+
+  will-change: transform;
+}
+
+.sobre-motion__banner-border::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 3px;
+
+  border-radius: var(--radius-24);
+
+  background: var(--gray-900);
+}
+
+/* --------------------------------------------------------------------------
+   Banner Content
+   -------------------------------------------------------------------------- */
+
+.sobre-motion__banner-content {
+  position: relative;
+
+  z-index: 1;
+
+  border-radius: var(--radius-24);
+
+  background: var(--gray-900);
+}
+
+/* ==========================================================================
+   Responsive · Tablet
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .sobre-motion__orbit-avatar {
+    --orbit-radius: calc(var(--orbit-radius) * 0.88);
+  }
+}
+
+/* ==========================================================================
+   Responsive · Mobile
+   ========================================================================== */
+
+@media (max-width: 560px) {
+  .sobre-motion__orbit-avatar {
+    --orbit-radius: calc(var(--orbit-radius) * 0.72);
+  }
+
+  .sobre-motion__banner-border {
+    inset: -2px;
+
+    border-radius: calc(var(--radius-24) + 2px);
+  }
+
+  .sobre-motion__banner-border::after {
+    inset: 2px;
+  }
+}
+
+/* ==========================================================================
+   Responsive · Small Mobile
+   ========================================================================== */
+
+@media (max-width: 400px) {
+  .sobre-motion__orbit-avatar {
+    --orbit-radius: calc(var(--orbit-radius) * 0.64);
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre-motion__orbit-group,
+  .sobre-motion__orbit-avatar-content,
+  .sobre-motion__banner-border {
+    animation: none !important;
+    transition: none !important;
+  }
+}

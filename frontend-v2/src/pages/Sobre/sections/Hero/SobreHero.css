@@ -9,9 +9,9 @@
 
 .sobre-hero__container {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 1.05fr 1fr;
   align-items: center;
-  gap: var(--spacing-64);
+  gap: clamp(3rem, 6vw, 6rem);
 
   width: min(1120px, calc(100% - 3rem));
   margin: 0 auto;
@@ -20,6 +20,11 @@
 /* --------------------------------------------------------------------------
    Content
    -------------------------------------------------------------------------- */
+
+.sobre-hero__content {
+  position: relative;
+  z-index: 2;
+}
 
 .sobre-hero__eyebrow {
   display: inline-flex;
@@ -36,25 +41,26 @@
 }
 
 .sobre-hero__title {
+  max-width: 680px;
+
   margin: 0;
 
   color: var(--text-primary);
 
   font-size: clamp(2.25rem, 4.2vw, 3.25rem);
   font-weight: var(--font-bold);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  line-height: 1.12;
+
+  letter-spacing: -0.025em;
 }
 
 .sobre-hero__title-highlight {
-  background: var(--gradient-primary);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--brand-primary);
+  font-weight: inherit;
 }
 
 .sobre-hero__paragraph {
-  max-width: 46ch;
+  max-width: 48ch;
 
   margin: var(--spacing-16) 0 0;
 
@@ -79,72 +85,249 @@
 
   font-size: var(--font-small);
   font-weight: var(--font-medium);
+
   text-decoration: none;
 
   transition:
     border-color var(--transition-fast) ease,
-    background-color var(--transition-fast) ease;
+    background-color var(--transition-fast) ease,
+    transform var(--transition-fast) ease;
 }
 
 .sobre-hero__back:hover {
   border-color: var(--brand-primary);
   background: var(--surface-hover);
+  transform: translateY(-2px);
 }
 
 /* --------------------------------------------------------------------------
-   Illustration
+   Visual
    -------------------------------------------------------------------------- */
 
-.sobre-hero__illustration {
+.sobre-hero__visual {
   position: relative;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  width: min(500px, 100%);
   aspect-ratio: 1;
-  width: min(420px, 100%);
+
   margin: 0 auto;
 }
 
+/* --------------------------------------------------------------------------
+   Central Glow
+   -------------------------------------------------------------------------- */
+
+.sobre-hero__glow {
+  position: absolute;
+  z-index: 0;
+
+  width: 16rem;
+  height: 16rem;
+
+  border-radius: 50%;
+
+  background: rgba(113, 64, 250, 0.12);
+
+  filter: blur(60px);
+
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Orbital Rings
+   -------------------------------------------------------------------------- */
+
 .sobre-hero__ring {
   position: absolute;
+  z-index: 1;
 
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-full);
+  border: 1px solid rgba(113, 64, 250, 0.14);
+  border-radius: 50%;
+
+  pointer-events: none;
 }
 
 .sobre-hero__ring--outer {
-  inset: 0;
+  width: 92%;
+  height: 92%;
+}
+
+.sobre-hero__ring--middle {
+  width: 72%;
+  height: 72%;
+
+  border-color: rgba(113, 64, 250, 0.18);
 }
 
 .sobre-hero__ring--inner {
-  inset: 15%;
+  width: 48%;
+  height: 48%;
+
+  border-color: rgba(56, 163, 165, 0.12);
 }
+
+/* --------------------------------------------------------------------------
+   Decorative Particles
+   -------------------------------------------------------------------------- */
+
+.sobre-hero__particle {
+  position: absolute;
+  z-index: 2;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: var(--brand-primary);
+
+  box-shadow:
+    0 0 8px rgba(113, 64, 250, 0.8),
+    0 0 18px rgba(113, 64, 250, 0.45);
+
+  pointer-events: none;
+}
+
+.sobre-hero__particle--1 {
+  top: 16%;
+  left: 20%;
+}
+
+.sobre-hero__particle--2 {
+  top: 34%;
+  right: 13%;
+
+  width: 4px;
+  height: 4px;
+}
+
+.sobre-hero__particle--3 {
+  right: 25%;
+  bottom: 17%;
+
+  width: 5px;
+  height: 5px;
+}
+
+.sobre-hero__particle--4 {
+  bottom: 29%;
+  left: 18%;
+
+  width: 3px;
+  height: 3px;
+
+  background: var(--brand-accent);
+
+  box-shadow:
+    0 0 8px rgba(56, 163, 165, 0.7),
+    0 0 16px rgba(56, 163, 165, 0.35);
+}
+
+.sobre-hero__particle--5 {
+  top: 24%;
+  left: 37%;
+
+  width: 3px;
+  height: 3px;
+
+  opacity: 0.7;
+}
+
+/* --------------------------------------------------------------------------
+   Central Logo
+   -------------------------------------------------------------------------- */
 
 .sobre-hero__logo {
   position: relative;
-  z-index: 1;
+  z-index: 5;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 6rem;
-  height: 6rem;
+  width: 7rem;
+  height: 7rem;
 
-  border-radius: var(--radius-24);
+  border: 1px solid rgba(113, 64, 250, 0.45);
+  border-radius: 1.75rem;
 
-  background: var(--gradient-primary);
-  color: var(--white);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(113, 64, 250, 0.16),
+      rgba(56, 163, 165, 0.08)
+    ),
+    var(--surface);
 
-  box-shadow: var(--shadow-floating);
+  box-shadow:
+    0 0 0 10px rgba(113, 64, 250, 0.035),
+    0 0 35px rgba(113, 64, 250, 0.18),
+    0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
-.sobre-hero__logo svg {
-  width: 2.5rem;
-  height: 2.5rem;
+.sobre-hero__logo::before {
+  content: "";
+
+  position: absolute;
+  inset: -1px;
+
+  border-radius: inherit;
+
+  background: linear-gradient(
+    135deg,
+    rgba(113, 64, 250, 0.35),
+    transparent 50%,
+    rgba(56, 163, 165, 0.18)
+  );
+
+  opacity: 0.75;
+
+  pointer-events: none;
 }
+
+.sobre-hero__logo img {
+  position: relative;
+  z-index: 1;
+
+  width: 4rem;
+  height: 4rem;
+
+  object-fit: contain;
+}
+
+/* --------------------------------------------------------------------------
+   People
+   -------------------------------------------------------------------------- */
+
+/*
+ * O posicionamento e a rotação dos avatares são controlados pelo Motion.
+ *
+ * NÃO adicionar:
+ * - top/left individual nos avatares
+ * - nth-child()
+ * - transform individual
+ * - animação CSS
+ *
+ * O OrbitGroup define a rotação da órbita.
+ * O OrbitAvatar define o ângulo e o raio de cada avatar.
+ */
+
+.sobre-hero__people {
+  position: absolute;
+  inset: 0;
+
+  z-index: 6;
+
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Avatar
+   -------------------------------------------------------------------------- */
 
 .sobre-hero__avatar {
   position: absolute;
@@ -153,53 +336,254 @@
   align-items: center;
   justify-content: center;
 
-  width: 2.75rem;
-  height: 2.75rem;
-
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-
-  background: var(--surface);
-  color: var(--text-secondary);
-
-  box-shadow: var(--shadow-rest);
+  pointer-events: none;
 }
 
-.sobre-hero__avatar--1 {
-  top: 6%;
-  left: 22%;
+/* Outer orbit */
+
+.sobre-hero__avatar--outer {
+  width: 4rem;
+  height: 4rem;
 }
 
-.sobre-hero__avatar--2 {
-  top: 12%;
-  right: 4%;
-}
+/* Middle orbit */
 
-.sobre-hero__avatar--3 {
-  bottom: 10%;
-  left: 2%;
-}
-
-.sobre-hero__avatar--4 {
-  bottom: 4%;
-  right: 20%;
+.sobre-hero__avatar--middle {
+  width: 3.75rem;
+  height: 3.75rem;
 }
 
 /* --------------------------------------------------------------------------
-   Responsive
+   Avatar Image
+   -------------------------------------------------------------------------- */
+
+.sobre-hero__avatar-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   Motion Integration
+   ========================================================================== */
+
+/*
+ * O Motion cria os wrappers de órbita.
+ *
+ * A estrutura esperada é:
+ *
+ * .sobre-hero__people
+ *   ├── OrbitGroup
+ *   │     ├── OrbitAvatar
+ *   │     ├── OrbitAvatar
+ *   │     └── OrbitAvatar
+ *   │
+ *   └── OrbitGroup
+ *         ├── OrbitAvatar
+ *         ├── OrbitAvatar
+ *         └── OrbitAvatar
+ *
+ * Os dois grupos permanecem centralizados na composição.
+ */
+
+.sobre-motion__orbit-group {
+  position: absolute;
+
+  top: calc(50% - 10px);
+  left: calc(50% - 15px);
+
+  width: 0;
+  height: 0;
+
+  transform-origin: center center;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+.sobre-motion__orbit-avatar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 0;
+  height: 0;
+
+  pointer-events: none;
+}
+
+.sobre-motion__orbit-avatar > * {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Particle Animation
+   ========================================================================== */
+
+.sobre-hero__particle {
+  animation: sobre-particle-pulse 3.2s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.sobre-hero__particle--1 {
+  animation-delay: 0s;
+}
+
+.sobre-hero__particle--2 {
+  animation-delay: -1.1s;
+}
+
+.sobre-hero__particle--3 {
+  animation-delay: -2.3s;
+}
+
+.sobre-hero__particle--4 {
+  animation-delay: -0.6s;
+}
+
+.sobre-hero__particle--5 {
+  animation-delay: -1.8s;
+}
+
+@keyframes sobre-particle-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.75);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre-hero__particle {
+    animation: none;
+    opacity: 0.7;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tablet
    -------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
+  .sobre-hero {
+    padding-top: clamp(5rem, 10vw, 7rem);
+  }
+
   .sobre-hero__container {
     grid-template-columns: 1fr;
+    gap: var(--spacing-48);
+
     text-align: center;
+  }
+
+  .sobre-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .sobre-hero__paragraph {
     margin-inline: auto;
   }
 
-  .sobre-hero__illustration {
-    margin-top: var(--spacing-32);
+  .sobre-hero__visual {
+    width: min(440px, 90vw);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .sobre-hero {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  .sobre-hero__container {
+    width: min(100% - 2rem, 440px);
+    gap: var(--spacing-40);
+  }
+
+  .sobre-hero__title {
+    font-size: clamp(2rem, 9vw, 2.5rem);
+  }
+
+  .sobre-hero__visual {
+    width: min(360px, 92vw);
+  }
+
+  .sobre-hero__logo {
+    width: 5.5rem;
+    height: 5.5rem;
+
+    border-radius: var(--radius-20);
+  }
+
+  .sobre-hero__logo img {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .sobre-hero__avatar--outer {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .sobre-hero__avatar--middle {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small Mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+  .sobre-hero__visual {
+    width: min(330px, 92vw);
+  }
+
+  .sobre-hero__avatar--outer {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .sobre-hero__avatar--middle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .sobre-hero__logo {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .sobre-hero__logo img {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced Motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre-hero__back {
+    transition: none;
   }
 }

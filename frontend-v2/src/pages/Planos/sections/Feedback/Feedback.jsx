@@ -1,4 +1,5 @@
 import { Heart, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import Button from "@/components/common/Button";
 
@@ -48,9 +49,11 @@ function Feedback() {
             cuidar do que realmente importa.
           </p>
 
-          <Button variant="secondary" className="feedback__button">
-            Enviar um feedback →
-          </Button>
+          <Link to="/feedback">
+            <Button variant="secondary" className="feedback__button">
+              Enviar um feedback →
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

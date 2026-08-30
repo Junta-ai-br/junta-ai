@@ -13,6 +13,7 @@ import Sobre from "@/pages/Sobre";
 import Contato from "@/pages/Contato";
 import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
+import FeedbackPage from "@/pages/FeedbackPage/FeedbackPage";
 
 import Login from "@/pages/Login/Login";
 import Cadastro from "@/pages/Cadastro/Cadastro";
@@ -28,6 +29,7 @@ function AppRoutes() {
         <Route path="/contato" element={<Contato />} />
         <Route path="/privacidade" element={<Privacidade />} />
         <Route path="/termos" element={<Termos />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
       </Route>
 
       {/* Área de autenticação e área interna */}
