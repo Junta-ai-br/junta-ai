@@ -29,10 +29,6 @@ function Header() {
 
   return (
     <header className="header">
-      <div className="header__theme">
-        <ThemeSwitch />
-      </div>
-
       <div className="header__container">
         <div className="header__brand">
           <button
@@ -52,6 +48,8 @@ function Header() {
         <Navbar />
 
         <div className="header__actions">
+          <ThemeSwitch />
+
           <a href="/login" className="navbar__link">
             Login
           </a>
