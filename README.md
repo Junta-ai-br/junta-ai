@@ -12,7 +12,6 @@
 ![Infrastructure](https://img.shields.io/badge/Infrastructure-Docker-2496ED?style=for-the-badge&logo=docker)
 ![Cloud](https://img.shields.io/badge/Cloud-Azure-0078D4?style=for-the-badge&logo=microsoftazure)
 ![Security](https://img.shields.io/badge/Security-Secure%20Development-7140FA?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
 </p>
 
@@ -76,7 +75,7 @@ O objetivo é que a tecnologia ajude o usuário a compreender melhor sua situaç
 
 # 🎯 Principais Funcionalidades
 
-As funcionalidades abaixo fazem parte do escopo planejado do MVP e estão sendo implementadas progressivamente.
+As funcionalidades abaixo fazem parte do escopo do MVP e estão sendo implementadas progressivamente.
 
 ### 💬 Conversação em linguagem natural
 
@@ -104,7 +103,7 @@ O sistema poderá utilizar indicadores financeiros e informações fornecidas pe
 
 ### 🧠 Recomendações contextualizadas
 
-Os agentes poderão utilizar as informações disponíveis para oferecer sugestões relacionadas ao contexto financeiro do usuário.
+A Inteligência Artificial poderá utilizar as informações disponíveis para oferecer sugestões relacionadas ao contexto financeiro do usuário.
 
 ### 📈 Acompanhamento da evolução
 
@@ -114,56 +113,15 @@ O sistema será capaz de organizar o histórico financeiro e utilizar essas info
 
 # 🤖 Inteligência Artificial
 
-A experiência conversacional do Junta.ai está sendo projetada com uma arquitetura baseada em **agentes de Inteligência Artificial**, utilizando **CrewAI** como framework de orquestração.
+O Junta.ai utiliza **Inteligência Artificial** como parte central da experiência conversacional.
 
-O **MCP (Model Context Protocol)** atua como uma camada de controle, responsável por definir o contexto, os recursos e os limites aos quais os agentes terão acesso.
+A arquitetura utiliza agentes especializados e **CrewAI** como framework de orquestração, enquanto o **MCP (Model Context Protocol)** participa da definição do contexto, recursos e limites disponíveis para essa camada.
 
-Dessa forma, os agentes não atuam de maneira livre. Suas respostas e ações devem permanecer dentro do contexto financeiro e das configurações estabelecidas pelo MCP.
+Os agentes operam dentro do contexto estabelecido pela arquitetura da aplicação.
 
-O **CrewAI** é responsável por orquestrar os diferentes agentes especializados dentro desse contexto.
+O objetivo é utilizar IA para interpretar mensagens, organizar informações financeiras e apoiar experiências contextualizadas, mantendo o usuário no controle de suas decisões.
 
-A relação entre essas camadas pode ser representada da seguinte forma:
-
-```text
-Usuário
-   │
-   ▼
-Chat do Junta.ai
-   │
-   ▼
-Backend / API
-   │
-   ▼
-MCP
-   │
-   │  Contexto, regras, recursos e limites
-   │
-   ▼
-CrewAI
-   │
-   │  Orquestração dos agentes
-   │
-   ├── Agente de interpretação
-   ├── Agente de classificação
-   ├── Agente de organização
-   └── Outros agentes especializados
-   │
-   │  Agentes operam somente dentro
-   │  do contexto definido pelo MCP
-   │
-   ▼
-Resposta / Dados processados
-   │
-   ├── Chat
-   ├── Metas
-   ├── Saúde financeira
-   ├── Dashboard
-   └── Histórico
-```
-
-Atualmente, o **MCP do agente está configurado** e o agente encontra-se em fase de testes.
-
-> A integração completa entre agentes, backend, persistência de dados e interface ainda está em desenvolvimento.
+Os detalhes de implementação, especificações dos agentes, regras operacionais e decisões relacionadas à arquitetura de IA são mantidos na documentação interna do projeto.
 
 ---
 
@@ -171,23 +129,22 @@ Atualmente, o **MCP do agente está configurado** e o agente encontra-se em fase
 
 Segurança é uma preocupação transversal do Junta.ai.
 
-Por lidar com **informações financeiras e dados potencialmente sensíveis**, o projeto está incorporando práticas de **desenvolvimento seguro desde a fase de arquitetura e implementação**.
+Por lidar com informações financeiras, o projeto considera práticas de desenvolvimento seguro desde a arquitetura e implementação.
 
-A frente de segurança considera, entre outros aspectos:
+Entre os princípios considerados estão:
 
-- 🔐 Autenticação e controle de acesso;
-- 🛡️ Proteção de dados e informações financeiras;
-- 🔑 Gestão segura de credenciais e segredos;
-- 🌐 Segurança na comunicação entre frontend, backend e serviços;
-- 🤖 Segurança na integração com agentes e serviços de Inteligência Artificial;
-- 🧱 Validação e tratamento seguro de entradas;
-- 📋 Princípios de menor privilégio;
-- 🧪 Segurança integrada ao processo de desenvolvimento e testes;
-- 📚 Documentação contínua das decisões e requisitos de segurança.
+- proteção de dados;
+- autenticação e controle de acesso;
+- gestão segura de credenciais;
+- validação de entradas;
+- segurança das integrações;
+- princípio do menor privilégio;
+- segurança na utilização de Inteligência Artificial;
+- testes e validações de segurança.
 
-As decisões de segurança estão sendo orientadas por referências como a **OWASP**, pelos aprendizados obtidos na **GloboSec Week** e pelos recursos disponíveis na infraestrutura de nuvem.
+A estratégia é orientada por boas práticas de engenharia de software e referências como a **OWASP**, além dos aprendizados obtidos durante a **GloboSec Week**.
 
-A definição da estratégia para armazenamento de credenciais, tokens e chaves de acesso ainda está em avaliação.
+Os requisitos, decisões e controles técnicos detalhados são mantidos na documentação interna do projeto.
 
 ---
 
@@ -200,13 +157,13 @@ A interface considera aspectos básicos de acessibilidade visual, incluindo:
 - espaçamento e legibilidade;
 - adaptação da interface a diferentes tamanhos de tela.
 
-Recursos adicionais de acessibilidade serão avaliados em etapas futuras do projeto.
+Recursos adicionais de acessibilidade serão avaliados conforme a evolução do projeto.
 
 ---
 
 # 📊 Dados e Visualizações
 
-O dashboard do Junta.ai apresenta informações financeiras de forma visual para facilitar a compreensão dos dados.
+O dashboard do Junta.ai foi projetado para apresentar informações financeiras de forma visual e facilitar a compreensão dos dados.
 
 A interface contempla:
 
@@ -219,91 +176,27 @@ A interface contempla:
 - gráficos financeiros;
 - acompanhamento de metas.
 
-A equipe está trabalhando na integração entre os dados provenientes do chat, a persistência no banco de dados e os componentes responsáveis pelas visualizações.
-
-Os gráficos estão sendo estruturados para permitir filtros por período e datas personalizadas.
+A integração entre os dados provenientes da experiência conversacional, persistência e visualizações está em desenvolvimento.
 
 ---
 
 # 🧪 Testes e Validação
 
-A etapa de testes é uma das prioridades atuais do projeto.
+A estratégia de testes busca verificar se as funcionalidades implementadas correspondem aos requisitos definidos e apresentam o comportamento esperado.
 
-Além de verificar se as funcionalidades estão operacionalmente corretas, a equipe busca estabelecer critérios objetivos para validar se aquilo que foi implementado corresponde aos requisitos definidos.
-
-A estratégia de testes está sendo estruturada considerando práticas de engenharia de software e os aprendizados relacionados a **Specification-Driven Development (SDD)**, buscando transformar especificações em critérios verificáveis, testes e evidências de qualidade.
-
-Entre os objetivos dessa etapa estão:
+Entre os objetivos estão:
 
 - validar requisitos funcionais;
-- verificar comportamentos esperados do sistema;
-- testar integrações entre as diferentes camadas;
-- validar o comportamento dos agentes de IA;
-- identificar falhas e comportamentos fora do escopo;
+- verificar comportamentos esperados;
+- testar integrações;
+- validar funcionalidades relacionadas à Inteligência Artificial;
+- identificar comportamentos fora do escopo;
 - verificar requisitos de segurança;
 - registrar evidências dos testes realizados.
 
-A estratégia e a implementação dos testes ainda estão em evolução junto com a arquitetura do sistema.
+A equipe também pretende realizar **testes com usuários reais na primeira metade de outubro de 2026**, buscando coletar feedback, identificar problemas de usabilidade e orientar melhorias antes da apresentação final do projeto.
 
-Também estão previstos **testes com usuários reais na primeira metade de outubro de 2026**, com o objetivo de coletar feedback, identificar problemas de usabilidade e orientar as correções necessárias antes da apresentação final do projeto.
-
----
-
-# 🏗️ Arquitetura Conceitual
-
-A aplicação está sendo estruturada como uma arquitetura Full Stack, separando responsabilidades entre interface, backend, inteligência artificial, persistência de dados, integrações e requisitos de segurança.
-
-```text
-                         ┌──────────────────────┐
-                         │      Junta.ai        │
-                         │     React + Vite     │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │      Backend API     │
-                         │      Spring Boot     │
-                         └──────────┬───────────┘
-                                    │
-                  ┌─────────────────┴─────────────────┐
-                  │                                   │
-                  ▼                                   ▼
-        ┌──────────────────┐                ┌──────────────────┐
-        │       MCP        │                │ Banco de Dados   │
-        │ Contexto, regras │                │    PostgreSQL    │
-        │ e recursos       │                └──────────────────┘
-        └────────┬─────────┘
-                 │
-                 ▼
-        ┌──────────────────┐
-        │      CrewAI      │
-        │  Orquestração    │
-        │    de agentes    │
-        └────────┬─────────┘
-                 │
-          ┌──────┴──────┐
-          │             │
-          ▼             ▼
-    ┌──────────┐   ┌──────────┐
-    │ Agente 1 │   │ Agente 2 │
-    └──────────┘   └──────────┘
-          │             │
-          └──────┬──────┘
-                 │
-                 ▼
-        ┌──────────────────┐
-        │ Resposta / Dados │
-        │    processados   │
-        └──────────────────┘
-
-       ┌──────────────────────────────────────┐
-       │ Segurança transversal à solução     │
-       │ Arquitetura · Código · Dados · IA   │
-       │ APIs · Infraestrutura · Testes       │
-       └──────────────────────────────────────┘
-```
-
-A arquitetura encontra-se em evolução e está sendo refinada conforme a implementação do backend, agentes, persistência, integrações e mecanismos de segurança avança.
+Os detalhes da estratégia, critérios e evidências de testes são mantidos na documentação interna.
 
 ---
 
@@ -334,7 +227,6 @@ A arquitetura encontra-se em evolução e está sendo refinada conforme a implem
 - CrewAI
 - MCP (Model Context Protocol)
 - Agentes de Inteligência Artificial
-- Orquestração de agentes
 - LLMs
 
 ## Banco de Dados
@@ -347,7 +239,6 @@ A arquitetura encontra-se em evolução e está sendo refinada conforme a implem
 - Containers
 - NGINX
 - Azure
-- Monitoramento da aplicação
 
 ## Integrações
 
@@ -360,10 +251,6 @@ A arquitetura encontra-se em evolução e está sendo refinada conforme a implem
 - JWT
 - OWASP
 - Práticas de Secure Development
-- Validação e proteção de entradas
-- Princípio do menor privilégio
-
-> A implementação dos mecanismos de segurança está sendo realizada de forma incremental conforme a arquitetura evolui.
 
 ## Testes
 
@@ -372,8 +259,6 @@ A arquitetura encontra-se em evolução e está sendo refinada conforme a implem
 - Testes funcionais
 - Testes de componentes
 - Validação baseada em requisitos
-
-> A estratégia e a implementação dos testes estão em evolução junto com o desenvolvimento da aplicação.
 
 ---
 
@@ -394,7 +279,7 @@ Atualmente, as principais frentes incluem:
 - 🗄️ Implementação da persistência de dados
 - 📱 Integração com WhatsApp (em análise)
 - 🐳 Containerização da aplicação
-- ☁️ Configuração da infraestrutura em nuvem
+- ☁️ Infraestrutura em nuvem
 - 🔐 Desenvolvimento seguro
 - ♿ Acessibilidade visual básica
 - 🧪 Estratégia de testes
@@ -464,18 +349,17 @@ Atualmente, as principais frentes incluem:
 
 # 📂 Estrutura do Projeto
 
-A estrutura do repositório está organizada para separar aplicação, documentação e responsabilidades técnicas.
+A estrutura pública do repositório está organizada para apresentar a aplicação e sua documentação sem expor materiais internos de desenvolvimento.
 
 ```text
 junta-ai/
 
 ├── docs/
-│   ├── ai/
+│   ├── design-system/
 │   ├── product/
 │   ├── research/
-│   ├── security/
-│   ├── technical/
-│   └── testing/
+│   ├── team/
+│   └── README-Docs.md
 │
 ├── frontend-v2/
 │   ├── src/
@@ -490,124 +374,28 @@ junta-ai/
 │   └── ...
 │
 ├── README.md
-├── LICENSE
 └── .gitignore
 ```
 
-> A estrutura continuará evoluindo conforme backend, agentes e infraestrutura forem incorporados ao repositório.
-
----
-
-# 🧠 Decisões Arquiteturais
-
-As principais decisões adotadas até o momento incluem:
-
-- Arquitetura Full Stack.
-- Separação entre frontend e backend.
-- API REST para comunicação entre aplicações.
-- Componentização da interface.
-- Design System próprio.
-- Suporte a Light Mode e Dark Mode.
-- Experiência centrada em IA conversacional.
-- **CrewAI como framework de orquestração dos agentes de IA.**
-- **MCP como camada de definição de contexto, recursos e limites para os agentes.**
-- Agentes operando dentro das configurações estabelecidas pelo MCP.
-- PostgreSQL como banco de dados.
-- Docker para containerização.
-- NGINX para servir o frontend.
-- Azure para infraestrutura em nuvem e monitoramento.
-- Desenvolvimento incremental.
-- Documentação contínua.
-- Versionamento com Git e GitHub.
-- Separação entre documentação de produto, pesquisa, IA, segurança, arquitetura e testes.
-- Desenvolvimento seguro incorporado ao ciclo de desenvolvimento.
-- Segurança considerada desde a arquitetura.
-- Acessibilidade visual considerada na construção da interface.
-- Evolução progressiva da arquitetura conforme o MVP é implementado.
-
----
-
-# 📋 Metodologia
-
-O projeto é desenvolvido utilizando práticas inspiradas em metodologias ágeis e princípios de engenharia de software.
-
-- Git e GitHub para versionamento;
-- Desenvolvimento incremental;
-- Evolução contínua do MVP;
-- Documentação viva;
-- Organização por milestones;
-- Checkpoints frequentes;
-- Componentização e reutilização;
-- Revisão contínua de decisões arquiteturais;
-- **Secure Development Lifecycle (SDL);**
-- Segurança considerada durante planejamento, desenvolvimento e testes;
-- Pesquisa e validação utilizadas para apoiar decisões de produto;
-- Especificações e critérios verificáveis como apoio à estratégia de testes.
-
-A equipe também utiliza o projeto como laboratório prático para aplicar conceitos de desenvolvimento Full Stack, arquitetura, Inteligência Artificial, segurança, cloud e metodologias ágeis.
+> Documentações técnicas detalhadas e materiais internos relacionados à IA, segurança, arquitetura e testes são mantidos separadamente.
 
 ---
 
 # 📚 Documentação
 
-Toda a documentação oficial está sendo organizada na pasta **`/docs`**.
+A documentação pública está organizada na pasta **`/docs`**.
 
 | Área | Descrição |
 |---|---|
-| 📍 Roadmap | Evolução das funcionalidades e prioridades |
 | 📐 Product | Visão, princípios e especificações do produto |
 | 🔎 Research | Pesquisas, evidências, hipóteses e validações |
-| 🤖 AI | Comportamento, arquitetura e decisões relacionadas aos agentes |
-| 🔐 Security | Princípios, requisitos e decisões relacionadas à segurança |
-| 🏗️ Technical | Arquitetura, APIs e infraestrutura |
-| 🧪 Testing | Estratégia e documentação de testes |
-| 📝 Changelog | Histórico de evolução do projeto |
+| 🎨 Design System | Diretrizes e decisões relacionadas à interface |
+| 👥 Team | Informações relacionadas à equipe |
+| 📝 Documentação | Organização e orientação dos documentos públicos |
 
-### 🔎 Research
+A documentação pública apresenta o contexto necessário para compreender o produto, sua evolução e suas principais decisões.
 
-A documentação de Research registra as pesquisas utilizadas para apoiar decisões de desenvolvimento, incluindo:
-
-- fundamentação em literatura e pesquisas acadêmicas;
-- análise geral do mercado;
-- insights e hipóteses;
-- testes e validações com usuários.
-
-A pesquisa orienta o desenvolvimento, mas não é tratada como verdade absoluta. Hipóteses devem ser confrontadas com novas evidências e testes.
-
-### 🔐 Segurança
-
-A documentação de segurança acompanha a evolução da arquitetura e contempla temas como:
-
-- Overview e princípios de segurança;
-- Autenticação;
-- Autorização;
-- Proteção de dados;
-- Privacidade;
-- Desenvolvimento seguro.
-
-Os documentos são evolutivos e distinguem claramente requisitos, decisões planejadas e controles efetivamente implementados.
-
-### 🧪 Testing
-
-A documentação de testes acompanha a evolução dos requisitos e critérios de validação do sistema.
-
-A estratégia busca relacionar:
-
-```text
-Requisito
-   ↓
-Especificação
-   ↓
-Critério verificável
-   ↓
-Teste
-   ↓
-Resultado
-   ↓
-Evidência
-```
-
-Essa abordagem permite acompanhar não apenas se uma funcionalidade foi implementada, mas também se ela atende ao comportamento esperado e aos requisitos definidos.
+Detalhes técnicos de implementação são mantidos separadamente para a equipe do projeto.
 
 ---
 
@@ -646,16 +434,16 @@ Junta.ai
 Aplicação Full Stack
    │
    ▼
-Agentes de IA + experiência conversacional
+Experiência conversacional
    │
    ▼
-MCP + controle de contexto e recursos
+Inteligência Artificial + MCP
    │
    ▼
-CrewAI + orquestração de agentes
+Orquestração de agentes
    │
    ▼
-Desenvolvimento seguro integrado ao produto
+Desenvolvimento seguro
    │
    ▼
 Infraestrutura em containers e cloud
@@ -664,7 +452,7 @@ Infraestrutura em containers e cloud
 Testes e validação
 ```
 
-A evolução do projeto representa não apenas uma mudança de nome, mas uma mudança de visão: de uma ferramenta de organização financeira para uma experiência conversacional orientada a contexto, autonomia, clareza e segurança.
+A evolução do projeto representa uma mudança de visão: de uma ferramenta de organização financeira para uma experiência conversacional orientada a contexto, autonomia, clareza e segurança.
 
 ---
 
@@ -675,8 +463,6 @@ A evolução do projeto representa não apenas uma mudança de nome, mas uma mud
 **Danieli Dutra Braga** — Líder da equipe e responsável pela liderança do desenvolvimento do projeto.
 
 ### 🤝 Equipe
-
-A equipe é multidisciplinar e a divisão de responsabilidades é definida e refinada ao longo do desenvolvimento do projeto, de acordo com as necessidades de cada etapa.
 
 - Artur Alejandro
 - Caio Firmino
@@ -693,12 +479,6 @@ O projeto é desenvolvido como parte da formação em **Desenvolvimento Full Sta
 
 ---
 
-# 📄 Licença
-
-Este projeto está licenciado sob a licença **MIT**.
-
----
-
 <p align="center">
 
 💜 **Junta.ai**
@@ -708,3 +488,17 @@ Este projeto está licenciado sob a licença **MIT**.
 **Seu dinheiro. Do seu jeito.**
 
 </p>
+
+---
+
+# © Direitos sobre o projeto
+
+O código, documentação, identidade visual, materiais e demais conteúdos deste repositório são disponibilizados para fins de apresentação e acompanhamento do desenvolvimento do projeto.
+
+**Este repositório não possui uma licença open source.**
+
+Não é autorizada a cópia, redistribuição, comercialização ou utilização deste projeto, integral ou parcialmente, sem autorização prévia dos responsáveis.
+
+Para solicitações relacionadas ao uso do projeto, entre em contato com a equipe do Junta.ai.
+
+---
