@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Logo from "@/components/branding/logo";
 import Navbar from "@/components/navigation/Navbar";
@@ -11,12 +11,20 @@ import "./Header.css";
 
 function Header() {
   const { theme } = useTheme();
+  const navigate = useNavigate();
 
   function handleLogoClick() {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (window.location.pathname === "/") {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+
+      return;
+    }
+
+    navigate("/");
   }
 
   return (
@@ -31,7 +39,7 @@ function Header() {
             type="button"
             className="header__logo-button"
             onClick={handleLogoClick}
-            aria-label="Voltar ao topo"
+            aria-label="Voltar para o início"
           >
             <Logo
               variant="horizontal"

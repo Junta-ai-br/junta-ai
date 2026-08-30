@@ -3,28 +3,36 @@ import { Send } from "lucide-react";
 
 import Button from "@/components/common/Button";
 
-import "./Contato.css";
+import "./FeedbackPage.css";
 
 const subjectOptions = [
   {
-    value: "faq",
-    label: "Não encontrei minha dúvida na FAQ",
-  },
-  {
-    value: "junta",
-    label: "Dúvida sobre o Junta.ai",
+    value: "experiencia",
+    label: "Experiência com o Junta.ai",
   },
   {
     value: "sugestao",
-    label: "Sugestão ou ideia",
+    label: "Sugestão ou nova ideia",
   },
   {
-    value: "parceria",
-    label: "Parceria ou colaboração",
+    value: "problema",
+    label: "Encontrei um problema",
   },
   {
-    value: "imprensa",
-    label: "Imprensa",
+    value: "duvida",
+    label: "Algo não ficou claro",
+  },
+  {
+    value: "privacidade",
+    label: "Privacidade e segurança",
+  },
+  {
+    value: "financeiro",
+    label: "Recursos financeiros",
+  },
+  {
+    value: "assistente",
+    label: "Assistente / IA",
   },
   {
     value: "outro",
@@ -32,7 +40,7 @@ const subjectOptions = [
   },
 ];
 
-function Contato() {
+function FeedbackPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -59,80 +67,66 @@ function Contato() {
     setIsSubmitted(true);
   }
 
-  function handleNewMessage() {
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      subjectOther: "",
-      message: "",
-    });
-
-    setIsSubmitted(false);
-  }
-
   if (isSubmitted) {
     return (
-      <main className="page">
-        <div className="page__container">
-          <div className="page__success">
-            <div className="page__success-icon">
+      <section className="feedback-page feedback-page--success">
+        <div className="feedback-page__container">
+          <div className="feedback-page__success">
+            <div className="feedback-page__success-icon">
               <Send size={24} strokeWidth={1.8} />
             </div>
 
-            <span className="page__eyebrow">
-              Mensagem recebida
+            <span className="feedback-page__eyebrow">
+              Feedback recebido
             </span>
 
-            <h1 className="page__success-title">
-              Obrigado pelo contato.
+            <h1 className="feedback-page__success-title">
+              Sua voz ajuda a construir o Junta.ai.
             </h1>
 
-            <p className="page__success-description">
-              Sua mensagem foi encaminhada para a equipe do Junta.ai responsável.
-            </p>
-
-            <p className="page__success-description">
-              Vamos analisar com atenção e, se necessário, retornaremos o
-              contato pelo e-mail informado.
+            <p className="feedback-page__success-description">
+              Obrigado por compartilhar sua experiência.
+              <br />
+              Cada mensagem nos ajuda a entender o que faz sentido para quem
+              usa o Junta.ai e onde podemos melhorar.
             </p>
 
             <Button
               variant="primary"
               size="lg"
-              className="page__success-button"
-              onClick={handleNewMessage}
+              className="feedback-page__success-button"
+              onClick={() => setIsSubmitted(false)}
             >
-              Enviar outra mensagem
+              Enviar outro feedback
             </Button>
           </div>
         </div>
-      </main>
+      </section>
     );
   }
 
   return (
-    <main className="page">
-      <div className="page__container">
-        <header className="page__header">
-          <span className="page__eyebrow">
-            Ainda ficou com alguma dúvida?
+    <section className="feedback-page">
+      <div className="feedback-page__container">
+        <div className="feedback-page__intro">
+          <span className="feedback-page__eyebrow">
+            O Junta.ai cresce com você
           </span>
 
-          <h1 className="page__title">
-            Conte no que podemos te ajudar.
+          <h1 className="feedback-page__title">
+            Tem algo para contar?
+            <span>A gente quer ouvir.</span>
           </h1>
 
-          <p className="page__description">
-            Se você não encontrou sua resposta na sessão de Dúvidas ou quer
-            falar com a equipe do Junta.ai sobre algo específico, envie uma
-            mensagem.
+          <p className="feedback-page__description">
+            Seu feedback nos ajuda a entender o que funciona, o que pode
+            melhorar e o que você gostaria de encontrar no Junta.ai.
           </p>
-        </header>
+        </div>
 
-        <form className="page__form" onSubmit={handleSubmit}>
-          <div className="page__fields">
-            <div className="page__field">
+        <form className="feedback-page__form" onSubmit={handleSubmit}>
+          <div className="feedback-page__fields">
+            <div className="feedback-page__field">
               <label htmlFor="name">Nome</label>
 
               <input
@@ -146,7 +140,7 @@ function Contato() {
               />
             </div>
 
-            <div className="page__field">
+            <div className="feedback-page__field">
               <label htmlFor="email">E-mail</label>
 
               <input
@@ -159,13 +153,13 @@ function Contato() {
                 required
               />
 
-              <span className="page__helper">
-                Usaremos seu e-mail apenas para responder à sua mensagem,
-                quando necessário.
+              <span className="feedback-page__helper">
+                Usaremos seu e-mail apenas se precisarmos entrar em contato
+                sobre seu feedback.
               </span>
             </div>
 
-            <div className="page__field">
+            <div className="feedback-page__field">
               <label htmlFor="subject">
                 Sobre o que você quer falar?
               </label>
@@ -190,7 +184,7 @@ function Contato() {
             </div>
 
             {formData.subject === "outro" && (
-              <div className="page__field">
+              <div className="feedback-page__field">
                 <label htmlFor="subjectOther">
                   Qual assunto?
                 </label>
@@ -207,16 +201,16 @@ function Contato() {
               </div>
             )}
 
-            <div className="page__field">
+            <div className="feedback-page__field">
               <label htmlFor="message">
-                Mensagem
+                Conta pra gente.
               </label>
 
               <textarea
                 id="message"
                 name="message"
                 rows="6"
-                placeholder="Conte pra gente o que você gostaria de saber."
+                placeholder="O que você gostaria que a gente soubesse?"
                 value={formData.message}
                 onChange={handleChange}
                 required
@@ -224,21 +218,21 @@ function Contato() {
             </div>
           </div>
 
-          <div className="page__actions">
+          <div className="feedback-page__actions">
             <Button
               type="submit"
               variant="primary"
               size="lg"
-              className="page__submit"
+              className="feedback-page__submit"
             >
-              Enviar mensagem
+              Compartilhar feedback
               <Send size={17} strokeWidth={1.8} />
             </Button>
           </div>
         </form>
       </div>
-    </main>
+    </section>
   );
 }
 
-export default Contato;
+export default FeedbackPage;

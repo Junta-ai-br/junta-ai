@@ -25,6 +25,31 @@
    Intro
    -------------------------------------------------------------------------- */
 
+.collab__intro {
+  position: relative;
+
+  padding-right: var(--spacing-32);
+}
+
+.collab__intro::after {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 1px;
+  height: 100%;
+
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(56, 163, 165, 0.5) 12%,
+    rgba(56, 163, 165, 0.5) 88%,
+    transparent
+  );
+}
+
 .collab__title {
   margin: 0 0 var(--spacing-16);
 
@@ -49,49 +74,151 @@
    -------------------------------------------------------------------------- */
 
 .collab__pillars {
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: var(--spacing-8);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+
+  column-gap: var(--spacing-32);
+  row-gap: var(--spacing-48);
+
+  align-items: start;
 }
 
-.collab__pillar-wrapper {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-8);
-}
-
-.collab__plus {
-  padding-top: var(--spacing-32);
-
-  color: var(--text-muted);
-  font-size: var(--font-subtitle);
-}
+/* --------------------------------------------------------------------------
+   Individual Pillar
+   -------------------------------------------------------------------------- */
 
 .collab__pillar {
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  width: 120px;
+  width: 100%;
+  max-width: 160px;
+
+  margin: 0 auto;
 
   text-align: center;
+
+  transition: transform var(--transition-fast) ease;
 }
 
+.collab__pillar:hover {
+  transform: translateY(-3px);
+}
+
+/* --------------------------------------------------------------------------
+   Icon
+   -------------------------------------------------------------------------- */
+
 .collab__pillar-icon {
+  position: relative;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 3rem;
-  height: 3rem;
+  width: 3.5rem;
+  height: 3.5rem;
+
   margin-bottom: var(--spacing-12);
 
-  border: 1px solid var(--border);
+  border: 1px solid;
   border-radius: var(--radius-16);
 
-  color: var(--brand-primary);
+  background: var(--surface);
+
+  transition:
+    border-color var(--transition-fast) ease,
+    background-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease,
+    transform var(--transition-fast) ease;
 }
+
+.collab__pillar-icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+
+  stroke-width: 1.8;
+}
+
+/* --------------------------------------------------------------------------
+   Purple / Aqua Alternation
+   -------------------------------------------------------------------------- */
+
+/* 1 · Ideia
+   3 · Desenvolvimento
+   5 · Inteligência
+*/
+
+.collab__pillar:nth-child(odd) .collab__pillar-icon {
+  color: var(--brand-primary);
+
+  border-color: rgba(113, 64, 250, 0.45);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(113, 64, 250, 0.12),
+      rgba(113, 64, 250, 0.025) 72%
+    ),
+    var(--surface);
+
+  box-shadow:
+    0 0 0 4px rgba(113, 64, 250, 0.025),
+    0 0 24px rgba(113, 64, 250, 0.1);
+}
+
+/* 2 · Design
+   4 · Segurança
+   6 · Colaboração
+*/
+
+.collab__pillar:nth-child(even) .collab__pillar-icon {
+  color: var(--brand-accent);
+
+  border-color: rgba(56, 163, 165, 0.45);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(56, 163, 165, 0.12),
+      rgba(56, 163, 165, 0.025) 72%
+    ),
+    var(--surface);
+
+  box-shadow:
+    0 0 0 4px rgba(56, 163, 165, 0.025),
+    0 0 24px rgba(56, 163, 165, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   Hover
+   -------------------------------------------------------------------------- */
+
+.collab__pillar:nth-child(odd):hover .collab__pillar-icon {
+  border-color: rgba(113, 64, 250, 0.7);
+
+  box-shadow:
+    0 0 0 5px rgba(113, 64, 250, 0.035),
+    0 0 30px rgba(113, 64, 250, 0.2);
+
+  transform: translateY(-2px);
+}
+
+.collab__pillar:nth-child(even):hover .collab__pillar-icon {
+  border-color: rgba(56, 163, 165, 0.7);
+
+  box-shadow:
+    0 0 0 5px rgba(56, 163, 165, 0.035),
+    0 0 30px rgba(56, 163, 165, 0.2);
+
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
 
 .collab__pillar-title {
   margin: 0 0 var(--spacing-8);
@@ -100,15 +227,16 @@
 
   font-size: var(--font-small);
   font-weight: var(--font-semibold);
+  line-height: 1.3;
 }
 
 .collab__pillar-description {
   margin: 0;
 
-  color: var(--text-muted);
+  color: var(--text-secondary);
 
   font-size: var(--font-caption);
-  line-height: var(--line-height-normal);
+  line-height: 1.55;
 }
 
 /* --------------------------------------------------------------------------
@@ -118,14 +246,84 @@
 @media (max-width: 900px) {
   .collab__container {
     grid-template-columns: 1fr;
+
     padding: var(--spacing-32);
   }
 
-  .collab__pillars {
-    justify-content: center;
+  .collab__intro {
+    padding-right: 0;
+    padding-bottom: var(--spacing-32);
   }
 
-  .collab__plus {
-    display: none;
+  .collab__intro::after {
+    top: auto;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(56, 163, 165, 0.5) 12%,
+      rgba(56, 163, 165, 0.5) 88%,
+      transparent
+    );
+  }
+
+  .collab__pillars {
+    grid-template-columns: repeat(3, 1fr);
+
+    column-gap: var(--spacing-16);
+    row-gap: var(--spacing-40);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small Screens
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .collab {
+    padding-bottom: 5rem;
+  }
+
+  .collab__container {
+    width: min(100% - 2rem, 440px);
+
+    padding: var(--spacing-24);
+  }
+
+  .collab__pillars {
+    grid-template-columns: repeat(2, 1fr);
+
+    column-gap: var(--spacing-16);
+    row-gap: var(--spacing-32);
+  }
+
+  .collab__pillar {
+    max-width: 140px;
+  }
+
+  .collab__pillar-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .collab__pillar-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced Motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .collab__pillar,
+  .collab__pillar-icon {
+    transition: none;
   }
 }
