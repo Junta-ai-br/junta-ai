@@ -498,7 +498,7 @@
   }
 
   .sobre-hero__visual {
-    width: min(440px, 90vw);
+    width: min(500px, 100%);
   }
 }
 
@@ -517,12 +517,19 @@
     gap: var(--spacing-40);
   }
 
+  .sobre-hero__content {
+    width: 100%;
+    max-width: 420px;
+    transform: translateX(-8px);
+  }
+
   .sobre-hero__title {
+    max-width: 420px;
     font-size: clamp(2rem, 9vw, 2.5rem);
   }
 
   .sobre-hero__visual {
-    width: min(360px, 92vw);
+    width: min(460px, 100vw);
   }
 
   .sobre-hero__logo {
@@ -546,6 +553,14 @@
     width: 3rem;
     height: 3rem;
   }
+
+  /*
+   * Pequena redução da composição orbital.
+   * Não altera ângulos, raios ou lógica do Motion.
+   */
+  .sobre-motion__orbit-group {
+    transform: scale(0.90);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -554,7 +569,11 @@
 
 @media (max-width: 400px) {
   .sobre-hero__visual {
-    width: min(330px, 92vw);
+    width: 460px;
+    max-width: none;
+
+    margin-left: 46%;
+    transform: translateX(-50%);
   }
 
   .sobre-hero__avatar--outer {

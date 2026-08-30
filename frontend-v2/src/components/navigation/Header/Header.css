@@ -1,27 +1,28 @@
+/* ==========================================================================
+   Navigation · Header
+   ========================================================================== */
+
 .header {
   position: sticky;
   top: 0;
   z-index: 1000;
 
   width: 100%;
-  padding: 2rem var(--spacing-8);
-  padding-block: 2.5rem;
+  padding: 2.5rem var(--spacing-8);
 
-  background: color-mix(in srgb, var(--background), transparent 18%);
+  background: color-mix(
+    in srgb,
+    var(--background),
+    transparent 18%
+  );
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-.header__theme {
-  position: absolute;
-  top: calc(2rem - 2px);
-  transform: translateY(-50%);
-  right: 15rem;
-
-  display: flex;
-  align-items: center;
-}
+/* --------------------------------------------------------------------------
+   Logo
+   -------------------------------------------------------------------------- */
 
 .header__logo-button {
   display: flex;
@@ -35,9 +36,9 @@
   cursor: pointer;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Container */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Container
+   -------------------------------------------------------------------------- */
 
 .header__container {
   display: grid;
@@ -56,6 +57,8 @@
 
   box-shadow: var(--shadow-rest);
 
+  overflow: visible;
+
   transition:
     border-color var(--transition-fast) ease,
     box-shadow var(--transition-normal) var(--ease-smooth);
@@ -69,28 +72,27 @@
   );
 
   box-shadow: var(--shadow-hover);
-  transform: translateY(-1px);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Brand */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Brand
+   -------------------------------------------------------------------------- */
 
 .header__brand {
   justify-self: start;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Navigation */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Navigation
+   -------------------------------------------------------------------------- */
 
 .navbar {
   justify-self: center;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Actions */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Actions
+   -------------------------------------------------------------------------- */
 
 .header__actions {
   display: flex;
@@ -101,4 +103,81 @@
 
 .header__cta {
   text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .header {
+    padding: 1.5rem var(--spacing-8);
+  }
+
+  .header__container {
+    grid-template-columns: auto 1fr auto;
+
+    padding: 0.875rem 1rem;
+  }
+
+  .header__brand {
+    min-width: 0;
+  }
+
+  .header__brand .header__logo-button {
+    max-width: 180px;
+  }
+
+  /* ------------------------------------------------------------------------
+     Actions
+     ------------------------------------------------------------------------ */
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    gap: var(--spacing-8);
+  }
+
+  /*
+   * No mobile, ThemeSwitch permanece visível.
+   * Login e CTA passam para o menu mobile do Navbar.
+   */
+
+  .header__actions .navbar__link,
+  .header__actions .header__cta {
+    display: none;
+  }
+
+  /* ------------------------------------------------------------------------
+     Navigation
+     ------------------------------------------------------------------------ */
+
+  .navbar {
+    justify-self: end;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small Screens
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .header {
+    padding: 1rem var(--spacing-8);
+  }
+
+  .header__container {
+    padding: 0.75rem;
+
+    border-radius: var(--radius-16);
+  }
+
+  .header__brand .header__logo-button {
+    max-width: 150px;
+  }
+
+  .header__actions {
+    gap: var(--spacing-8);
+  }
 }

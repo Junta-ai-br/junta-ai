@@ -43,6 +43,14 @@ export default function Login() {
           <div className="login-page__theme">
             <ThemeSwitch />
           </div>
+
+          <Link
+            to="/"
+            className="login-page__back"
+            aria-label="Voltar para a página inicial"
+          >
+            Voltar
+          </Link>
         </div>
       </header>
 
