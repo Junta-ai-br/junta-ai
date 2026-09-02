@@ -8,6 +8,9 @@ import { THEMES } from "@/utils/theme";
 
 import "./Cadastro.css";
 
+// 1. Importe o componente de formulário que criamos no passo anterior
+import CadastroForm from "@/components/Cadastro/Cadastro";
+
 export default function Cadastro() {
   const { theme } = useTheme();
 
@@ -49,6 +52,7 @@ export default function Cadastro() {
         aria-label="Criação de conta"
       >
         <div className="cadastro-page__card">
+          
           <div className="cadastro-page__heading">
             <p className="cadastro-page__eyebrow">
               BEM-VINDO(A) AO JUNTA.AI
@@ -61,16 +65,8 @@ export default function Cadastro() {
             </p>
           </div>
 
-          <form className="cadastro-form">
-            {/* campos do cadastro */}
-
-            <button
-              type="submit"
-              className="button button--primary cadastro-form__submit"
-            >
-              Criar conta
-            </button>
-          </form>
+          {/* 2. Inserimos o componente com todos os inputs aqui */}
+          <CadastroForm />
 
           <p className="cadastro-page__privacy">
             Ao criar sua conta, você concorda com nossos{" "}
