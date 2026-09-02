@@ -19,6 +19,7 @@ import logoHorizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
 import logoHorizontalPreta from "@/assets/logos/logo-horizontal-preta.svg";
 
 import ThemeSwitch from "@/components/navigation/ThemeSwitch";
+import { CATEGORY_META, aggregateByCategory, loadCategories, loadTransactions, saveTransactions } from "@/services/finance/store";
 
 import "./Assistente.css";
 
@@ -31,6 +32,9 @@ export default function Assistente() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState([]);
+  const [pendingExpense, setPendingExpense] = useState(null);
+  const [transactions, setTransactions] = useState(loadTransactions);
+  const [categories, setCategories] = useState(loadCategories);
   const [isTyping, setIsTyping] = useState(false);
 
   const userMenuRef = useRef(null);
@@ -80,6 +84,21 @@ export default function Assistente() {
         "keydown",
         handleEscape
       );
+    };
+  }, []);
+
+  useEffect(() => {
+    const refreshFinanceData = () => {
+      setTransactions(loadTransactions());
+      setCategories(loadCategories());
+    };
+
+    window.addEventListener("junta:transactions-changed", refreshFinanceData);
+    window.addEventListener("junta:categories-changed", refreshFinanceData);
+
+    return () => {
+      window.removeEventListener("junta:transactions-changed", refreshFinanceData);
+      window.removeEventListener("junta:categories-changed", refreshFinanceData);
     };
   }, []);
 
@@ -151,111 +170,34 @@ export default function Assistente() {
     status: "Ótimo",
   };
 
+  const monthlyIncome = transactions
+    .filter((item) => item.amount > 0)
+    .reduce((sum, item) => sum + item.amount, 0);
+  const monthlyExpenses = transactions
+    .filter((item) => item.amount < 0)
+    .reduce((sum, item) => sum + Math.abs(item.amount), 0);
+  const categoryData = aggregateByCategory(transactions, categories);
+  const monthlyBalanceClass = monthlyIncome - monthlyExpenses >= 0
+    ? "assistant__widget-month-value--positive"
+    : "assistant__widget-month-value--negative";
+  const monthlyBalanceFormatted = `R$ ${(monthlyIncome - monthlyExpenses).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
   const monthlyOverview = {
-    balance: 1890.5,
-
-    categories: [
-      {
-        name: "Moradia",
-        percentage: 32,
-        color: "#7140FA",
-        emoji: "🏠",
-      },
-      {
-        name: "Alimentação",
-        percentage: 24,
-        color: "#9B78FF",
-        emoji: "🍔",
-      },
-      {
-        name: "Lazer",
-        percentage: 18,
-        color: "#B9A2FF",
-        emoji: "🎮",
-      },
-      {
-        name: "Transporte",
-        percentage: 14,
-        color: "#38A3A5",
-        emoji: "🚗",
-      },
-      {
-        name: "Outros",
-        percentage: 12,
-        color: "#4B357F",
-        emoji: "📦",
-      },
-    ],
-
-    transactions: [
-      {
-        description: "Mercado",
-        category: "Alimentação",
-        emoji: "🛒",
-        value: "R$ 120,00",
-        type: "expense",
-      },
-      {
-        description: "Uber",
-        category: "Transporte",
-        emoji: "🚗",
-        value: "R$ 24,00",
-        type: "expense",
-      },
-      {
-        description: "Streaming",
-        category: "Assinaturas",
-        emoji: "📺",
-        value: "R$ 39,90",
-        type: "expense",
-      },
-      {
-        description: "Salário",
-        category: "Receita",
-        emoji: "💰",
-        value: "R$ 4.250,00",
-        type: "income",
-      },
-    ],
+    categories: categoryData.map((category) => ({ ...category, percentage: category.pct, emoji: category.icon })),
+    transactions: transactions.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4).map((transaction) => ({
+      description: transaction.desc,
+      category: transaction.category,
+      emoji: transaction.icon,
+      value: `R$ ${Math.abs(transaction.amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      type: transaction.amount > 0 ? "income" : "expense",
+    })),
   };
-
-  /* ==========================================================================
-     Monthly Balance
-     ========================================================================== */
-
-  const monthlyBalanceClass =
-    monthlyOverview.balance > 0
-      ? "assistant__widget-month-value--positive"
-      : monthlyOverview.balance < 0
-        ? "assistant__widget-month-value--negative"
-        : "assistant__widget-month-value--neutral";
-
-  const monthlyBalanceFormatted =
-    `${monthlyOverview.balance > 0 ? "+" : monthlyOverview.balance < 0 ? "-" : ""} ` +
-    `R$ ${Math.abs(monthlyOverview.balance).toLocaleString(
-      "pt-BR",
-      {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }
-    )}`;
-
-  /* ==========================================================================
-     Donut
-     ========================================================================== */
-
-  const donutGradient = (() => {
-    const segments = monthlyOverview.categories.map((category, index) => {
-      const start = monthlyOverview.categories
-        .slice(0, index)
-        .reduce((total, currentCategory) => total + currentCategory.percentage, 0);
-      const end = start + category.percentage;
-
-      return `${category.color} ${start}% ${end}%`;
-    });
-
-    return `conic-gradient(${segments.join(", ")})`;
-  })();
+  const donutTotal = categoryData.reduce((sum, category) => sum + category.value, 0);
+  const donutGradient = categoryData.length && donutTotal
+    ? `conic-gradient(${categoryData.map((category, index) => {
+      const start = categoryData.slice(0, index).reduce((sum, item) => sum + (item.value / donutTotal) * 100, 0);
+      return `${category.color} ${start}% ${start + (category.value / donutTotal) * 100}%`;
+    }).join(", ")})`
+    : "transparent";
 
   /* ==========================================================================
      Chat
@@ -289,21 +231,42 @@ export default function Assistente() {
      * Substituir este mock pela chamada real ao agente/backend.
      */
 
-    setTimeout(() => {
-      const assistantMessage = {
-        id: Date.now() + 1,
-        type: "assistant",
-        text:
-          "Entendi! 💜 Vou considerar essa informação no seu planejamento financeiro.",
-      };
+    const entryMatch = message.match(/\bentrada\s*:?\s*([\d]+(?:[.,]\d{1,2})?)/i);
+    const exitMatch = message.match(/\b(sa[ií]da|gastei)\s*:?\s*([\d]+(?:[.,]\d{1,2})?)/i);
+    const amount = Number((entryMatch?.[1] || exitMatch?.[2] || "0").replace(",", "."));
+    const today = new Date().toISOString().split("T")[0];
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        assistantMessage,
-      ]);
+    if (amount > 0 && entryMatch) {
+      const transaction = { id: `chat-${Date.now()}`, date: today, category: "Renda", desc: "Entrada via chat", amount, icon: CATEGORY_META.Renda.icon };
+      const next = [...transactions, transaction];
+      saveTransactions(next);
+      setTransactions(next);
+      setMessages((currentMessages) => [...currentMessages, { id: Date.now() + 1, type: "assistant", text: "Entrada registrada. Seus gráficos já foram atualizados." }]);
+      setIsTyping(false);
+      return;
+    }
 
+    if (amount > 0 && exitMatch) {
+      setPendingExpense({ amount, date: today, desc: "Saída via chat" });
+      setMessages((currentMessages) => [...currentMessages, { id: Date.now() + 1, type: "assistant", text: "Qual categoria devo usar para essa saída?" }]);
+      setIsTyping(false);
+      return;
+    }
+
+    window.setTimeout(() => {
+      setMessages((currentMessages) => [...currentMessages, { id: Date.now() + 1, type: "assistant", text: "Entendi! 💜 Vou considerar essa informação no seu planejamento financeiro." }]);
       setIsTyping(false);
     }, 1000);
+  };
+
+  const registerExpense = (category) => {
+    if (!pendingExpense) return;
+    const transaction = { id: `chat-${transactions.length + 1}`, ...pendingExpense, category, amount: -pendingExpense.amount, icon: CATEGORY_META[category]?.icon || "💰" };
+    const next = [...transactions, transaction];
+    saveTransactions(next);
+    setTransactions(next);
+    setPendingExpense(null);
+    setMessages((currentMessages) => [...currentMessages, { id: Date.now() + 1, type: "assistant", text: `Saída registrada em ${category}. Seus gráficos já foram atualizados.` }]);
   };
 
   /* ==========================================================================
@@ -562,7 +525,7 @@ export default function Assistente() {
           </span>
 
           <strong className="assistant__summary-value">
-            R$ 4.250,00
+            R$ {monthlyIncome.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </strong>
 
         </article>
@@ -582,7 +545,7 @@ export default function Assistente() {
           </span>
 
           <strong className="assistant__summary-value">
-            R$ 1.890,50
+            R$ {monthlyExpenses.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </strong>
 
         </article>
@@ -604,7 +567,7 @@ export default function Assistente() {
           <strong
             className={`assistant__summary-value ${balanceClass}`}
           >
-            R$ 2.359,50
+            R$ {(monthlyIncome - monthlyExpenses).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </strong>
 
         </article>
@@ -697,6 +660,18 @@ export default function Assistente() {
 
                 </motion.div>
               ))}
+
+              {pendingExpense && (
+                <div className="assistant__message assistant__message--assistant">
+                  <div className="assistant__message-bubble assistant__category-picker">
+                    {loadCategories().filter((category) => category !== "Renda").map((category) => (
+                      <button type="button" key={category} onClick={() => registerExpense(category)}>
+                        {CATEGORY_META[category]?.icon || "💰"} {category}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Typing Indicator */}
 
@@ -897,7 +872,10 @@ export default function Assistente() {
 
           {/* Visão do Mês */}
 
-          <section className="assistant__widget assistant__widget--dashboard">
+          <Link
+            to="/visao-mes"
+            className="assistant__widget assistant__widget--dashboard assistant__month-link"
+          >
 
             <div className="assistant__widget-header">
 
@@ -1031,7 +1009,7 @@ export default function Assistente() {
 
             </div>
 
-          </section>
+          </Link>
 
         </aside>
 
