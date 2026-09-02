@@ -8,7 +8,7 @@ import { THEMES } from "@/utils/theme";
 
 import "./Cadastro.css";
 
-// 1. Importe o componente de formulário que criamos no passo anterior
+
 import CadastroForm from "@/components/Cadastro/Cadastro";
 
 export default function Cadastro() {
@@ -65,7 +65,7 @@ export default function Cadastro() {
             </p>
           </div>
 
-          {/* 2. Inserimos o componente com todos os inputs aqui */}
+        
           <CadastroForm />
 
           <p className="cadastro-page__privacy">
