@@ -16,9 +16,11 @@ export default function DateRangeFilter({ value, onChange, tokens }) {
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, []);
-  const label = PRESETS.find(([, start, end]) => start === value.start && end === value.end)?.[0] || `${value.start} → ${value.end}`;
+  const label = !value
+    ? "Selecionar período"
+    : PRESETS.find(([, start, end]) => start === value.start && end === value.end)?.[0] || `${value.start} → ${value.end}`;
   return <div ref={ref} style={{ position: "relative" }}>
-    <button type="button" onClick={() => { setDraft(value); setOpen((current) => !current); }} style={{ background: tokens.surface, border: `1px solid ${tokens.border}`, borderRadius: 8, color: tokens.textMuted, padding: "9px 12px", cursor: "pointer" }}>📅 {label} ▾</button>
+    <button type="button" onClick={() => { setDraft(value || PRESETS[0].slice(1).reduce((range, date, index) => ({ ...range, [index === 0 ? "start" : "end"]: date }), {})); setOpen((current) => !current); }} style={{ background: tokens.surface, border: `1px solid ${tokens.border}`, borderRadius: 8, color: tokens.textMuted, padding: "9px 12px", cursor: "pointer" }}>📅 {label} ▾</button>
     {open && <div style={{ position: "absolute", right: 0, top: "calc(100% + 8px)", zIndex: 4, width: 280, padding: 16, background: tokens.surface, border: `1px solid ${tokens.border}`, borderRadius: 12, boxShadow: "0 16px 40px #0008" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>{PRESETS.map(([name, start, end]) => <button type="button" key={name} onClick={() => setDraft({ start, end })} style={{ border: `1px solid ${draft.start === start && draft.end === end ? "#7c3aed" : tokens.border}`, background: tokens.inputBg, color: tokens.textMuted, borderRadius: 16, padding: "5px 9px", cursor: "pointer" }}>{name}</button>)}</div>
       {["start", "end"].map((field) => <label key={field} style={{ display: "block", color: tokens.textMuted, fontSize: 12, marginBottom: 10 }}>{field === "start" ? "Data inicial" : "Data final"}<input type="date" value={draft[field]} onChange={(event) => setDraft({ ...draft, [field]: event.target.value })} style={{ display: "block", width: "100%", marginTop: 4, padding: 8, background: tokens.inputBg, border: `1px solid ${tokens.border}`, color: tokens.text, borderRadius: 7 }} /></label>)}

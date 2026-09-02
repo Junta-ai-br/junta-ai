@@ -1,3 +1,10 @@
+import VisaoMes from "@/pages/VisaoMes/VisaoMes";
+
 export default function Dashboard() {
-  return <h1>Dashboard</h1>;
+  return (
+    <VisaoMes
+      title="Dashboard"
+      initialRange={null}
+    />
+  );
 }

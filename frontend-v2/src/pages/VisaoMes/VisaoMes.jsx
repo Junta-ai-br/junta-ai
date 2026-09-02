@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CATEGORY_META, aggregateByCategory, aggregateByMonth, filterByRange, formatDateBR, formatMoney, loadCategories, loadDateRange, loadTransactions, saveCategories, saveDateRange } from "@/services/finance/store";
+import { CATEGORY_META, aggregateByCategory, aggregateByMonth, filterByRange, formatDateBR, formatMoney, loadCategories, loadTransactions, saveCategories, saveDateRange } from "@/services/finance/store";
 import DateRangeFilter from "./DateRangeFilter";
 import { useTheme } from "@/contexts/useTheme";
 import { THEMES } from "@/utils/theme";
@@ -13,11 +13,11 @@ const THEME_TOKENS = {
   light: { bg: "#f0f2f5", surface: "#fff", border: "#e2e5eb", text: "#111827", textMuted: "#6b7280", textDim: "#9ca3af", inputBg: "#f0f2f5" },
 };
 
-export default function VisaoMes() {
+export default function VisaoMes({ title = "Visão do mês", initialRange = { start: "2026-08-01", end: "2026-08-31" } } = {}) {
   const { theme } = useTheme();
   const T = THEME_TOKENS[theme === THEMES.DARK ? "dark" : "light"];
   const [tab, setTab] = useState("overview");
-  const [range, setRange] = useState(loadDateRange);
+  const [range, setRange] = useState(initialRange);
   const [transactions, setTransactions] = useState(loadTransactions);
   const [categories, setCategories] = useState(loadCategories);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
@@ -49,7 +49,7 @@ export default function VisaoMes() {
   return <main className="finance-page" style={{ background: T.bg, color: T.text }}>
     <header className="finance-header" style={{ background: T.surface, borderColor: T.border }}>
       <Link to="/assistente" className="finance-back">← Assistente</Link>
-      <div><h1>Visão do mês</h1><p>{formatDateBR(range.start)} até {formatDateBR(range.end)} · {filtered.length} transações</p></div>
+      <div><h1>{title}</h1><p>{range ? `${formatDateBR(range.start)} até ${formatDateBR(range.end)} · ` : "Todos os períodos · "}{filtered.length} transações</p></div>
       <div className="finance-header-actions"><button type="button" onClick={() => setShowCategoryForm(true)} className="finance-add">＋ Categoria</button><DateRangeFilter value={range} onChange={(next) => { setRange(next); saveDateRange(next); }} tokens={T} /></div>
     </header>
 

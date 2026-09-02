@@ -67,6 +67,7 @@ export function saveDateRange(range) {
 }
 
 export function filterByRange(transactions, range) {
+  if (!range) return transactions;
   return transactions.filter((transaction) => transaction.date >= range.start && transaction.date <= range.end);
 }
 
