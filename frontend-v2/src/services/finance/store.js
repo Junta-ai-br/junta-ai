@@ -18,7 +18,16 @@ const SEED = [
 
 const TRANSACTIONS_KEY = "junta_transactions";
 const CATEGORIES_KEY = "junta_categories";
+const CATEGORY_COLORS_KEY = "junta_category_colors";
 const RANGE_KEY = "junta_date_range";
+
+export function getCurrentMonthRange(date = new Date()) {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth();
+  const monthNumber = String(month + 1).padStart(2, "0");
+  const lastDay = String(new Date(Date.UTC(year, month + 1, 0)).getUTCDate()).padStart(2, "0");
+  return { start: `${year}-${monthNumber}-01`, end: `${year}-${monthNumber}-${lastDay}` };
+}
 
 export function loadTransactions() {
   try {
@@ -49,8 +58,20 @@ export function loadCategories() {
   return Object.keys(CATEGORY_META);
 }
 
+export function loadCategoryColors() {
+  try {
+    const raw = localStorage.getItem(CATEGORY_COLORS_KEY);
+    return { ...Object.fromEntries(Object.entries(CATEGORY_META).map(([name, meta]) => [name, meta.color])), ...(raw ? JSON.parse(raw) : {}) };
+  } catch { return Object.fromEntries(Object.entries(CATEGORY_META).map(([name, meta]) => [name, meta.color])); }
+}
+
 export function saveCategories(categories) {
   localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+  window.dispatchEvent(new Event("junta:categories-changed"));
+}
+
+export function saveCategoryColors(colors) {
+  localStorage.setItem(CATEGORY_COLORS_KEY, JSON.stringify(colors));
   window.dispatchEvent(new Event("junta:categories-changed"));
 }
 
@@ -71,7 +92,7 @@ export function filterByRange(transactions, range) {
   return transactions.filter((transaction) => transaction.date >= range.start && transaction.date <= range.end);
 }
 
-export function aggregateByCategory(transactions, categories = []) {
+export function aggregateByCategory(transactions, categories = [], categoryColors = {}) {
   const values = {};
   categories.filter((category) => category !== "Renda").forEach((category) => {
     values[category] = 0;
@@ -84,7 +105,7 @@ export function aggregateByCategory(transactions, categories = []) {
     name,
     value,
     pct: total ? Math.round((value / total) * 1000) / 10 : 0,
-    color: CATEGORY_META[name]?.color || "#888",
+    color: categoryColors[name] || CATEGORY_META[name]?.color || "#888",
     icon: CATEGORY_META[name]?.icon || "💰",
   }));
 }

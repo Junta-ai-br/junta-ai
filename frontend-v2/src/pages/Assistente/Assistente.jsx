@@ -19,7 +19,7 @@ import logoHorizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
 import logoHorizontalPreta from "@/assets/logos/logo-horizontal-preta.svg";
 
 import ThemeSwitch from "@/components/navigation/ThemeSwitch";
-import { CATEGORY_META, aggregateByCategory, loadCategories, loadTransactions, saveTransactions } from "@/services/finance/store";
+import { CATEGORY_META, aggregateByCategory, loadCategories, loadCategoryColors, loadTransactions, saveTransactions } from "@/services/finance/store";
 
 import "./Assistente.css";
 
@@ -35,6 +35,7 @@ export default function Assistente() {
   const [pendingExpense, setPendingExpense] = useState(null);
   const [transactions, setTransactions] = useState(loadTransactions);
   const [categories, setCategories] = useState(loadCategories);
+  const [categoryColors, setCategoryColors] = useState(loadCategoryColors);
   const [isTyping, setIsTyping] = useState(false);
 
   const userMenuRef = useRef(null);
@@ -91,6 +92,7 @@ export default function Assistente() {
     const refreshFinanceData = () => {
       setTransactions(loadTransactions());
       setCategories(loadCategories());
+      setCategoryColors(loadCategoryColors());
     };
 
     window.addEventListener("junta:transactions-changed", refreshFinanceData);
@@ -176,7 +178,7 @@ export default function Assistente() {
   const monthlyExpenses = transactions
     .filter((item) => item.amount < 0)
     .reduce((sum, item) => sum + Math.abs(item.amount), 0);
-  const categoryData = aggregateByCategory(transactions, categories);
+  const categoryData = aggregateByCategory(transactions, categories, categoryColors);
   const monthlyBalanceClass = monthlyIncome - monthlyExpenses >= 0
     ? "assistant__widget-month-value--positive"
     : "assistant__widget-month-value--negative";
@@ -664,7 +666,7 @@ export default function Assistente() {
               {pendingExpense && (
                 <div className="assistant__message assistant__message--assistant">
                   <div className="assistant__message-bubble assistant__category-picker">
-                    {loadCategories().filter((category) => category !== "Renda").map((category) => (
+                    {categories.filter((category) => category !== "Renda").map((category) => (
                       <button type="button" key={category} onClick={() => registerExpense(category)}>
                         {CATEGORY_META[category]?.icon || "💰"} {category}
                       </button>

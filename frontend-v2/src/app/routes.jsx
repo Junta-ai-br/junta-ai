@@ -39,7 +39,7 @@ function AppRoutes() {
         <Route path="/cadastro" element={<Cadastro />} />
 
         <Route path="/assistente" element={<Assistente />} />
-        <Route path="/visao-mes" element={<VisaoMes />} />
+        <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/perfil" element={<Perfil />} />

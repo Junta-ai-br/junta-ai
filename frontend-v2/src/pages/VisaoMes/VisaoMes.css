@@ -32,5 +32,7 @@
 .category-modal h2 { margin-top: 0; }
 .category-modal input { width: 100%; padding: 11px; border: 1px solid #777; border-radius: 7px; background: transparent; color: inherit; box-sizing: border-box; }
 .category-modal form > div { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+.category-color-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: .9rem; }
+.category-color-field input[type="color"] { width: 48px; height: 36px; padding: 2px; cursor: pointer; }
 .category-modal button { padding: 8px 12px; border: 0; border-radius: 7px; cursor: pointer; }.category-modal button:last-child { background: #7c3aed; color: white; }
 @media (max-width: 760px) { .finance-header { flex-wrap: wrap; padding: 16px; }.finance-header-actions { width: 100%; margin-left: 0; justify-content: space-between; }.finance-kpis { grid-template-columns: repeat(2, 1fr); padding: 16px; }.finance-tabs, .finance-content { padding-left: 16px; padding-right: 16px; overflow-x: auto; }.finance-tabs { white-space: nowrap; }.finance-grid { grid-template-columns: 1fr; } }

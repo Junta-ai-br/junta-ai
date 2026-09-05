@@ -4,7 +4,7 @@ export default function Dashboard() {
   return (
     <VisaoMes
       title="Dashboard"
-      initialRange={null}
+      variant="all"
     />
   );
 }

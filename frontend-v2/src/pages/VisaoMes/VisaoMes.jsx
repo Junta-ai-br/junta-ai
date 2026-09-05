@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CATEGORY_META, aggregateByCategory, aggregateByMonth, filterByRange, formatDateBR, formatMoney, loadCategories, loadTransactions, saveCategories, saveDateRange } from "@/services/finance/store";
+import { CATEGORY_META, aggregateByCategory, aggregateByMonth, filterByRange, formatDateBR, formatMoney, getCurrentMonthRange, loadCategories, loadCategoryColors, loadTransactions, saveCategories, saveCategoryColors, saveDateRange } from "@/services/finance/store";
 import DateRangeFilter from "./DateRangeFilter";
 import { useTheme } from "@/contexts/useTheme";
 import { THEMES } from "@/utils/theme";
@@ -13,26 +13,40 @@ const THEME_TOKENS = {
   light: { bg: "#f0f2f5", surface: "#fff", border: "#e2e5eb", text: "#111827", textMuted: "#6b7280", textDim: "#9ca3af", inputBg: "#f0f2f5" },
 };
 
-export default function VisaoMes({ title = "Visão do mês", initialRange = { start: "2026-08-01", end: "2026-08-31" } } = {}) {
+export default function VisaoMes({ title = "Visão do mês", variant = "month" } = {}) {
   const { theme } = useTheme();
   const T = THEME_TOKENS[theme === THEMES.DARK ? "dark" : "light"];
   const [tab, setTab] = useState("overview");
-  const [range, setRange] = useState(initialRange);
+  const [range, setRange] = useState(variant === "all" ? null : getCurrentMonthRange);
   const [transactions, setTransactions] = useState(loadTransactions);
   const [categories, setCategories] = useState(loadCategories);
+  const [categoryColors, setCategoryColors] = useState(loadCategoryColors);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [newCategory, setNewCategory] = useState("");
+  const [newCategoryColor, setNewCategoryColor] = useState("#7c3aed");
 
   useEffect(() => {
-    const refresh = () => { setTransactions(loadTransactions()); setCategories(loadCategories()); };
+    const refresh = () => { setTransactions(loadTransactions()); setCategories(loadCategories()); setCategoryColors(loadCategoryColors()); };
+    const refreshFromStorage = (event) => {
+      if (event.key === "junta_transactions" || event.key === "junta_categories") refresh();
+    };
     window.addEventListener("junta:transactions-changed", refresh);
     window.addEventListener("junta:categories-changed", refresh);
-    return () => { window.removeEventListener("junta:transactions-changed", refresh); window.removeEventListener("junta:categories-changed", refresh); };
+    window.addEventListener("storage", refreshFromStorage);
+    return () => {
+      window.removeEventListener("junta:transactions-changed", refresh);
+      window.removeEventListener("junta:categories-changed", refresh);
+      window.removeEventListener("storage", refreshFromStorage);
+    };
   }, []);
 
   const filtered = useMemo(() => filterByRange(transactions, range), [transactions, range]);
-  const byCategory = useMemo(() => aggregateByCategory(filtered, categories), [filtered, categories]);
-  const byMonth = useMemo(() => aggregateByMonth(transactions), [transactions]);
+  const sortedTransactions = useMemo(
+    () => [...filtered].sort((a, b) => b.date.localeCompare(a.date)),
+    [filtered],
+  );
+  const byCategory = useMemo(() => aggregateByCategory(filtered, categories, categoryColors), [filtered, categories, categoryColors]);
+  const byMonth = useMemo(() => aggregateByMonth(filtered), [filtered]);
   const income = filtered.filter((item) => item.amount > 0).reduce((sum, item) => sum + item.amount, 0);
   const expenses = filtered.filter((item) => item.amount < 0).reduce((sum, item) => sum + Math.abs(item.amount), 0);
   const tooltip = { background: T.surface, border: `1px solid ${T.border}`, borderRadius: 8, color: T.text };
@@ -42,7 +56,9 @@ export default function VisaoMes({ title = "Visão do mês", initialRange = { st
     const name = newCategory.trim();
     if (!name || categories.includes(name)) return;
     saveCategories([...categories, name]);
+    saveCategoryColors({ ...categoryColors, [name]: newCategoryColor });
     setNewCategory("");
+    setNewCategoryColor("#7c3aed");
     setShowCategoryForm(false);
   };
 
@@ -60,10 +76,10 @@ export default function VisaoMes({ title = "Visão do mês", initialRange = { st
       {tab === "overview" && <div className="finance-grid"><Panel title="Gastos por categoria"><ResponsiveContainer width="100%" height={280}><PieChart><Pie data={byCategory} dataKey="value" nameKey="name" innerRadius={72} outerRadius={105}>{byCategory.map((item) => <Cell key={item.name} fill={item.color} />)}</Pie><Tooltip contentStyle={tooltip} formatter={(value) => formatMoney(Number(value))} /></PieChart></ResponsiveContainer><CategoryRows data={byCategory} tokens={T} /></Panel><Panel title="Valor por categoria"><ResponsiveContainer width="100%" height={350}><BarChart data={byCategory} layout="vertical" margin={{ left: 12, right: 16 }}><CartesianGrid stroke={T.border} horizontal={false} /><XAxis type="number" stroke={T.textDim} tickFormatter={(value) => `R$${value}`} /><YAxis type="category" dataKey="name" width={90} stroke={T.textMuted} /><Tooltip contentStyle={tooltip} formatter={(value) => formatMoney(Number(value))} /><Bar dataKey="value" fill="#7c3aed" radius={[0, 5, 5, 0]} /></BarChart></ResponsiveContainer></Panel></div>}
       {tab === "history" && <Panel title="Evolução mensal"><ResponsiveContainer width="100%" height={380}><LineChart data={byMonth}><CartesianGrid stroke={T.border} strokeDasharray="3 3" /><XAxis dataKey="mes" stroke={T.textMuted} /><YAxis stroke={T.textMuted} tickFormatter={(value) => `R$${value}`} /><Tooltip contentStyle={tooltip} formatter={(value) => formatMoney(Number(value))} /><Legend /><Line dataKey="entradas" name="Entradas" stroke="#00d084" strokeWidth={3} /><Line dataKey="saidas" name="Saídas" stroke="#ff4444" strokeWidth={3} /></LineChart></ResponsiveContainer></Panel>}
       {tab === "flow" && <Panel title="Entradas e saídas"><ResponsiveContainer width="100%" height={380}><BarChart data={byMonth}><CartesianGrid stroke={T.border} strokeDasharray="3 3" /><XAxis dataKey="mes" stroke={T.textMuted} /><YAxis stroke={T.textMuted} tickFormatter={(value) => `R$${value}`} /><Tooltip contentStyle={tooltip} formatter={(value) => formatMoney(Number(value))} /><Legend /><Bar dataKey="entradas" name="Entradas" fill="#00d084" radius={[5, 5, 0, 0]} /><Bar dataKey="saidas" name="Saídas" fill="#ff4444" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></Panel>}
-      {tab === "transactions" && <Panel title={`Transações no período (${filtered.length})`}><div className="transaction-list">{filtered.sort((a, b) => b.date.localeCompare(a.date)).map((item) => <div className="transaction" key={item.id}><span className="transaction-icon">{item.icon || CATEGORY_META[item.category]?.icon || "💰"}</span><div><strong>{item.desc}</strong><small>{formatDateBR(item.date)} · {item.category}</small></div><b className={item.amount > 0 ? "income" : "expense"}>{item.amount > 0 ? "+" : "-"}{formatMoney(item.amount)}</b></div>)}</div></Panel>}
+      {tab === "transactions" && <Panel title={`Transações no período (${sortedTransactions.length})`}><div className="transaction-list">{sortedTransactions.map((item) => <div className="transaction" key={item.id}><span className="transaction-icon">{item.icon || CATEGORY_META[item.category]?.icon || "💰"}</span><div><strong>{item.desc}</strong><small>{formatDateBR(item.date)} · {item.category}</small></div><b className={item.amount > 0 ? "income" : "expense"}>{item.amount > 0 ? "+" : "-"}{formatMoney(item.amount)}</b></div>)}</div></Panel>}
     </section>
 
-    {showCategoryForm && <div className="category-modal" role="dialog" aria-modal="true"><form onSubmit={addCategory} style={{ background: T.surface, borderColor: T.border }}><h2>Adicionar categoria</h2><input autoFocus value={newCategory} onChange={(event) => setNewCategory(event.target.value)} placeholder="Ex.: Educação" /><div><button type="button" onClick={() => setShowCategoryForm(false)}>Cancelar</button><button type="submit">Adicionar</button></div></form></div>}
+    {showCategoryForm && <div className="category-modal" role="dialog" aria-modal="true"><form onSubmit={addCategory} style={{ background: T.surface, borderColor: T.border }}><h2>Adicionar categoria</h2><input autoFocus value={newCategory} onChange={(event) => setNewCategory(event.target.value)} placeholder="Ex.: Educação" required /><label className="category-color-field">Cor da categoria<input type="color" value={newCategoryColor} onChange={(event) => setNewCategoryColor(event.target.value)} required /></label><div><button type="button" onClick={() => setShowCategoryForm(false)}>Cancelar</button><button type="submit">Adicionar</button></div></form></div>}
   </main>;
 }
 
