@@ -16,6 +16,8 @@ const SEED = [
   { id: "t06", date: "2026-08-09", category: "Lazer", desc: "Cinema", amount: -40, icon: "🎮" },
 ];
 
+const MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
 const TRANSACTIONS_KEY = "junta_transactions";
 const CATEGORIES_KEY = "junta_categories";
 const CATEGORY_COLORS_KEY = "junta_category_colors";
@@ -123,6 +125,42 @@ export function aggregateByMonth(transactions) {
     mes: `${months[Number(key.slice(5)) - 1]}/${key.slice(2, 4)}`,
     ...value,
   }));
+}
+
+export function aggregateCategoryHistory(transactions, categories = [], categoryColors = {}) {
+  const expenseCategories = categories.filter((category) => category !== "Renda");
+  const datedTransactions = transactions.filter((transaction) => transaction.date && transaction.amount < 0);
+  if (!datedTransactions.length) return { months: [], categories: [] };
+
+  const firstMonth = datedTransactions.reduce((first, transaction) => transaction.date < first ? transaction.date : first, datedTransactions[0].date).slice(0, 7);
+  const lastMonth = datedTransactions.reduce((last, transaction) => transaction.date > last ? transaction.date : last, datedTransactions[0].date).slice(0, 7);
+  const [firstYear, firstMonthNumber] = firstMonth.split("-").map(Number);
+  const [lastYear, lastMonthNumber] = lastMonth.split("-").map(Number);
+  const months = [];
+  for (let year = firstYear, month = firstMonthNumber; year < lastYear || (year === lastYear && month <= lastMonthNumber); month += 1) {
+    months.push({ key: `${year}-${String(month).padStart(2, "0")}`, label: `${MONTHS[month - 1]}/${String(year).slice(2)}` });
+    if (month === 12) { year += 1; month = 0; }
+  }
+
+  const values = Object.fromEntries(expenseCategories.map((category) => [category, Object.fromEntries(months.map(({ key }) => [key, 0]))]));
+  datedTransactions.forEach((transaction) => {
+    if (!values[transaction.category]) values[transaction.category] = Object.fromEntries(months.map(({ key }) => [key, 0]));
+    values[transaction.category][transaction.date.slice(0, 7)] += Math.abs(transaction.amount);
+  });
+
+  const totals = Object.fromEntries(Object.entries(values).map(([name, monthlyValues]) => [name, Object.values(monthlyValues).reduce((sum, value) => sum + value, 0)]));
+  const total = Object.values(totals).reduce((sum, value) => sum + value, 0);
+  return {
+    months,
+    categories: Object.keys(values).sort((a, b) => totals[b] - totals[a]).map((name) => ({
+      name,
+      color: categoryColors[name] || CATEGORY_META[name]?.color || "#888",
+      icon: CATEGORY_META[name]?.icon || "💰",
+      total: totals[name],
+      pct: total ? Math.round((totals[name] / total) * 1000) / 10 : 0,
+      values: values[name],
+    })),
+  };
 }
 
 export function formatMoney(value) {

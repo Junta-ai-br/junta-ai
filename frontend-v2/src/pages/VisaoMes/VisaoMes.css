@@ -16,6 +16,13 @@
 .finance-content { padding: 16px 5vw 36px; }
 .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .finance-panel h2 { font-size: .95rem; margin: 0 0 16px; }
+.history-chart { min-width: 0; }
+.history-summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; }
+.history-summary-card { min-width: 0; border: 1px solid; border-radius: 10px; padding: 13px; display: grid; gap: 5px; }
+.history-summary-icon { font-size: 1.25rem; }
+.history-summary-name { color: inherit; opacity: .68; font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-summary-card strong { font-size: 1.2rem; }
+.history-summary-card small { color: #888; }
 .category-rows { display: grid; gap: 7px; }
 .category-rows div, .transaction { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px; border-radius: 7px; background: rgba(127,127,127,.08); }
 .category-rows span { display: flex; align-items: center; gap: 7px; }
