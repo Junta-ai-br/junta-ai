@@ -8,7 +8,7 @@
   z-index: 1000;
 
   width: 100%;
-  padding: 2.5rem var(--spacing-8);
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(0.75rem, 4vw, 2rem);
 
   background: color-mix(
     in srgb,
@@ -48,7 +48,8 @@
   max-width: 1120px;
   margin: 0 auto;
 
-  padding: 1rem 2rem;
+  width: min(100%, 1120px);
+  padding: 1rem clamp(0.75rem, 3vw, 2rem);
 
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-24);
@@ -111,7 +112,7 @@
 
 @media (max-width: 900px) {
   .header {
-    padding: 1.5rem var(--spacing-8);
+    padding: 1.25rem clamp(0.75rem, 4vw, 1.5rem);
   }
 
   .header__container {
@@ -164,7 +165,7 @@
 
 @media (max-width: 560px) {
   .header {
-    padding: 1rem var(--spacing-8);
+    padding: 1rem 0.75rem;
   }
 
   .header__container {

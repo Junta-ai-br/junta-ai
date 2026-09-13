@@ -156,7 +156,9 @@
 
 @media (max-width: 900px) {
   .sobre-motion__orbit-avatar {
-    --orbit-radius: calc(var(--orbit-radius) * 0.88);
+    transform:
+      rotate(var(--orbit-angle))
+      translateX(calc(var(--orbit-radius) * 0.88));
   }
 }
 
@@ -166,7 +168,9 @@
 
 @media (max-width: 560px) {
   .sobre-motion__orbit-avatar {
-    --orbit-radius: calc(var(--orbit-radius) * 0.72);
+    transform:
+      rotate(var(--orbit-angle))
+      translateX(calc(var(--orbit-radius) * 0.72));
   }
 
   .sobre-motion__banner-border {
@@ -186,7 +190,9 @@
 
 @media (max-width: 400px) {
   .sobre-motion__orbit-avatar {
-    --orbit-radius: calc(var(--orbit-radius) * 0.64);
+    transform:
+      rotate(var(--orbit-angle))
+      translateX(calc(var(--orbit-radius) * 0.64));
   }
 }
 

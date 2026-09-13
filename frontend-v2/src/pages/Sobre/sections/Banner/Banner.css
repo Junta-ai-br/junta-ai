@@ -10,6 +10,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  contain: paint;
 
   display: flex;
   align-items: center;
@@ -32,10 +33,7 @@
 
 .sobre-banner__animated-border {
   position: absolute;
-  inset: -100%;
-
-  width: 300%;
-  height: 300%;
+  inset: -2px;
 
   background: conic-gradient(
     from 0deg,
@@ -280,6 +278,10 @@
 
   .sobre-banner__title {
     font-size: 1.3rem;
+  }
+
+  .sobre-banner__line {
+    white-space: normal;
   }
 }
 

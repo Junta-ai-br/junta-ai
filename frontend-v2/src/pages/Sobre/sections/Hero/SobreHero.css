@@ -520,7 +520,7 @@
   .sobre-hero__content {
     width: 100%;
     max-width: 420px;
-    transform: translateX(-8px);
+    margin-inline: auto;
   }
 
   .sobre-hero__title {
@@ -569,11 +569,11 @@
 
 @media (max-width: 400px) {
   .sobre-hero__visual {
-    width: 460px;
-    max-width: none;
+    width: min(100%, 360px);
+    max-width: 100%;
 
-    margin-left: 46%;
-    transform: translateX(-50%);
+    margin-inline: auto;
+    transform: none;
   }
 
   .sobre-hero__avatar--outer {
