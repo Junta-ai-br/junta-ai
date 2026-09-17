@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
 import { buscarCep } from "@/services/cepService";
+import { useUser } from "@/contexts/useUser";
 import "./Cadastro.css";
 
 export default function Cadastro() {
@@ -17,6 +18,8 @@ export default function Cadastro() {
     password: '',
     confirmPassword: ''
   });
+
+  const { updateProfile } = useUser();
 
   const [carregandoCep, setCarregandoCep] = useState(false);
   const [erroForm, setErroForm] = useState('');
@@ -74,9 +77,14 @@ export default function Cadastro() {
     setLoadingAction("submit");
 
     window.setTimeout(() => {
+      updateProfile({
+        nome: form.nome,
+        email: form.email,
+        username: form.username,
+      });
+
       setStatusForm("Cadastro realizado com sucesso!");
       setLoadingAction(null);
-      console.log("Dados enviados:", form);
     }, 1000);
   }
 

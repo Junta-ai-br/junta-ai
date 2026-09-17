@@ -1,0 +1,319 @@
+/* ==========================================================================
+   SETTINGS PAGE (Perfil / Configurações)
+   ========================================================================== */
+
+.settings-page {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+.settings-page__main {
+  flex: 1;
+}
+
+.settings-page__container {
+  width: min(calc(100% - 3rem), 780px);
+
+  margin: 0 auto;
+  padding: var(--spacing-48) 0 var(--spacing-96);
+}
+
+/* --------------------------------------------------------------------------
+   Breadcrumb
+   -------------------------------------------------------------------------- */
+
+.settings-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  margin-bottom: var(--spacing-24);
+
+  color: var(--text-secondary);
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+}
+
+.settings-page__breadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.settings-page__breadcrumb a:hover {
+  color: var(--brand-primary);
+}
+
+.settings-page__breadcrumb span[aria-current="page"] {
+  color: var(--text-primary);
+  font-weight: var(--font-medium);
+}
+
+/* --------------------------------------------------------------------------
+   Intro
+   -------------------------------------------------------------------------- */
+
+.settings-page__intro {
+  margin-bottom: var(--spacing-32);
+}
+
+.settings-page__eyebrow {
+  margin: 0 0 var(--spacing-8);
+
+  color: var(--brand-accent);
+
+  font-family: var(--body-family);
+  font-size: var(--font-caption);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+}
+
+.settings-page__intro h1 {
+  margin: 0 0 var(--spacing-12);
+
+  font-family: var(--heading-family);
+  font-size: var(--font-title);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.settings-page__description {
+  margin: 0;
+  max-width: 52ch;
+
+  color: var(--text-secondary);
+
+  font-family: var(--body-family);
+  font-size: var(--font-body);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Form Layout
+   -------------------------------------------------------------------------- */
+
+.settings-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.settings-page__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+/* --------------------------------------------------------------------------
+   Section Card
+   -------------------------------------------------------------------------- */
+
+.settings-card {
+  gap: var(--spacing-24);
+}
+
+.settings-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-16);
+}
+
+.settings-card__number {
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--surface-selected);
+  color: var(--brand-primary);
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+  font-weight: var(--font-bold);
+}
+
+.settings-card__title {
+  margin: 0 0 var(--spacing-4);
+
+  font-family: var(--heading-family);
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.settings-card__description {
+  margin: 0;
+  max-width: 56ch;
+
+  color: var(--text-secondary);
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+  line-height: var(--line-height-normal);
+}
+
+.settings-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+/* --------------------------------------------------------------------------
+   Avatar Block
+   -------------------------------------------------------------------------- */
+
+.settings-avatar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-20);
+}
+
+.settings-avatar__image.avatar {
+  width: 76px;
+  height: 76px;
+
+  font-size: 1.5rem;
+
+  border: 1px solid var(--border);
+}
+
+.settings-avatar__label {
+  margin: 0;
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.settings-avatar__helper {
+  margin: var(--spacing-4) 0 var(--spacing-12);
+
+  color: var(--text-secondary);
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+}
+
+.settings-avatar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+
+  flex-wrap: wrap;
+}
+
+.settings-avatar__remove {
+  border: none;
+  background: transparent;
+  padding: 0;
+
+  color: var(--error);
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+  font-weight: var(--font-medium);
+
+  cursor: pointer;
+}
+
+.settings-avatar__remove:hover {
+  text-decoration: underline;
+}
+
+.settings-avatar__file-input {
+  display: none;
+}
+
+.settings-avatar__requirements {
+  margin: var(--spacing-12) 0 0;
+
+  color: var(--text-muted);
+
+  font-family: var(--body-family);
+  font-size: var(--font-caption);
+}
+
+.settings-avatar__error {
+  margin: var(--spacing-8) 0 0;
+
+  color: var(--error);
+
+  font-family: var(--body-family);
+  font-size: var(--font-caption);
+}
+
+/* --------------------------------------------------------------------------
+   Notifications List
+   -------------------------------------------------------------------------- */
+
+.settings-notifications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+/* --------------------------------------------------------------------------
+   Danger button used as a link (Excluir minha conta)
+   -------------------------------------------------------------------------- */
+
+.settings-card a.button--danger-outline {
+  align-self: flex-start;
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   Actions
+   -------------------------------------------------------------------------- */
+
+.settings-page__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-16);
+
+  padding-top: var(--spacing-8);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .settings-page__container {
+    padding: var(--spacing-32) 0 var(--spacing-64);
+  }
+
+  .settings-avatar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .settings-avatar__actions {
+    justify-content: center;
+  }
+
+  .settings-card a.button--danger-outline {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .settings-page__actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-page__actions .button {
+    width: 100%;
+  }
+}
