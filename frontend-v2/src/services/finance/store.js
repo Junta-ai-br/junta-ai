@@ -85,7 +85,8 @@ export function saveCategoryColors(colors) {
 export function loadDateRange() {
   try {
     const raw = localStorage.getItem(RANGE_KEY);
-    if (raw) return JSON.parse(raw);
+    const range = raw ? JSON.parse(raw) : null;
+    if (range?.start && range?.end) return range;
   } catch { return { start: "2026-08-01", end: "2026-08-31" }; }
   return { start: "2026-08-01", end: "2026-08-31" };
 }
