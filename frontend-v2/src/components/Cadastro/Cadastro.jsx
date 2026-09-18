@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
-import { buscarCep } from "@/services/cepService";
 import "./Cadastro.css";
 
 export default function Cadastro() {
@@ -9,19 +8,11 @@ export default function Cadastro() {
     nome: '',
     email: '',
     whatsapp: '',
-    // cep: '',cd
-    // rua: '',
-    // bairro: '',
-    // cidade: '',
-    // uf: '',
-    // password: '',
-    // confirmPassword: '',
     pergunta1: '',
     pergunta2: '',
     pergunta3: ''
   });
 
-  const [carregandoCep, setCarregandoCep] = useState(false);
   const [erroForm, setErroForm] = useState('');
   const [statusForm, setStatusForm] = useState('');
   const [loadingAction, setLoadingAction] = useState(null);
@@ -38,44 +29,15 @@ export default function Cadastro() {
     clearMessages();
   }
 
-  // async function handleBuscarCep() {
-  //   try {
-  //     clearMessages();
-  //     const cepLimpo = form.cep.replace(/\D/g, '');
-  //     if (!cepLimpo) return;
-
-  //     if (cepLimpo.length !== 8) {
-  //       setErroForm('O CEP deve conter 8 dígitos.');
-  //       return;
-  //     }
-
-  //     setCarregandoCep(true);
-  //     const dados = await buscarCep(cepLimpo);
-
-  //     setForm((prev) => ({
-  //       ...prev,
-  //       rua: dados.logradouro || '',
-  //       bairro: dados.bairro || '',
-  //       cidade: dados.localidade || '',
-  //       uf: dados.uf || ''
-  //     }));
-  //   } catch (error) {
-  //     setErroForm(error.message || 'Erro ao buscar CEP.');
-  //   } finally {
-  //     setCarregandoCep(false);
-  //   }
-  // }
-
   function handleProximaEtapa() {
     clearMessages();
-    
+
     // Validação básica da Etapa 1
     if (!form.nome || !form.email || !form.whatsapp) {
       setErroForm("Preencha os campos obrigatórios antes de continuar.");
       return;
     }
 
-  
     setEtapa(2);
   }
 
@@ -88,9 +50,11 @@ export default function Cadastro() {
     if (e) e.preventDefault();
     clearMessages();
 
-    // Validação da Etapa 2 (se o usuário não clicou em "Pular")
+    // Validação da Etapa 2
     if (!pular && (!form.pergunta1 || !form.pergunta2 || !form.pergunta3)) {
-      setErroForm("Por favor, responda todas as perguntas ou escolha 'Pular por agora'.");
+      setErroForm(
+        "Por favor, responda todas as perguntas ou escolha 'Pular por agora'."
+      );
       return;
     }
 
@@ -132,14 +96,25 @@ export default function Cadastro() {
   ];
 
   return (
-    <form className="login-form__fields" onSubmit={(e) => handleSubmit(e, false)} noValidate>
-      
-      {/* ================= ETAPA 1: DADOS, ENDEREÇO E SENHA ================= */}
+    <form
+      className="login-form__fields"
+      onSubmit={(e) => handleSubmit(e, false)}
+      noValidate
+    >
+      {/* ================= ETAPA 1: DADOS BÁSICOS ================= */}
       {etapa === 1 && (
         <div className="form-etapa-1">
-          <div className="cadastro-header" style={{ marginBottom: '24px' }}>
-            <h2 style={{ margin: '0 0 8px 0' }}>Vamos começar?</h2>
-            <p style={{ margin: 0, color: '#666' }}>Crie sua conta e conheça o Junta.ai.</p>
+          <div
+            className="cadastro-header"
+            style={{ marginBottom: '24px' }}
+          >
+            <h2 style={{ margin: '0 0 8px 0' }}>
+              Vamos começar?
+            </h2>
+
+            <p style={{ margin: 0, color: '#666' }}>
+              Crie sua conta e conheça o Junta.ai.
+            </p>
           </div>
 
           <Input
@@ -178,8 +153,6 @@ export default function Cadastro() {
             required
           />
 
-
-
           <Button
             type="button"
             size="lg"
@@ -190,7 +163,14 @@ export default function Cadastro() {
             Continuar
           </Button>
 
-          <div style={{ marginTop: '16px', fontSize: '14px', color: '#555', textAlign: 'center' }}>
+          <div
+            style={{
+              marginTop: '16px',
+              fontSize: '14px',
+              color: '#555',
+              textAlign: 'center'
+            }}
+          >
             🔐 Seus dados são tratados com cuidado desde o desenvolvimento do Junta.ai.
           </div>
         </div>
@@ -199,18 +179,49 @@ export default function Cadastro() {
       {/* ================= ETAPA 2: PERFIL DO USUÁRIO ================= */}
       {etapa === 2 && (
         <div className="form-etapa-2">
-          <div className="cadastro-header" style={{ marginBottom: '24px' }}>
-            <h2 style={{ margin: '0 0 8px 0' }}>Agora, conta pra gente um pouquinho sobre você.</h2>
-            <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-              Essas respostas ajudam o Junta.ai a entender seu contexto. Não precisa ser perfeito. Você pode mudar suas respostas depois.
+          <div
+            className="cadastro-header"
+            style={{ marginBottom: '24px' }}
+          >
+            <h2 style={{ margin: '0 0 8px 0' }}>
+              Agora, conta pra gente um pouquinho sobre você.
+            </h2>
+
+            <p
+              style={{
+                margin: 0,
+                color: '#666',
+                fontSize: '14px'
+              }}
+            >
+              Essas respostas ajudam o Junta.ai a entender seu contexto.
+              Não precisa ser perfeito. Você pode mudar suas respostas depois.
             </p>
           </div>
 
           {/* PERGUNTA 1 */}
-          <div className="pergunta-grupo" style={{ marginBottom: '20px' }}>
-            <p style={{ fontWeight: 'bold', marginBottom: '10px' }}>1. O que você mais quer organizar hoje?</p>
+          <div
+            className="pergunta-grupo"
+            style={{ marginBottom: '20px' }}
+          >
+            <p
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '10px'
+              }}
+            >
+              1. O que você mais quer organizar hoje?
+            </p>
+
             {opcoesP1.map((opcao, idx) => (
-              <label key={idx} style={{ display: 'block', marginBottom: '8px', cursor: 'pointer' }}>
+              <label
+                key={idx}
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  cursor: 'pointer'
+                }}
+              >
                 <input
                   type="radio"
                   name="pergunta1"
@@ -225,10 +236,28 @@ export default function Cadastro() {
           </div>
 
           {/* PERGUNTA 2 */}
-          <div className="pergunta-grupo" style={{ marginBottom: '20px' }}>
-            <p style={{ fontWeight: 'bold', marginBottom: '10px' }}>2. Como você costuma cuidar das suas finanças?</p>
+          <div
+            className="pergunta-grupo"
+            style={{ marginBottom: '20px' }}
+          >
+            <p
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '10px'
+              }}
+            >
+              2. Como você costuma cuidar das suas finanças?
+            </p>
+
             {opcoesP2.map((opcao, idx) => (
-              <label key={idx} style={{ display: 'block', marginBottom: '8px', cursor: 'pointer' }}>
+              <label
+                key={idx}
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  cursor: 'pointer'
+                }}
+              >
                 <input
                   type="radio"
                   name="pergunta2"
@@ -243,10 +272,28 @@ export default function Cadastro() {
           </div>
 
           {/* PERGUNTA 3 */}
-          <div className="pergunta-grupo" style={{ marginBottom: '24px' }}>
-            <p style={{ fontWeight: 'bold', marginBottom: '10px' }}>3. O que você gostaria que fosse mais fácil?</p>
+          <div
+            className="pergunta-grupo"
+            style={{ marginBottom: '24px' }}
+          >
+            <p
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '10px'
+              }}
+            >
+              3. O que você gostaria que fosse mais fácil?
+            </p>
+
             {opcoesP3.map((opcao, idx) => (
-              <label key={idx} style={{ display: 'block', marginBottom: '8px', cursor: 'pointer' }}>
+              <label
+                key={idx}
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  cursor: 'pointer'
+                }}
+              >
                 <input
                   type="radio"
                   name="pergunta3"
@@ -260,14 +307,22 @@ export default function Cadastro() {
             ))}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
+            }}
+          >
             <Button
               type="submit"
               size="lg"
               className="login-form__submit"
               disabled={loadingAction !== null}
             >
-              {loadingAction === "submit" ? "Finalizando..." : "Continuar"}
+              {loadingAction === "submit"
+                ? "Finalizando..."
+                : "Continuar"}
             </Button>
 
             <button
@@ -285,7 +340,7 @@ export default function Cadastro() {
             >
               Pular por agora
             </button>
-            
+
             <button
               type="button"
               onClick={handleEtapaAnterior}
@@ -305,7 +360,12 @@ export default function Cadastro() {
         </div>
       )}
 
-      {(erroForm || statusForm) && <Message error={erroForm} status={statusForm} />}
+      {(erroForm || statusForm) && (
+        <Message
+          error={erroForm}
+          status={statusForm}
+        />
+      )}
     </form>
   );
 }
@@ -313,7 +373,9 @@ export default function Cadastro() {
 function Message({ error, status }) {
   return (
     <div
-      className={`login-form__message ${error ? "is-error" : "is-success"}`}
+      className={`login-form__message ${
+        error ? "is-error" : "is-success"
+      }`}
       aria-live="polite"
       role={error ? "alert" : "status"}
       style={{ marginTop: '18px' }}

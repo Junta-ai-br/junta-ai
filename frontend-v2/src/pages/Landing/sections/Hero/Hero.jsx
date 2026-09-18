@@ -22,7 +22,7 @@ function Hero() {
           </p>
 
           <div className="hero__actions">
-            <Link to="/assistente" className="button button--primary">
+            <Link to="/login" className="button button--primary">
               Experimentar o Junta.ai
             </Link>
 

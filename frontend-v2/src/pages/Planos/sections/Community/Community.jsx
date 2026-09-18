@@ -1,4 +1,4 @@
-import { MessageCircle, Lightbulb, Users } from "lucide-react";
+import { MessageCircle, Lightbulb, Share2 } from "lucide-react";
 
 import "./Community.css";
 
@@ -7,19 +7,19 @@ const cards = [
     icon: MessageCircle,
     title: "Experimente",
     description:
-      "Use o Junta.ai no seu ritmo e conheça o que ele já oferece.",
+      "Converse com o Junta.ai, registre seus gastos e descubra uma forma mais simples de acompanhar seu dinheiro.",
   },
   {
     icon: Lightbulb,
     title: "Sugira",
     description:
-      "Encontrou algo que poderia ser melhor? Tem uma ideia? Conta pra gente.",
+      "Sentiu falta de alguma coisa? Tem uma ideia para melhorar a experiência? Conte pra gente.",
   },
   {
-    icon: Users,
-    title: "Contribua",
+    icon: Share2,
+    title: "Compartilhe",
     description:
-      "Seu feedback ajuda a gente a entender o que realmente importa para quem usa o produto.",
+      "Conte o que funcionou, o que pode melhorar e o que você gostaria de ver no Junta.ai.",
   },
 ];
 
@@ -29,7 +29,7 @@ function Community() {
       <div className="community__container">
         <header className="community__intro">
           <span className="community__eyebrow">
-            Sua experiência também conta
+            Sua experiência é o nosso maior valor
           </span>
 
           <h2 className="community__title">
@@ -37,9 +37,8 @@ function Community() {
           </h2>
 
           <p className="community__description">
-            Use, experimente e conte pra gente o que você acha. Suas
-            sugestões e feedbacks ajudam a gente a entender o que realmente
-            importa para você.
+            Experimente o Junta.ai, descubra o que ele já pode fazer por você
+            e conte pra gente como foi.
           </p>
         </header>
 
@@ -51,7 +50,10 @@ function Community() {
               </div>
 
               <h3 className="community-card__title">{title}</h3>
-              <p className="community-card__description">{description}</p>
+
+              <p className="community-card__description">
+                {description}
+              </p>
             </article>
           ))}
         </div>

@@ -1,6 +1,8 @@
 import { CheckCircle, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import Button from "@/components/common/Button";
+import logoIcon from "@/assets/logos/logo-icon.svg";
 
 import "./PlanCard.css";
 
@@ -8,9 +10,11 @@ const includedItems = [
   "Registrar despesas em conversa",
   "Categorizar transações automaticamente",
   "Conversar com o agente financeiro",
-  "Acompanhar seu mês com clareza",
+  "Visualizar seus gastos de forma simples",
   "Criar e acompanhar suas metas",
-  "100% gratuito para começar",
+  "Entender para onde seu dinheiro está indo",
+  "Escolher o que você quer compartilhar",
+  "Sem conectar conta bancária ou cadastrar cartão de crédito",
 ];
 
 function PlanCard() {
@@ -20,28 +24,31 @@ function PlanCard() {
         <div className="plan-card">
           <div className="plan-card__info">
             <div className="plan-card__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 4 4 9M4 9l5 5M4 9h9a6 6 0 0 1 0 12h-1" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <img src={logoIcon} alt="" />
             </div>
 
             <span className="plan-card__eyebrow">Junta.ai</span>
-            <h2 className="plan-card__name">Gratuito</h2>
+
+            <h2 className="plan-card__name">Plano gratuito</h2>
 
             <div className="plan-card__price">
               <span className="plan-card__price-value">R$ 0</span>
-              <span className="plan-card__price-caption">para começar</span>
             </div>
 
-            <Button variant="primary" size="lg" className="plan-card__cta">
-              Começar agora →
-            </Button>
+            <Link to="/cadastro">
+              <Button
+                variant="primary"
+                size="lg"
+                className="plan-card__cta"
+              >
+                Começar agora
+              </Button>
+            </Link>
           </div>
 
           <div className="plan-card__details">
             <h3 className="plan-card__details-title">
-              Tudo que você precisa para começar a organizar sua vida
-              financeira.
+              Tudo para começar a entender melhor para onde vai seu dinheiro.
             </h3>
 
             <ul className="plan-card__list">

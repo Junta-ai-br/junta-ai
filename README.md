@@ -7,9 +7,11 @@
 ![Build](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Backend](https://img.shields.io/badge/Backend-Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot)
 ![AI](https://img.shields.io/badge/AI-CrewAI-7B3FE4?style=for-the-badge)
+![MCP](https://img.shields.io/badge/AI-MCP-7140FA?style=for-the-badge)
 ![Database](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql)
+![Infrastructure](https://img.shields.io/badge/Infrastructure-Docker-2496ED?style=for-the-badge&logo=docker)
+![Cloud](https://img.shields.io/badge/Cloud-Azure-0078D4?style=for-the-badge&logo=microsoftazure)
 ![Security](https://img.shields.io/badge/Security-Secure%20Development-7140FA?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
 </p>
 
@@ -44,7 +46,7 @@ Foi dessa evolução que surgiu o nome **Junta.ai**.
 - 💰 **Juntar dinheiro**, incentivando hábitos financeiros mais saudáveis;
 - 🤝 **Estar junto**, transmitindo a ideia de um assistente que acompanha o usuário, em vez de apenas registrar informações.
 
-Mais do que um novo nome, Junta.ai representa uma nova visão de produto.
+Junta.ai representa uma nova visão de produto.
 
 ---
 
@@ -73,7 +75,7 @@ O objetivo é que a tecnologia ajude o usuário a compreender melhor sua situaç
 
 # 🎯 Principais Funcionalidades
 
-As funcionalidades abaixo fazem parte do escopo planejado do MVP e estão sendo implementadas progressivamente.
+As funcionalidades abaixo fazem parte do escopo do MVP e estão sendo implementadas progressivamente.
 
 ### 💬 Conversação em linguagem natural
 
@@ -89,7 +91,7 @@ As movimentações poderão ser classificadas e organizadas automaticamente a pa
 
 ### 🎯 Metas financeiras
 
-O usuário poderá definir objetivos financeiros, acompanhar seu progresso e utilizar diferentes cenários para planejar o alcance de suas metas.
+O usuário poderá definir objetivos financeiros e acompanhar seu progresso.
 
 ### 📊 Dashboard financeiro
 
@@ -101,7 +103,7 @@ O sistema poderá utilizar indicadores financeiros e informações fornecidas pe
 
 ### 🧠 Recomendações contextualizadas
 
-O agente poderá utilizar as informações disponíveis para oferecer sugestões relacionadas ao contexto financeiro do usuário.
+A Inteligência Artificial poderá utilizar as informações disponíveis para oferecer sugestões relacionadas ao contexto financeiro do usuário.
 
 ### 📈 Acompanhamento da evolução
 
@@ -111,109 +113,90 @@ O sistema será capaz de organizar o histórico financeiro e utilizar essas info
 
 # 🤖 Inteligência Artificial
 
-A experiência conversacional do Junta.ai está sendo projetada para utilizar um **agente de Inteligência Artificial estruturado e orquestrado com CrewAI**.
+O Junta.ai utiliza **Inteligência Artificial** como parte central da experiência conversacional.
 
-A proposta é que o agente não funcione apenas como uma interface de conversa, mas como uma camada de inteligência capaz de interpretar as mensagens do usuário e acionar os recursos necessários para processar as informações financeiras.
+A arquitetura utiliza agentes especializados e **CrewAI** como framework de orquestração, enquanto o **MCP (Model Context Protocol)** participa da definição do contexto, recursos e limites disponíveis para essa camada.
 
-Fluxo conceitual:
+Os agentes operam dentro do contexto estabelecido pela arquitetura da aplicação.
 
-```text
-Usuário
-   │
-   ▼
-Chat do Junta.ai
-   │
-   ▼
-Backend / API
-   │
-   ▼
-Orquestração de IA
-   │
-   │  CrewAI
-   │
-   ├── Interpretação da mensagem
-   ├── Identificação da intenção
-   ├── Organização dos dados
-   ├── Classificação da movimentação
-   └── Ações relacionadas ao contexto financeiro
-   │
-   ▼
-Dados estruturados
-   │
-   ├── Chat
-   ├── Metas
-   ├── Saúde financeira
-   ├── Dashboard
-   └── Histórico
-```
+O objetivo é utilizar IA para interpretar mensagens, organizar informações financeiras e apoiar experiências contextualizadas, mantendo o usuário no controle de suas decisões.
 
-> A integração completa entre o agente, backend, persistência de dados e interface ainda está em desenvolvimento.
+Os detalhes de implementação, especificações dos agentes, regras operacionais e decisões relacionadas à arquitetura de IA são mantidos na documentação interna do projeto.
 
 ---
 
 # 🔐 Desenvolvimento Seguro
 
-Segurança não é tratada como uma etapa posterior no Junta.ai.
+Segurança é uma preocupação transversal do Junta.ai.
 
-Por lidar com **informações financeiras e dados potencialmente sensíveis**, o projeto está incorporando práticas de **desenvolvimento seguro desde a fase de arquitetura e implementação**.
+Por lidar com informações financeiras, o projeto considera práticas de desenvolvimento seguro desde a arquitetura e implementação.
 
-A frente de segurança considera, entre outros aspectos:
+Entre os princípios considerados estão:
 
-- 🔐 Autenticação e controle de acesso;
-- 🛡️ Proteção de dados e informações financeiras;
-- 🔑 Gestão segura de credenciais e segredos;
-- 🌐 Segurança na comunicação entre frontend, backend e serviços;
-- 🤖 Segurança na integração com agentes e serviços de Inteligência Artificial;
-- 🧱 Validação e tratamento seguro de entradas;
-- 📋 Princípios de menor privilégio;
-- 🧪 Segurança integrada ao processo de desenvolvimento e testes;
-- 📚 Documentação contínua das decisões e requisitos de segurança.
+- proteção de dados;
+- autenticação e controle de acesso;
+- gestão segura de credenciais;
+- validação de entradas;
+- segurança das integrações;
+- princípio do menor privilégio;
+- segurança na utilização de Inteligência Artificial;
+- testes e validações de segurança.
 
-A segurança está sendo tratada como uma **preocupação transversal do produto**, e não apenas como uma funcionalidade isolada.
+A estratégia é orientada por boas práticas de engenharia de software e referências como a **OWASP**, além dos aprendizados obtidos durante a **GloboSec Week**.
 
-A documentação de segurança está organizada em:
-
-```text
-docs/
-└── security/
-```
-
-> As medidas específicas ainda estão sendo definidas e implementadas de acordo com a evolução da arquitetura. O projeto não considera como implementada uma prática que ainda esteja apenas planejada ou documentada.
+Os requisitos, decisões e controles técnicos detalhados são mantidos na documentação interna do projeto.
 
 ---
 
-# 🏗️ Arquitetura Conceitual
+# ♿ Acessibilidade visual básica
 
-A aplicação está sendo estruturada como uma arquitetura Full Stack, separando responsabilidades entre interface, backend, inteligência artificial, persistência de dados e requisitos de segurança.
+A interface considera aspectos básicos de acessibilidade visual, incluindo:
 
-```text
-                    ┌──────────────────────┐
-                    │      Junta.ai        │
-                    │     React + Vite     │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │      Backend API     │
-                    │      Spring Boot     │
-                    └──────────┬───────────┘
-                               │
-                 ┌─────────────┴─────────────┐
-                 │                           │
-                 ▼                           ▼
-       ┌──────────────────┐        ┌──────────────────┐
-       │   Orquestração   │        │ Banco de Dados   │
-       │     CrewAI       │        │    PostgreSQL    │
-       └──────────────────┘        └──────────────────┘
+- Light Mode e Dark Mode;
+- contraste visual;
+- espaçamento e legibilidade;
+- adaptação da interface a diferentes tamanhos de tela.
 
-             ┌──────────────────────────────────┐
-             │ Segurança transversal à solução │
-             │ Arquitetura · Código · Dados    │
-             │ IA · APIs · Testes               │
-             └──────────────────────────────────┘
-```
+Recursos adicionais de acessibilidade serão avaliados conforme a evolução do projeto.
 
-A arquitetura encontra-se em evolução e será refinada conforme a implementação do backend, agente, persistência e mecanismos de segurança avance.
+---
+
+# 📊 Dados e Visualizações
+
+O dashboard do Junta.ai foi projetado para apresentar informações financeiras de forma visual e facilitar a compreensão dos dados.
+
+A interface contempla:
+
+- acompanhamento de receitas;
+- acompanhamento de despesas;
+- saldo;
+- categorias;
+- períodos;
+- filtros por datas;
+- gráficos financeiros;
+- acompanhamento de metas.
+
+A integração entre os dados provenientes da experiência conversacional, persistência e visualizações está em desenvolvimento.
+
+---
+
+# 🧪 Testes e Validação
+
+A estratégia de testes busca verificar se as funcionalidades implementadas correspondem aos requisitos definidos e apresentam o comportamento esperado.
+
+Entre os objetivos estão:
+
+- validar requisitos funcionais;
+- verificar comportamentos esperados;
+- testar integrações;
+- validar funcionalidades relacionadas à Inteligência Artificial;
+- identificar comportamentos fora do escopo;
+- verificar requisitos de segurança;
+- registrar evidências dos testes realizados.
+
+A equipe também pretende realizar **testes com usuários reais na primeira metade de outubro de 2026**, buscando coletar feedback, identificar problemas de usabilidade e orientar melhorias antes da apresentação final do projeto.
+
+Os detalhes da estratégia, critérios e evidências de testes são mantidos na documentação interna.
 
 ---
 
@@ -221,7 +204,7 @@ A arquitetura encontra-se em evolução e será refinada conforme a implementaç
 
 <p align="center">
 
-<img src="https://skillicons.dev/icons?i=react,javascript,vite,java,spring,postgres,git,github,vscode" />
+<img src="https://skillicons.dev/icons?i=react,javascript,vite,java,spring,postgres,docker,nginx,git,github,vscode,azure" />
 
 </p>
 
@@ -242,30 +225,40 @@ A arquitetura encontra-se em evolução e será refinada conforme a implementaç
 ## Inteligência Artificial
 
 - CrewAI
-- Orquestração de agentes
+- MCP (Model Context Protocol)
+- Agentes de Inteligência Artificial
 - LLMs
 
 ## Banco de Dados
 
 - PostgreSQL
 
+## Infraestrutura e Cloud
+
+- Docker
+- Containers
+- NGINX
+- Azure
+
+## Integrações
+
+- API REST
+- WhatsApp (em análise)
+
 ## Segurança
 
 - Spring Security
 - JWT
+- OWASP
 - Práticas de Secure Development
-- Validação e proteção de entradas
-- Princípio do menor privilégio
-- Segurança integrada ao ciclo de desenvolvimento
-
-> A implementação dos mecanismos de segurança está sendo realizada de forma incremental conforme a arquitetura evolui.
 
 ## Testes
 
-- Vitest / Jest
-- JUnit
-
-> A estratégia e a implementação dos testes estão em evolução junto com o desenvolvimento da aplicação.
+- Testes unitários
+- Testes de integração
+- Testes funcionais
+- Testes de componentes
+- Validação baseada em requisitos
 
 ---
 
@@ -280,10 +273,15 @@ Atualmente, as principais frentes incluem:
 - 🎨 Design System
 - 💻 Desenvolvimento da interface em React
 - 💬 Experiência conversacional
-- 🤖 Estruturação e orquestração do agente de IA
-- ⚙️ Desenvolvimento do backend
+- 🤖 Estruturação e orquestração dos agentes de IA
+- 🔗 Configuração do MCP
+- ⚙️ Estruturação do backend
 - 🗄️ Implementação da persistência de dados
+- 📱 Integração com WhatsApp (em análise)
+- 🐳 Containerização da aplicação
+- ☁️ Infraestrutura em nuvem
 - 🔐 Desenvolvimento seguro
+- ♿ Acessibilidade visual básica
 - 🧪 Estratégia de testes
 - 👤 Autenticação e autorização
 
@@ -296,15 +294,19 @@ Atualmente, as principais frentes incluem:
 - [x] Evolução da identidade para Junta.ai
 - [x] Definição inicial do Design System
 - [x] Estruturação da experiência conversacional
-- [ ] Conversação funcional com agente de IA
+- [x] Definição do PostgreSQL
+- [x] Configuração inicial do MCP
+- [ ] Comunicação inicial com WhatsApp (em análise)
+- [ ] Conversação funcional com agentes de IA
 - [ ] Registro inteligente de receitas e despesas
-- [ ] Organização automática das transações
+- [ ] Organização das transações
 - [ ] Acompanhamento de metas financeiras
-- [ ] Dashboard financeiro
+- [ ] Dashboard financeiro integrado aos dados
 - [ ] Saúde financeira
 - [ ] Recomendações financeiras contextualizadas
 - [ ] Histórico financeiro
-- [ ] Persistência de dados
+- [ ] Persistência completa de dados
+- [ ] API de integração entre frontend, IA e banco de dados
 - [ ] Autenticação e autorização
 - [ ] Controles de segurança
 - [ ] Testes automatizados
@@ -322,14 +324,19 @@ Atualmente, as principais frentes incluem:
 | 🔄 Evolução Grana AI → Junta.ai | ✅ |
 | 📐 Arquitetura inicial | ✅ |
 | 🎨 Design System | ✅ |
+| 🔗 MCP do agente | ✅ |
 | 💻 Estrutura Frontend | 🚧 |
 | 💬 Experiência Conversacional | 🚧 |
-| 🤖 Agente de IA | 🚧 |
+| 🤖 Agentes de IA | 🚧 |
 | ⚙️ Backend | 🚧 |
 | 🔐 Desenvolvimento Seguro | 🚧 |
 | 💾 Persistência de Dados | 🚧 |
+| ☁️ Infraestrutura em Cloud | 🚧 |
 | 👤 Autenticação e Autorização | 🚧 |
-| 🧪 Testes | ⏳ |
+| ♿ Acessibilidade visual básica | 🚧 |
+| 🧪 Testes | 🚧 |
+| 📱 Integração WhatsApp | ⏳ |
+| 👥 Validação com Usuários | ⏳ |
 | 🚀 MVP | ⏳ |
 
 **Legenda:**
@@ -342,18 +349,17 @@ Atualmente, as principais frentes incluem:
 
 # 📂 Estrutura do Projeto
 
-A estrutura do repositório está organizada para separar aplicação, documentação e responsabilidades técnicas.
+A estrutura pública do repositório está organizada para apresentar a aplicação e sua documentação sem expor materiais internos de desenvolvimento.
 
 ```text
 junta-ai/
 
 ├── docs/
-│   ├── ai/
+│   ├── design-system/
 │   ├── product/
 │   ├── research/
-│   ├── security/
-│   ├── technical/
-│   └── testing/
+│   ├── team/
+│   └── README-Docs.md
 │
 ├── frontend-v2/
 │   ├── src/
@@ -368,96 +374,28 @@ junta-ai/
 │   └── ...
 │
 ├── README.md
-├── LICENSE
 └── .gitignore
 ```
 
-> A estrutura continuará evoluindo conforme backend, agente e infraestrutura forem incorporados ao repositório.
-
----
-
-# 🧠 Decisões Arquiteturais
-
-As principais decisões adotadas até o momento incluem:
-
-- Arquitetura Full Stack.
-- Separação entre frontend e backend.
-- API REST para comunicação entre aplicações.
-- Componentização da interface.
-- Design System próprio.
-- Suporte a Light Mode e Dark Mode.
-- Experiência centrada em IA conversacional.
-- CrewAI como framework de orquestração do agente.
-- PostgreSQL como banco de dados.
-- Desenvolvimento incremental.
-- Documentação contínua.
-- Versionamento com Git e GitHub.
-- Separação entre documentação de produto, pesquisa, IA, segurança, arquitetura e testes.
-- Desenvolvimento seguro incorporado ao ciclo de desenvolvimento.
-- Segurança considerada desde a arquitetura, e não apenas após a implementação.
-- Evolução progressiva da arquitetura conforme o MVP é implementado.
-
----
-
-# 📋 Metodologia
-
-O projeto é desenvolvido utilizando práticas inspiradas em metodologias ágeis e princípios de engenharia de software.
-
-- Git Flow
-- Versionamento com Git e GitHub
-- Desenvolvimento incremental
-- Evolução contínua do MVP
-- Documentação viva
-- Organização por milestones
-- Checkpoints frequentes
-- Componentização e reutilização
-- Revisão contínua de decisões arquiteturais
-- **Secure Development Lifecycle (SDL)**
-- Segurança considerada durante planejamento, desenvolvimento e testes
-- Pesquisa e validação utilizadas para apoiar decisões de produto
-
-A documentação de Research registra evidências, insights, hipóteses e resultados de validações, mantendo uma separação entre o que foi observado, o que foi inferido e o que ainda precisa ser testado.
+> Documentações técnicas detalhadas e materiais internos relacionados à IA, segurança, arquitetura e testes são mantidos separadamente.
 
 ---
 
 # 📚 Documentação
 
-Toda a documentação oficial está sendo organizada na pasta **`/docs`**.
+A documentação pública está organizada na pasta **`/docs`**.
 
 | Área | Descrição |
 |---|---|
-| 📍 Roadmap | Evolução das funcionalidades e prioridades |
 | 📐 Product | Visão, princípios e especificações do produto |
 | 🔎 Research | Pesquisas, evidências, hipóteses e validações |
-| 🤖 AI | Comportamento, arquitetura e decisões relacionadas ao agente |
-| 🔐 Security | Princípios, requisitos e decisões relacionadas à segurança |
-| 🏗️ Technical | Arquitetura, APIs e infraestrutura |
-| 🧪 Testing | Estratégia e documentação de testes |
-| 📝 Changelog | Histórico de evolução do projeto |
+| 🎨 Design System | Diretrizes e decisões relacionadas à interface |
+| 👥 Team | Informações relacionadas à equipe |
+| 📝 Documentação | Organização e orientação dos documentos públicos |
 
-### 🔎 Research
+A documentação pública apresenta o contexto necessário para compreender o produto, sua evolução e suas principais decisões.
 
-A documentação de Research registra as pesquisas utilizadas para apoiar decisões de desenvolvimento, incluindo:
-
-- fundamentação em literatura e pesquisas acadêmicas;
-- análise geral do mercado;
-- insights e hipóteses;
-- testes e validações com usuários.
-
-A pesquisa orienta o desenvolvimento, mas não é tratada como verdade absoluta. Hipóteses devem ser confrontadas com novas evidências e testes.
-
-### 🔐 Segurança
-
-A documentação de segurança acompanha a evolução da arquitetura e contempla temas como:
-
-- Overview e princípios de segurança;
-- Autenticação;
-- Autorização;
-- Proteção de dados;
-- Privacidade;
-- Desenvolvimento seguro.
-
-Os documentos são evolutivos e distinguem claramente requisitos, decisões planejadas e controles efetivamente implementados.
+Detalhes técnicos de implementação são mantidos separadamente para a equipe do projeto.
 
 ---
 
@@ -466,12 +404,6 @@ Os documentos são evolutivos e distinguem claramente requisitos, decisões plan
 O Junta.ai teve início como um protótipo desenvolvido durante um bootcamp utilizando ferramentas de Inteligência Artificial para acelerar a fase de ideação e validação da interface.
 
 A primeira versão utilizava o nome **Grana AI**.
-
-O protótipo original permanece disponível como registro da evolução do produto e da transformação da ideia inicial em uma aplicação Full Stack colaborativa.
-
-### 🚀 Protótipo
-
-https://grana-ai-project.vercel.app/
 
 ### 🔗 Repositório original
 
@@ -502,13 +434,25 @@ Junta.ai
 Aplicação Full Stack
    │
    ▼
-Agente de IA + experiência conversacional
+Experiência conversacional
    │
    ▼
-Desenvolvimento seguro integrado ao produto
+Inteligência Artificial + MCP
+   │
+   ▼
+Orquestração de agentes
+   │
+   ▼
+Desenvolvimento seguro
+   │
+   ▼
+Infraestrutura em containers e cloud
+   │
+   ▼
+Testes e validação
 ```
 
-A evolução do projeto representa não apenas uma mudança de nome, mas uma mudança de visão: de uma ferramenta de organização financeira para uma experiência conversacional orientada a contexto, autonomia, clareza e segurança.
+A evolução do projeto representa uma mudança de visão: de uma ferramenta de organização financeira para uma experiência conversacional orientada a contexto, autonomia, clareza e segurança.
 
 ---
 
@@ -520,8 +464,6 @@ A evolução do projeto representa não apenas uma mudança de nome, mas uma mud
 
 ### 🤝 Equipe
 
-A equipe é multidisciplinar e a divisão de responsabilidades é definida e refinada ao longo do desenvolvimento do projeto, de acordo com as necessidades de cada etapa.
-
 - Artur Alejandro
 - Caio Firmino
 - Daniel Ferreira
@@ -530,15 +472,10 @@ A equipe é multidisciplinar e a divisão de responsabilidades é definida e ref
 - Maria Eduarda Pereira
 - Renan Estrela
 - Robert Melo
+- Simone Frez
 - Thais Rodrigues
 
 O projeto é desenvolvido como parte da formação em **Desenvolvimento Full Stack da +praTi / Codifica**.
-
----
-
-# 📄 Licença
-
-Este projeto está licenciado sob a licença **MIT**.
 
 ---
 
@@ -551,3 +488,17 @@ Este projeto está licenciado sob a licença **MIT**.
 **Seu dinheiro. Do seu jeito.**
 
 </p>
+
+---
+
+# © Direitos sobre o projeto
+
+O código, documentação, identidade visual, materiais e demais conteúdos deste repositório são disponibilizados para fins de apresentação e acompanhamento do desenvolvimento do projeto.
+
+**Este repositório não possui uma licença open source.**
+
+Não é autorizada a cópia, redistribuição, comercialização ou utilização deste projeto, integral ou parcialmente, sem autorização prévia dos responsáveis.
+
+Para solicitações relacionadas ao uso do projeto, entre em contato com a equipe do Junta.ai.
+
+---

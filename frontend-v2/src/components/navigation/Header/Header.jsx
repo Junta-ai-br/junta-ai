@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Logo from "@/components/branding/logo";
 import Navbar from "@/components/navigation/Navbar";
@@ -11,27 +11,31 @@ import "./Header.css";
 
 function Header() {
   const { theme } = useTheme();
+  const navigate = useNavigate();
 
   function handleLogoClick() {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (window.location.pathname === "/") {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+
+      return;
+    }
+
+    navigate("/");
   }
 
   return (
     <header className="header">
-      <div className="header__theme">
-        <ThemeSwitch />
-      </div>
-
       <div className="header__container">
         <div className="header__brand">
           <button
             type="button"
             className="header__logo-button"
             onClick={handleLogoClick}
-            aria-label="Voltar ao topo"
+            aria-label="Voltar para o início"
           >
             <Logo
               variant="horizontal"
@@ -44,12 +48,14 @@ function Header() {
         <Navbar />
 
         <div className="header__actions">
+          <ThemeSwitch />
+
           <a href="/login" className="navbar__link">
             Login
           </a>
 
           <Link
-            to="/assistente"
+            to="/login"
             className="button button--primary header__cta"
           >
             Começar agora

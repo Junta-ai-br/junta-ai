@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Planos · Community Section
+   Comunidade · Community Section
    ========================================================================== */
 
 .community {
@@ -66,44 +66,133 @@
 
 .community__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: var(--spacing-24);
 }
 
+/* --------------------------------------------------------------------------
+   Cards
+   -------------------------------------------------------------------------- */
+
 .community-card {
+  position: relative;
+
   padding: var(--spacing-32);
 
+  overflow: hidden;
+
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-16);
+  border-radius: var(--radius-24);
 
   background: var(--surface);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.14),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform var(--transition-fast) ease,
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
+
+/* --------------------------------------------------------------------------
+   Card Highlight
+   -------------------------------------------------------------------------- */
+
+.community-card::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 2px;
+
+  background: transparent;
+
+  transition: background var(--transition-fast) ease;
+
+  pointer-events: none;
+}
+
+.community-card:hover {
+  transform: translateY(-5px);
+
+  border-color: var(--brand-primary);
+
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.2),
+    0 5px 20px rgba(113, 64, 250, 0.14);
+}
+
+.community-card:hover::before {
+  background: var(--brand-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Card Icon
+   -------------------------------------------------------------------------- */
 
 .community-card__icon {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 3rem;
-  height: 3rem;
-  margin-bottom: var(--spacing-16);
+  width: 3.25rem;
+  height: 3.25rem;
 
-  border-radius: var(--radius-12);
+  margin-bottom: var(--spacing-24);
+
+  border: 1px solid rgba(113, 64, 250, 0.14);
+  border-radius: var(--radius-16);
 
   background: var(--surface-elevated);
+
   color: var(--brand-primary);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform var(--transition-fast) ease,
+    border-color var(--transition-fast) ease,
+    background-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
 
-.community-card__title {
-  margin: 0 0 var(--spacing-8);
+.community-card:hover .community-card__icon {
+  transform: translateY(-2px);
 
-  color: var(--text-primary);
+  border-color: var(--brand-primary);
+
+  background: rgba(113, 64, 250, 0.08);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 6px 18px rgba(113, 64, 250, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   Card Content
+   -------------------------------------------------------------------------- */
+
+.community-card__title {
+  margin: 0 0 var(--spacing-12);
+
+  color: var(--brand-primary);
 
   font-size: var(--font-subtitle);
   font-weight: var(--font-semibold);
+  line-height: 1.25;
 }
 
 .community-card__description {
+  max-width: 38ch;
+
   margin: 0;
 
   color: var(--text-secondary);
@@ -113,11 +202,40 @@
 }
 
 /* --------------------------------------------------------------------------
+   Reduced Motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .community-card,
+  .community-card::before,
+  .community-card__icon {
+    transition: none;
+  }
+
+  .community-card:hover,
+  .community-card:hover .community-card__icon {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Responsive
    -------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
   .community__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .community__container {
+    width: min(100% - 2rem, 440px);
+  }
+
+  .community-card {
+    padding: var(--spacing-24);
+
+    border-radius: var(--radius-20);
   }
 }

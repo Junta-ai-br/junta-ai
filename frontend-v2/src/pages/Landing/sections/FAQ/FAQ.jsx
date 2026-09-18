@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Accordion } from "radix-ui";
 
 import "./FAQ.css";
@@ -107,10 +108,13 @@ export default function FAQ() {
             Ainda ficou alguma dúvida?
           </span>
 
-          <span className="faq__contact-link">
+          <Link
+            to="/contato"
+            className="faq__contact-link"
+          >
             Entre em contato
             <span aria-hidden="true">→</span>
-          </span>
+          </Link>
         </div>
       </div>
     </section>
