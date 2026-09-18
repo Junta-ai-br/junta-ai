@@ -15,6 +15,7 @@ import Contato from "@/pages/Contato";
 import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
 import FeedbackPage from "@/pages/FeedbackPage/FeedbackPage";
+import VisaoMes from "@/pages/VisaoMes/VisaoMes";
 
 import Login from "@/pages/Login/Login";
 import Cadastro from "@/pages/Cadastro/Cadastro";
@@ -39,6 +40,7 @@ function AppRoutes() {
         <Route path="/cadastro" element={<Cadastro />} />
 
         <Route path="/assistente" element={<Assistente />} />
+        <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/perfil" element={<Perfil />} />

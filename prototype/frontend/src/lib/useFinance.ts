@@ -201,6 +201,18 @@ export function useFinance() {
     persistState(newState);
   }, [state, persistState]);
 
+  const updateGoal = useCallback((id: string, name: string, amount: number) => {
+    const newState = {
+      ...state,
+      goals: state.goals.map(goal => goal.id === id
+        ? { ...goal, name, targetAmount: Math.max(amount, goal.currentAmount) }
+        : goal),
+    };
+    setState(newState);
+    persistState(newState);
+    toast.success('Meta atualizada');
+  }, [state, persistState]);
+
   // Apply contribution to a goal (used both via chat and via savings suggestion)
   const contributeToGoal = useCallback((goal: Goal, amount: number, description: string, currentState: FinanceState): FinanceState => {
     const tx = createGoalContribution(amount, goal, description);
@@ -944,6 +956,7 @@ export function useFinance() {
     completeOnboarding,
     addGoal,
     deleteGoal,
+    updateGoal,
     respondToSuggestion,
     respondToCategoryPick,
     respondToRecurringPick,
