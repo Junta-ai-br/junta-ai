@@ -138,4 +138,30 @@
 
   --button-secondary-bg: var(--surface);
   --button-secondary-text: var(--text-primary);
+
+  /* --------------------------------------------------------------------------
+   Legacy Aliases
+   Alguns componentes (Input, Card, página de Cadastro) foram escritos
+   usando uma nomenclatura de tokens diferente da consolidada acima.
+   Mantemos esses aliases para que continuem estilizados corretamente
+   sem precisar reescrever cada arquivo.
+   -------------------------------------------------------------------------- */
+
+  --space-1: var(--spacing-4);
+  --space-2: var(--spacing-8);
+  --space-3: var(--spacing-12);
+  --space-4: var(--spacing-16);
+  --space-5: var(--spacing-20);
+  --space-6: var(--spacing-24);
+  --space-7: 1.75rem;
+  --space-8: var(--spacing-32);
+
+  --font-size-xs: var(--font-caption);
+  --font-size-sm: var(--font-small);
+  --font-size-md: var(--font-body);
+
+  --font-weight-medium: var(--font-medium);
+
+  --danger-500: var(--red-500);
+  --border-hover: var(--border-strong);
 }

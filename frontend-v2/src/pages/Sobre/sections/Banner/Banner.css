@@ -35,6 +35,11 @@
   position: absolute;
   inset: -2px;
 
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+
+  transform-origin: center;
+
   background: conic-gradient(
     from 0deg,
     var(--brand-primary),
@@ -116,6 +121,7 @@
   line-height: 1.25;
 
   max-width: 440px;
+  overflow-wrap: anywhere;
 }
 
 /*
