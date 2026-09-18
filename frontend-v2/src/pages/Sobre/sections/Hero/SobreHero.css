@@ -24,6 +24,8 @@
 .sobre-hero__content {
   position: relative;
   z-index: 2;
+
+  min-width: 0;
 }
 
 .sobre-hero__eyebrow {
@@ -112,6 +114,7 @@
   justify-content: center;
 
   width: min(500px, 100%);
+  min-width: 0;
   aspect-ratio: 1;
 
   margin: 0 auto;
@@ -475,15 +478,10 @@
    Tablet
    -------------------------------------------------------------------------- */
 
-@media (max-width: 900px) {
-  .sobre-hero {
-    padding-top: clamp(5rem, 10vw, 7rem);
-  }
-
+@media (max-width: 1100px) {
   .sobre-hero__container {
     grid-template-columns: 1fr;
     gap: var(--spacing-48);
-
     text-align: center;
   }
 
@@ -495,6 +493,24 @@
 
   .sobre-hero__paragraph {
     margin-inline: auto;
+  }
+
+  .sobre-hero__visual {
+    width: min(420px, 100%);
+  }
+
+  .sobre-motion__orbit-group {
+    transform: scale(0.82);
+  }
+}
+
+@media (max-width: 900px) {
+  .sobre-hero {
+    padding-top: clamp(5rem, 10vw, 7rem);
+  }
+
+  .sobre-hero__container {
+    gap: var(--spacing-40);
   }
 
   .sobre-hero__visual {
@@ -520,7 +536,7 @@
   .sobre-hero__content {
     width: 100%;
     max-width: 420px;
-    transform: translateX(-8px);
+    margin-inline: auto;
   }
 
   .sobre-hero__title {
@@ -529,7 +545,7 @@
   }
 
   .sobre-hero__visual {
-    width: min(460px, 100vw);
+    width: min(460px, 100%);
   }
 
   .sobre-hero__logo {
@@ -569,11 +585,11 @@
 
 @media (max-width: 400px) {
   .sobre-hero__visual {
-    width: 460px;
-    max-width: none;
+    width: min(100%, 360px);
+    max-width: 100%;
 
-    margin-left: 46%;
-    transform: translateX(-50%);
+    margin-inline: auto;
+    transform: none;
   }
 
   .sobre-hero__avatar--outer {

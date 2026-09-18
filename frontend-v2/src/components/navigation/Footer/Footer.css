@@ -9,7 +9,7 @@
 .footer__container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-64) var(--spacing-32) var(--spacing-32);
+  padding: var(--spacing-64) clamp(1rem, 4vw, 2rem) var(--spacing-32);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -192,5 +192,19 @@
   .footer__back-to-top {
     grid-column: 1;
     justify-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer__container {
+    padding-top: var(--spacing-48);
+  }
+
+  .footer__columns {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__copyright {
+    white-space: normal;
   }
 }

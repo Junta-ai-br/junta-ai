@@ -6,6 +6,7 @@ import {
   authenticateWithMock,
   isValidEmail,
 } from "@/services/auth/auth.mock";
+import { useUser } from "@/contexts/useUser";
 
 const RESEND_COOLDOWN = 30;
 
@@ -37,6 +38,8 @@ function GoogleIcon() {
 }
 
 export default function LoginForm() {
+  const { updateProfile } = useUser();
+
   const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -106,6 +109,8 @@ export default function LoginForm() {
         setLoadingAction(null);
         return;
       }
+
+      updateProfile({ email });
 
       setStatus(result.message);
       setStep("success");

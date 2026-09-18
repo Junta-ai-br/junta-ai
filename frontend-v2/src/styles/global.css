@@ -34,6 +34,7 @@ html,
 body,
 #root {
   min-height: 100vh;
+  width: 100%;
 }
 
 body {
@@ -44,7 +45,23 @@ body {
     background-color var(--transition-normal) var(--ease-default),
     color var(--transition-normal) var(--ease-default);
 
-  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe,
+table {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  max-width: 100%;
 }
 
 /* ==========================================================================

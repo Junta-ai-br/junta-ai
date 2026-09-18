@@ -21,7 +21,7 @@ function Privacidade() {
             <p className="page__section-title">
               <strong>1. Coleta de Dados Pessoais</strong>
             </p>
-            
+
             <p>
               Ao utilizar o junta.ai, podemos coletar as seguintes categorias de dados pessoais:
 
@@ -34,7 +34,7 @@ function Privacidade() {
             <p className="page__section-title">
               <strong>2. Finalidade do Tratamento dos Dados</strong>
             </p>
-            
+
             <p>
               Os dados pessoais coletados são utilizados para as seguintes finalidades:
 
@@ -48,19 +48,18 @@ function Privacidade() {
             <p className="page__section-title">
               <strong>3. Compartilhamento de Dados Pessoais</strong>
             </p>
-            
+
             <p>
               O junta.ai não compartilha seus dados pessoais com terceiros sem o seu consentimento. Podemos compartilhar dados pessoais nas seguintes situações:
 
               Fornecedores de Serviços: Com empresas que nos prestam serviços essenciais para o funcionamento do junta.ai, como hospedagem de dados e segurança.
               Cumprimento Legal: Quando necessário para cumprir obrigações legais, ordens judiciais ou processos legais.
-
             </p>
 
             <p className="page__section-title">
               <strong>4. Armazenamento e Segurança dos Dados</strong>
             </p>
-            
+
             <p>
               Seus dados pessoais são armazenados em servidores seguros, com medidas de proteção adequadas contra acessos não autorizados, perdas ou alterações indevidas. Adotamos práticas de segurança em conformidade com as melhores práticas de mercado para proteger suas informações.
             </p>
@@ -68,7 +67,7 @@ function Privacidade() {
             <p className="page__section-title">
               <strong>5. Retenção dos Dados</strong>
             </p>
-            
+
             <p>
               Manteremos seus dados pessoais pelo período necessário para cumprir as finalidades descritas nesta Política de Privacidade, exceto quando for necessário um período de retenção mais longo para cumprir obrigações legais ou proteger os direitos do junta.ai.
             </p>
@@ -76,7 +75,7 @@ function Privacidade() {
             <p className="page__section-title">
               <strong>6. Direitos dos Titulares dos Dados</strong>
             </p>
-            
+
             <p>
               Em conformidade com a LGPD, você tem o direito de:
 
@@ -84,14 +83,14 @@ function Privacidade() {
               Retificar seus dados pessoais: Corrigir dados pessoais incompletos, inexatos ou desatualizados.
               Excluir seus dados pessoais: Solicitar a exclusão de seus dados pessoais, desde que não haja uma obrigação legal para sua retenção.
               Revogar o consentimento: Revogar o consentimento para o tratamento de dados pessoais, quando aplicável.
-              
+
               Para exercer qualquer um desses direitos, entre em contato conosco através do e-mail: contato@juntaai.com.br
             </p>
 
             <p className="page__section-title">
               <strong>7. Uso de Cookies e Tecnologias Semelhantes</strong>
             </p>
-            
+
             <p>
               O junta.ai pode utilizar cookies e tecnologias semelhantes para coletar informações sobre sua interação com o serviço. Essas tecnologias ajudam a personalizar sua experiência, analisar o uso do serviço e melhorar a funcionalidade. Você pode ajustar as configurações de seu navegador para recusar cookies, mas isso pode afetar sua experiência no uso do junta.ai.
             </p>
@@ -99,20 +98,19 @@ function Privacidade() {
             <p className="page__section-title">
               <strong>8. Alterações na Política de Privacidade</strong>
             </p>
-            
+
             <p>
               Esta Política de Privacidade pode ser atualizada a qualquer momento. Notificaremos você sobre quaisquer alterações substanciais por meio do aplicativo ou por e-mail. O uso continuado do junta.ai após a publicação das alterações implicará na aceitação da Política de Privacidade revisada.
             </p>
 
             <p className="page__section-title">
-              <strong>9. Contato</strong> 
+              <strong>9. Contato</strong>
             </p>
-            
+
             <p>
               Se você tiver dúvidas ou preocupações sobre esta Política de Privacidade ou sobre o tratamento dos seus dados pessoais, entre em contato conosco através do e-mail: contato@juntaai.com.br
             </p>
-
-          </section>    
+          </section>
         </div>
       </div>
     </main>

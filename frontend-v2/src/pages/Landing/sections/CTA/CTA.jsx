@@ -39,7 +39,7 @@ export default function CTA() {
 
         <Link
           className="cta__button"
-          to="/assistente"
+          to="/login"
         >
           <span>Começar uma conversa</span>
 

@@ -92,6 +92,30 @@
   background: var(--surface-hover);
 }
 
+.button--danger {
+  background: var(--error);
+  color: var(--text-inverse);
+}
+
+.button--danger:hover:not(:disabled) {
+  background: var(--error-hover);
+}
+
+.button--danger:active:not(:disabled) {
+  background: var(--red-700);
+}
+
+.button--danger-outline {
+  background: var(--error-surface);
+  border-color: var(--red-200);
+  color: var(--error-hover);
+}
+
+.button--danger-outline:hover:not(:disabled) {
+  background: var(--red-100);
+  border-color: var(--red-300);
+}
+
 /* ==========================================================================
    States
    ========================================================================== */

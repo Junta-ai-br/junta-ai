@@ -8,6 +8,7 @@ import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
 import Relatorios from "@/pages/Relatorios";
 import Perfil from "@/pages/Perfil";
+import ExcluirConta from "@/pages/ExcluirConta";
 import Planos from "@/pages/Planos";
 import Sobre from "@/pages/Sobre";
 import Contato from "@/pages/Contato";
@@ -41,6 +42,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
       </Route>
     </Routes>
   );
