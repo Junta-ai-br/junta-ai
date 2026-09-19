@@ -1,1 +1,1 @@
-export { default } from './Planos';
+export { default } from "./Planos";

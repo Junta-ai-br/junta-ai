@@ -1,0 +1,249 @@
+/* ==========================================================================
+   Planos · Plan Card Section
+   ========================================================================== */
+
+.plan-card-section {
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+}
+
+.plan-card-section__container {
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Card
+   -------------------------------------------------------------------------- */
+
+.plan-card {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--spacing-64);
+
+  padding: var(--spacing-48);
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-24);
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow-rest);
+}
+
+/* --------------------------------------------------------------------------
+   Info (left)
+   -------------------------------------------------------------------------- */
+
+.plan-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  padding-right: var(--spacing-32);
+
+  border-right: 1px solid var(--border);
+}
+
+.plan-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 4rem;
+  height: 4rem;
+
+  margin-bottom: var(--spacing-24);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-16);
+
+  color: var(--brand-primary);
+}
+
+.plan-card__icon img {
+  display: block;
+
+  width: 1.75rem;
+  height: 1.75rem;
+
+  object-fit: contain;
+}
+
+.plan-card__eyebrow {
+  color: var(--brand-primary);
+
+  font-size: var(--font-caption);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plan-card__name {
+  margin: var(--spacing-4) 0 0;
+
+  color: var(--text-primary);
+
+  font-size: var(--font-title);
+  font-weight: var(--font-bold);
+  line-height: 1.15;
+}
+
+.plan-card__price {
+  display: flex;
+  align-items: baseline;
+
+  margin: var(--spacing-24) 0;
+}
+
+.plan-card__price-value {
+  color: var(--text-primary);
+
+  font-size: 2.75rem;
+  font-weight: var(--font-bold);
+  line-height: 1;
+
+  letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   CTA
+   -------------------------------------------------------------------------- */
+
+.plan-card__cta {
+  width: 100%;
+  justify-content: center;
+
+  border-radius: var(--radius-full);
+
+  background: var(--brand-primary);
+  color: var(--white);
+}
+
+/* --------------------------------------------------------------------------
+   Details (right)
+   -------------------------------------------------------------------------- */
+
+.plan-card__details {
+  padding-top: var(--spacing-4);
+}
+
+.plan-card__details-title {
+  max-width: 40ch;
+
+  margin: 0 0 var(--spacing-32);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-title);
+  font-weight: var(--font-semibold);
+  line-height: 1.35;
+}
+
+.plan-card__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-24) var(--spacing-32);
+
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+.plan-card__list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-small);
+  line-height: var(--line-height-normal);
+}
+
+.plan-card__list-item svg {
+  flex: 0 0 auto;
+
+  margin-top: 0.15rem;
+
+  color: var(--brand-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Note
+   -------------------------------------------------------------------------- */
+
+.plan-card-section__note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+
+  margin: var(--spacing-24) 0 0;
+
+  color: var(--brand-accent);
+
+  font-size: var(--font-small);
+  text-align: center;
+}
+
+.plan-card-section__note svg {
+  flex: 0 0 auto;
+
+  color: var(--brand-accent);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .plan-card {
+    grid-template-columns: 1fr;
+
+    padding: var(--spacing-32);
+  }
+
+  .plan-card__info {
+    align-items: center;
+
+    padding-right: 0;
+    padding-bottom: var(--spacing-32);
+
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+
+    text-align: center;
+  }
+
+  .plan-card__details {
+    padding-top: var(--spacing-32);
+  }
+
+  .plan-card__details-title {
+    max-width: none;
+
+    margin-inline: auto;
+
+    text-align: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .plan-card-section__container {
+    width: min(100% - 2rem, 440px);
+  }
+
+  .plan-card {
+    padding: var(--spacing-24);
+  }
+
+  .plan-card__list {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-card__price-value {
+    font-size: 2.5rem;
+  }
+}

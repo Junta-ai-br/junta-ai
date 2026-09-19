@@ -1,0 +1,71 @@
+/* ==========================================================================
+   COMPONENT
+   Toast
+   ========================================================================== */
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+
+  padding: var(--spacing-12) var(--spacing-16);
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-12);
+
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+  font-weight: var(--font-medium);
+  line-height: 1.4;
+}
+
+.toast__icon {
+  flex-shrink: 0;
+}
+
+.toast__message {
+  flex: 1;
+}
+
+.toast__dismiss {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2px;
+
+  border: none;
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.toast__dismiss:hover {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Variants
+   -------------------------------------------------------------------------- */
+
+.toast--success {
+  background: var(--success-surface);
+  border-color: var(--green-200);
+  color: var(--success-text, var(--green-700));
+}
+
+.toast--error {
+  background: var(--error-surface);
+  border-color: var(--red-200);
+  color: var(--error-text, var(--red-700));
+}
+
+.toast--warning {
+  background: var(--warning-surface);
+  border-color: var(--amber-200);
+  color: var(--warning-text, var(--amber-700));
+}

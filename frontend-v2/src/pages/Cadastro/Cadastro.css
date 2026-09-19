@@ -1,0 +1,340 @@
+/* ==========================================================================
+   Cadastro Page
+   ========================================================================== */
+
+.cadastro-page {
+  position: relative;
+
+  min-height: 100vh;
+  overflow: hidden;
+
+  background: var(--background);
+  color: var(--text-primary);
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.cadastro-page__header {
+  position: relative;
+  z-index: 2;
+
+  width: min(100% - 3rem, 1100px);
+  min-height: 68px;
+
+  margin: 24px auto 0;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid var(--border);
+  border-radius: 20px;
+
+  background: var(--surface);
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.12),
+    0 0 24px rgba(113, 64, 250, 0.025);
+
+  box-sizing: border-box;
+}
+
+.cadastro-page__logo {
+  display: inline-flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  text-decoration: none;
+}
+
+.cadastro-page__logo img {
+  display: block;
+
+  width: 168px;
+  height: auto;
+}
+
+
+/* ==========================================================================
+   Header Actions
+   ========================================================================== */
+
+.cadastro-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cadastro-page__login-text {
+  color: var(--text-secondary);
+
+  font-family: "Geist", sans-serif;
+  font-size: var(--font-small);
+  font-weight: var(--font-regular);
+
+  white-space: nowrap;
+}
+
+.cadastro-page__login-button {
+  min-height: 42px;
+
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  text-decoration: none;
+
+  font-family: "Geist", sans-serif;
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  white-space: nowrap;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cadastro-page__login-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 18px rgba(113, 64, 250, 0.22);
+}
+
+.cadastro-page__theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-left: 2px;
+}
+
+
+/* ==========================================================================
+   Content
+   ========================================================================== */
+
+.cadastro-page__content {
+  position: relative;
+  z-index: 1;
+
+  flex: 1;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 82px 24px 72px;
+}
+
+
+/* ==========================================================================
+   Cadastro Card
+   ========================================================================== */
+
+.cadastro-page__card {
+  position: relative;
+
+  width: min(100%, 500px);
+
+  padding: 40px;
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  background: var(--surface);
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(113, 64, 250, 0.025);
+}
+
+
+/* ==========================================================================
+   Heading
+   ========================================================================== */
+
+.cadastro-page__heading {
+  margin-bottom: var(--space-8);
+}
+
+.cadastro-page__eyebrow {
+  margin: 0 0 var(--space-3);
+
+  color: var(--brand-primary);
+
+  font-family: "Geist", sans-serif;
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cadastro-page__heading h1 {
+  margin: 0 0 var(--space-4);
+
+  color: var(--text-primary);
+
+  font-family: "Santoshi", sans-serif;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: var(--font-bold);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.cadastro-page__heading > p:last-child {
+  max-width: 400px;
+
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-family: "Geist", sans-serif;
+  font-size: var(--font-body);
+  line-height: 1.6;
+}
+
+
+/* ==========================================================================
+   Cadastro Form
+   ========================================================================== */
+
+.cadastro-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.cadastro-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.cadastro-form__submit {
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   Privacy
+   ========================================================================== */
+
+.cadastro-page__privacy {
+  max-width: 390px;
+
+  margin: 28px auto 0;
+
+  color: var(--text-secondary);
+
+  font-family: "Geist", sans-serif;
+  font-size: var(--font-caption);
+  line-height: 1.6;
+
+  text-align: center;
+}
+
+.cadastro-page__privacy a {
+  color: inherit;
+
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+
+  transition: color 0.2s ease;
+}
+
+.cadastro-page__privacy a:hover {
+  color: var(--brand-primary);
+}
+
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .cadastro-page__header {
+    width: calc(100% - 2rem);
+
+    margin-top: 16px;
+
+    padding-inline: 20px;
+
+    border-radius: 16px;
+  }
+
+  .cadastro-page__content {
+    padding-top: 64px;
+  }
+
+  .cadastro-page__login-text {
+    display: none;
+  }
+}
+
+
+@media (max-width: 560px) {
+  .cadastro-page__header {
+    min-height: 64px;
+  }
+
+  .cadastro-page__logo img {
+    width: 140px;
+  }
+
+  .cadastro-page__actions {
+    gap: 10px;
+  }
+
+  .cadastro-page__login-button {
+    min-height: 38px;
+
+    padding-inline: 16px;
+
+    border-radius: 10px;
+  }
+
+  .cadastro-page__content {
+    padding: 48px 16px 40px;
+  }
+
+  .cadastro-page__card {
+    padding: 32px 24px;
+
+    border-radius: 20px;
+  }
+}
+
+
+@media (max-width: 400px) {
+  .cadastro-page__logo img {
+    width: 126px;
+  }
+
+  .cadastro-page__login-button {
+    padding-inline: 14px;
+  }
+
+  .cadastro-page__card {
+    padding: 28px 20px;
+  }
+}

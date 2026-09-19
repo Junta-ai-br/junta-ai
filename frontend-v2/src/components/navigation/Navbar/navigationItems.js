@@ -1,15 +1,15 @@
 const navigationItems = [
   {
     label: "Como funciona",
-    href: "#como-funciona",
+    href: "/#como-funciona",
   },
   {
     label: "Recursos",
-    href: "#recursos",
+    href: "/#recursos",
   },
   {
     label: "Dúvidas",
-    href: "#duvidas",
+    href: "/#duvidas",
   },
 ];
 

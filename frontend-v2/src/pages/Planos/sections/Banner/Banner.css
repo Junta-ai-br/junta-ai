@@ -1,0 +1,107 @@
+/* ==========================================================================
+   Planos · Closing Banner
+   ========================================================================== */
+
+.planos-banner {
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+}
+
+.planos-banner__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-32);
+  flex-wrap: wrap;
+
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: var(--spacing-48);
+
+  border-radius: var(--radius-24);
+
+  background: var(--gradient-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Brand
+   -------------------------------------------------------------------------- */
+
+.planos-banner__brand {
+  display: flex;
+  align-items: center;
+}
+
+.planos-banner__title {
+  margin: 0;
+
+  color: var(--white);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: var(--font-bold);
+  line-height: 1.25;
+}
+
+.planos-banner__subtitle {
+  margin: var(--spacing-4) 0 0;
+
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--font-subtitle);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Button
+   -------------------------------------------------------------------------- */
+
+.planos-banner__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  flex: 0 0 auto;
+
+  padding: var(--spacing-12) var(--spacing-24);
+
+  border-radius: var(--radius-full);
+
+  background: var(--brand-primary);
+  color: var(--white);
+
+  font-size: var(--font-body);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    transform var(--transition-fast) ease,
+    background-color var(--transition-fast) ease,
+    opacity var(--transition-fast) ease;
+}
+
+.planos-banner__button:hover {
+  transform: translateY(-2px);
+  background: var(--brand-primary-hover);
+  opacity: 0.96;
+}
+
+.planos-banner__button:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  .planos-banner__container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-32);
+  }
+
+  .planos-banner__button {
+    width: 100%;
+    justify-content: center;
+  }
+}

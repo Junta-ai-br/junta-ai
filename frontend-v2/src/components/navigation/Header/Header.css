@@ -1,27 +1,28 @@
+/* ==========================================================================
+   Navigation · Header
+   ========================================================================== */
+
 .header {
   position: sticky;
   top: 0;
   z-index: 1000;
 
   width: 100%;
-  padding: 2rem var(--spacing-8);
-  padding-block: 2.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(0.75rem, 4vw, 2rem);
 
-  background: color-mix(in srgb, var(--background), transparent 18%);
+  background: color-mix(
+    in srgb,
+    var(--background),
+    transparent 18%
+  );
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-.header__theme {
-  position: absolute;
-  top: calc(2rem - 2px);
-  transform: translateY(-50%);
-  right: 15rem;
-
-  display: flex;
-  align-items: center;
-}
+/* --------------------------------------------------------------------------
+   Logo
+   -------------------------------------------------------------------------- */
 
 .header__logo-button {
   display: flex;
@@ -35,9 +36,9 @@
   cursor: pointer;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Container */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Container
+   -------------------------------------------------------------------------- */
 
 .header__container {
   display: grid;
@@ -47,7 +48,8 @@
   max-width: 1120px;
   margin: 0 auto;
 
-  padding: 1rem 2rem;
+  width: min(100%, 1120px);
+  padding: 1rem clamp(0.75rem, 3vw, 2rem);
 
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-24);
@@ -55,6 +57,8 @@
   background: var(--surface);
 
   box-shadow: var(--shadow-rest);
+
+  overflow: visible;
 
   transition:
     border-color var(--transition-fast) ease,
@@ -69,28 +73,27 @@
   );
 
   box-shadow: var(--shadow-hover);
-  transform: translateY(-1px);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Brand */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Brand
+   -------------------------------------------------------------------------- */
 
 .header__brand {
   justify-self: start;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Navigation */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Navigation
+   -------------------------------------------------------------------------- */
 
 .navbar {
   justify-self: center;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Actions */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Actions
+   -------------------------------------------------------------------------- */
 
 .header__actions {
   display: flex;
@@ -101,4 +104,81 @@
 
 .header__cta {
   text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .header {
+    padding: 1.25rem clamp(0.75rem, 4vw, 1.5rem);
+  }
+
+  .header__container {
+    grid-template-columns: auto 1fr auto;
+
+    padding: 0.875rem 1rem;
+  }
+
+  .header__brand {
+    min-width: 0;
+  }
+
+  .header__brand .header__logo-button {
+    max-width: 180px;
+  }
+
+  /* ------------------------------------------------------------------------
+     Actions
+     ------------------------------------------------------------------------ */
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    gap: var(--spacing-8);
+  }
+
+  /*
+   * No mobile, ThemeSwitch permanece visível.
+   * Login e CTA passam para o menu mobile do Navbar.
+   */
+
+  .header__actions .navbar__link,
+  .header__actions .header__cta {
+    display: none;
+  }
+
+  /* ------------------------------------------------------------------------
+     Navigation
+     ------------------------------------------------------------------------ */
+
+  .navbar {
+    justify-self: end;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small Screens
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .header {
+    padding: 1rem 0.75rem;
+  }
+
+  .header__container {
+    padding: 0.75rem;
+
+    border-radius: var(--radius-16);
+  }
+
+  .header__brand .header__logo-button {
+    max-width: 150px;
+  }
+
+  .header__actions {
+    gap: var(--spacing-8);
+  }
 }

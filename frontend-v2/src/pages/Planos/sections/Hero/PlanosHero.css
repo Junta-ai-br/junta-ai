@@ -1,0 +1,161 @@
+/* ==========================================================================
+   Planos · Hero Section
+   ========================================================================== */
+
+.planos-hero {
+  padding-top: clamp(5rem, 7vw, 7rem);
+  padding-bottom: clamp(4rem, 6vw, 6rem);
+}
+
+.planos-hero__container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+  align-items: center;
+  gap: var(--spacing-64);
+
+  width: min(1120px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+
+.planos-hero__content {
+  max-width: 580px;
+}
+
+.planos-hero__eyebrow {
+  display: inline-flex;
+
+  margin-bottom: var(--spacing-20);
+
+  color: var(--brand-primary);
+
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.planos-hero__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  font-weight: var(--font-bold);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+
+  white-space: nowrap;
+}
+
+.planos-hero__title-highlight {
+  color: var(--brand-primary);
+}
+
+.planos-hero__description {
+  max-width: 48ch;
+
+  margin: var(--spacing-24) 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-relaxed);
+}
+
+/* --------------------------------------------------------------------------
+   Support Text
+   -------------------------------------------------------------------------- */
+
+.planos-hero__support {
+  display: block;
+
+  margin-top: var(--spacing-16);
+
+  color: var(--brand-primary);
+
+  font-family: var(--body-family);
+  font-size: 1.25rem;
+  font-weight: var(--font-semibold);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Product Preview
+   -------------------------------------------------------------------------- */
+
+.planos-hero__preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .planos-hero {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .planos-hero__container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-40);
+
+    text-align: center;
+  }
+
+  .planos-hero__content {
+    max-width: 620px;
+    margin-inline: auto;
+  }
+
+  .planos-hero__description {
+    margin-inline: auto;
+  }
+
+  .planos-hero__support {
+    margin-inline: auto;
+  }
+
+  .planos-hero__preview {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .planos-hero {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .planos-hero__container {
+    width: min(100% - 2rem, 440px);
+
+    gap: var(--spacing-32);
+  }
+
+  .planos-hero__title {
+    white-space: normal;
+
+    font-size: clamp(2.35rem, 11vw, 3.25rem);
+  }
+
+  .planos-hero__description {
+    font-size: var(--font-body);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .planos-hero__support {
+    font-size: var(--font-subtitle);
+  }
+}

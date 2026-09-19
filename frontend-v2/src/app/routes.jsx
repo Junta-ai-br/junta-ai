@@ -8,12 +8,17 @@ import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
 import Relatorios from "@/pages/Relatorios";
 import Perfil from "@/pages/Perfil";
+import ExcluirConta from "@/pages/ExcluirConta";
 import Planos from "@/pages/Planos";
 import Sobre from "@/pages/Sobre";
 import Contato from "@/pages/Contato";
 import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
+import FeedbackPage from "@/pages/FeedbackPage/FeedbackPage";
+import VisaoMes from "@/pages/VisaoMes/VisaoMes";
+
 import Login from "@/pages/Login/Login";
+import Cadastro from "@/pages/Cadastro/Cadastro";
 
 function AppRoutes() {
   return (
@@ -26,15 +31,20 @@ function AppRoutes() {
         <Route path="/contato" element={<Contato />} />
         <Route path="/privacidade" element={<Privacidade />} />
         <Route path="/termos" element={<Termos />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
       </Route>
 
-      {/* Área autenticada (futuramente protegida por PrivateRoute) */}
+      {/* Área de autenticação e área interna */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+
         <Route path="/assistente" element={<Assistente />} />
+        <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
       </Route>
     </Routes>
   );

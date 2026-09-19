@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
-import { authenticateWithMock, isValidEmail } from "@/services/auth/auth.mock";
+import {
+  authenticateWithMock,
+  isValidEmail,
+} from "@/services/auth/auth.mock";
+import { useUser } from "@/contexts/useUser";
 
 const RESEND_COOLDOWN = 30;
 
-function GoogleIcon() {
-  return (
-    <svg aria-hidden="true" className="login-form__google-icon" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21Z" />
-      <path fill="#34A853" d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.93-3.31.93-2.55 0-4.71-1.72-5.49-4.03H3.27v2.52A9.75 9.75 0 0 0 12 21.75Z" />
-      <path fill="#FBBC05" d="M6.51 13.85A5.86 5.86 0 0 1 6.2 12c0-.64.11-1.26.31-1.85V7.63H3.27A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.02 4.37l3.24-2.52Z" />
-      <path fill="#EA4335" d="M12 6.12c1.43 0 2.71.49 3.73 1.46l2.8-2.8C16.84 3.19 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.73 5.38l3.24 2.52c.78-2.31 2.94-4.03 5.49-4.03Z" />
-    </svg>
-  );
-}
-
 export default function LoginForm() {
+  const { updateProfile } = useUser();
+
   const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -25,13 +21,12 @@ export default function LoginForm() {
   const [status, setStatus] = useState("");
   const [loadingAction, setLoadingAction] = useState(null);
   const [cooldown, setCooldown] = useState(0);
+
   useEffect(() => {
-    if (cooldown === 0) {
-      return undefined;
-    }
+    if (cooldown === 0) return undefined;
 
     const timer = window.setInterval(() => {
-      setCooldown((currentCooldown) => Math.max(0, currentCooldown - 1));
+      setCooldown((current) => Math.max(0, current - 1));
     }, 1000);
 
     return () => window.clearInterval(timer);
@@ -44,7 +39,9 @@ export default function LoginForm() {
 
   function handleEmailSubmit(event) {
     event.preventDefault();
+
     const normalizedEmail = email.trim();
+
     clearMessages();
 
     if (!isValidEmail(normalizedEmail)) {
@@ -54,6 +51,7 @@ export default function LoginForm() {
 
     setEmail(normalizedEmail);
     setLoadingAction("email");
+
     window.setTimeout(() => {
       setStatus("Enviamos uma chave de acesso para o seu e-mail.");
       setStep("code");
@@ -64,6 +62,7 @@ export default function LoginForm() {
 
   function handleCodeSubmit(event) {
     event.preventDefault();
+
     clearMessages();
 
     if (code.length !== 6) {
@@ -72,7 +71,11 @@ export default function LoginForm() {
     }
 
     setLoadingAction("code");
-    const result = authenticateWithMock({ email, token: code });
+
+    const result = authenticateWithMock({
+      email,
+      token: code,
+    });
 
     window.setTimeout(() => {
       if (!result.success) {
@@ -81,6 +84,8 @@ export default function LoginForm() {
         return;
       }
 
+      updateProfile({ email });
+
       setStatus(result.message);
       setStep("success");
       setLoadingAction(null);
@@ -88,12 +93,11 @@ export default function LoginForm() {
   }
 
   function handleResend() {
-    if (cooldown > 0 || loadingAction) {
-      return;
-    }
+    if (cooldown > 0 || loadingAction) return;
 
     clearMessages();
     setLoadingAction("resend");
+
     window.setTimeout(() => {
       setStatus("Uma nova chave de acesso foi enviada para o seu e-mail.");
       setCooldown(RESEND_COOLDOWN);
@@ -101,14 +105,59 @@ export default function LoginForm() {
     }, 250);
   }
 
-  function handleGoogleLogin() {
+  async function handleGoogleSuccess(response) {
     clearMessages();
     setLoadingAction("google");
-    window.setTimeout(() => {
-      setStatus("O login com Google estará disponível em breve.");
+
+    try {
+      if (!response.access_token) {
+        throw new Error("Google response has no access token.");
+      }
+
+      const profileResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${response.access_token}`,
+          },
+        },
+      );
+
+      if (!profileResponse.ok) {
+        throw new Error("Could not load Google profile.");
+      }
+
+      const profile = await profileResponse.json();
+
+      if (!profile.email) {
+        throw new Error("Google profile has no email.");
+      }
+
+      updateProfile({
+        email: profile.email,
+        nome: profile.name || "",
+        avatarUrl: profile.picture || "",
+      });
+      setEmail(profile.email);
+      setStatus("Login realizado com sucesso.");
+      setStep("success");
+    } catch {
+      setError("Não foi possível concluir o login com o Google.");
+    } finally {
       setLoadingAction(null);
-    }, 250);
+    }
   }
+
+  function handleGoogleError() {
+    clearMessages();
+    setLoadingAction(null);
+    setError("Não foi possível entrar com o Google.");
+  }
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: handleGoogleError,
+  });
 
   function handleEditEmail() {
     setStep("email");
@@ -119,11 +168,25 @@ export default function LoginForm() {
   if (step === "success") {
     return (
       <div className="login-form__success" role="status">
-        <div className="login-form__success-icon" aria-hidden="true">✓</div>
-        <p className="login-form__eyebrow">ACESSO CONFIRMADO</p>
+        <div className="login-form__success-icon" aria-hidden="true">
+          ✓
+        </div>
+
+        <p className="login-form__eyebrow">
+          ACESSO CONFIRMADO
+        </p>
+
         <h2 id="login-title">Tudo pronto.</h2>
-        <p>{status || "Sua identidade foi confirmada com sucesso."}</p>
-        <button type="button" className="login-form__text-button" onClick={handleEditEmail}>
+
+        <p>
+          {status || "Sua identidade foi confirmada com sucesso."}
+        </p>
+
+        <button
+          type="button"
+          className="login-form__text-button"
+          onClick={handleEditEmail}
+        >
           Entrar com outro e-mail
         </button>
       </div>
@@ -134,9 +197,17 @@ export default function LoginForm() {
     return (
       <>
         <div className="login-form__heading">
-          <p className="login-form__eyebrow">BEM-VINDO DE VOLTA</p>
-          <h2 id="login-title">Entre na sua conta</h2>
-          <p>Acesse seu espaço financeiro de forma simples e segura.</p>
+          <p className="login-form__eyebrow">
+            BEM-VINDO(A) DE VOLTA
+          </p>
+
+          <h2 id="login-title">
+            Vamos continuar de onde paramos?
+          </h2>
+
+          <p>
+            Converse, entenda e planeje suas finanças do seu jeito.
+          </p>
         </div>
 
         <Button
@@ -144,31 +215,53 @@ export default function LoginForm() {
           variant="secondary"
           size="lg"
           className="login-form__google"
-          onClick={handleGoogleLogin}
+          onClick={() => {
+            clearMessages();
+            setLoadingAction("google");
+            loginWithGoogle();
+          }}
+          loading={loadingAction === "google"}
+          loadingText="Entrando com Google..."
           disabled={loadingAction !== null}
-          aria-busy={loadingAction === "google"}
         >
           <GoogleIcon />
-          {loadingAction === "google" ? "Conectando..." : "Continuar com Google"}
+          Continuar com Google
         </Button>
 
-        <div className="login-form__divider"><span>ou continue com e-mail</span></div>
+        <div className="login-form__divider">
+          <span>ou entre com seu e-mail</span>
+        </div>
 
-        <form className="login-form__fields login-form__fields--email" onSubmit={handleEmailSubmit} noValidate>
+        <form
+          className="login-form__fields login-form__fields--email"
+          onSubmit={handleEmailSubmit}
+          noValidate
+        >
           <Input
             id="login-email"
             label="Seu e-mail"
             type="email"
             value={email}
-            onChange={(event) => { setEmail(event.target.value); clearMessages(); }}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              clearMessages();
+            }}
             placeholder="voce@exemplo.com"
             autoComplete="email"
             error={error}
             disabled={loadingAction !== null}
             required
           />
-          <Button type="submit" size="lg" className="login-form__submit" disabled={loadingAction !== null}>
-            {loadingAction === "email" ? "Enviando código..." : "Receber código"}
+
+          <Button
+            type="submit"
+            size="lg"
+            className="login-form__submit"
+            disabled={loadingAction !== null}
+          >
+            {loadingAction === "email"
+              ? "Enviando código..."
+              : "Receber código"}
           </Button>
         </form>
 
@@ -180,18 +273,33 @@ export default function LoginForm() {
   return (
     <>
       <div className="login-form__heading">
-        <p className="login-form__eyebrow">CHAVE DE ACESSO</p>
-        <h2 id="login-title">Confirme seu acesso</h2>
-        <p>Enviamos uma chave de 6 dígitos para {email}.</p>
+        <p className="login-form__eyebrow">
+          CHAVE DE ACESSO
+        </p>
+
+        <h2 id="login-title">
+          Confirme seu acesso
+        </h2>
+
+        <p>
+          Enviamos uma chave de 6 dígitos para {email}.
+        </p>
       </div>
 
-      <form className="login-form__fields" onSubmit={handleCodeSubmit} noValidate>
+      <form
+        className="login-form__fields"
+        onSubmit={handleCodeSubmit}
+        noValidate
+      >
         <Input
           id="login-code"
           label="Chave de acesso"
           type="text"
           value={code}
-          onChange={(event) => { setCode(event.target.value.replace(/\D/g, "")); clearMessages(); }}
+          onChange={(event) => {
+            setCode(event.target.value.replace(/\D/g, ""));
+            clearMessages();
+          }}
           placeholder="000000"
           autoComplete="one-time-code"
           inputMode="numeric"
@@ -200,15 +308,39 @@ export default function LoginForm() {
           disabled={loadingAction !== null}
           required
         />
-        <Button type="submit" size="lg" className="login-form__submit" disabled={loadingAction !== null}>
-          {loadingAction === "code" ? "Verificando..." : "Confirmar chave"}
+
+        <Button
+          type="submit"
+          size="lg"
+          className="login-form__submit"
+          disabled={loadingAction !== null}
+        >
+          {loadingAction === "code"
+            ? "Verificando..."
+            : "Confirmar chave"}
         </Button>
+
         <div className="login-form__code-actions">
-          <button type="button" className="login-form__text-button" onClick={handleEditEmail} disabled={loadingAction !== null}>
+          <button
+            type="button"
+            className="login-form__text-button"
+            onClick={handleEditEmail}
+            disabled={loadingAction !== null}
+          >
             Usar outro e-mail
           </button>
-          <button type="button" className="login-form__text-button" onClick={handleResend} disabled={cooldown > 0 || loadingAction !== null}>
-            {loadingAction === "resend" ? "Enviando..." : cooldown > 0 ? `Reenviar em ${cooldown}s` : "Reenviar chave"}
+
+          <button
+            type="button"
+            className="login-form__text-button"
+            onClick={handleResend}
+            disabled={cooldown > 0 || loadingAction !== null}
+          >
+            {loadingAction === "resend"
+              ? "Enviando..."
+              : cooldown > 0
+                ? `Reenviar em ${cooldown}s`
+                : "Reenviar chave"}
           </button>
         </div>
       </form>
@@ -218,9 +350,42 @@ export default function LoginForm() {
   );
 }
 
+function GoogleIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="login-form__google-icon"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="#4285F4"
+        d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.93-3.31.93-2.55 0-4.71-1.72-5.49-4.03H3.27v2.52A9.75 9.75 0 0 0 12 21.75Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M6.51 13.85A5.86 5.86 0 0 1 6.2 12c0-.64.11-1.26.31-1.85V7.63H3.27A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.02 4.37l3.24-2.52Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 6.12c1.43 0 2.71.49 3.73 1.46l2.8-2.8C16.84 3.19 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.73 5.38l3.24 2.52c.78-2.31 2.94-4.03 5.49-4.03Z"
+      />
+    </svg>
+  );
+}
+
 function Message({ error, status }) {
   return (
-    <div className={`login-form__message ${error ? "is-error" : "is-success"}`} aria-live="polite" role={error ? "alert" : "status"}>
+    <div
+      className={`login-form__message ${
+        error ? "is-error" : "is-success"
+      }`}
+      aria-live="polite"
+      role={error ? "alert" : "status"}
+    >
       {error || status}
     </div>
   );
