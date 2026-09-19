@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Target, X, Trash2 } from 'lucide-react';
+import { Plus, Target, X, Trash2, Pencil } from 'lucide-react';
 import type { Goal } from '@/lib/finance';
 
 interface Props {
   goals: Goal[];
   onAdd: (name: string, amount: number) => void;
+  onUpdate: (id: string, name: string, amount: number) => void;
   onDelete: (id: string) => void;
 }
 
@@ -13,8 +14,9 @@ function formatCurrency(n: number) {
   return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-export default function GoalsPanel({ goals, onAdd, onDelete }: Props) {
+export default function GoalsPanel({ goals, onAdd, onUpdate, onDelete }: Props) {
   const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
 
@@ -23,9 +25,25 @@ export default function GoalsPanel({ goals, onAdd, onDelete }: Props) {
     const n = name.trim();
     const a = parseFloat(amount.replace(',', '.'));
     if (!n || !a || a <= 0) return;
-    onAdd(n, a);
+    if (editingId) onUpdate(editingId, n, a);
+    else onAdd(n, a);
     setName('');
     setAmount('');
+    setEditingId(null);
+    setOpen(false);
+  };
+
+  const startEditing = (goal: Goal) => {
+    setEditingId(goal.id);
+    setName(goal.name);
+    setAmount(String(goal.targetAmount).replace('.', ','));
+    setOpen(true);
+  };
+
+  const cancelForm = () => {
+    setName('');
+    setAmount('');
+    setEditingId(null);
     setOpen(false);
   };
 
@@ -37,7 +55,7 @@ export default function GoalsPanel({ goals, onAdd, onDelete }: Props) {
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Minhas metas</h2>
         </div>
         <button
-          onClick={() => setOpen(o => !o)}
+          onClick={() => (open ? cancelForm() : setOpen(true))}
           className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 font-medium"
         >
           {open ? <X size={14} /> : <Plus size={14} />}
@@ -76,7 +94,7 @@ export default function GoalsPanel({ goals, onAdd, onDelete }: Props) {
                 type="submit"
                 className="px-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90"
               >
-                Salvar
+                {editingId ? 'Atualizar' : 'Salvar'}
               </button>
             </div>
           </motion.form>
@@ -107,13 +125,14 @@ export default function GoalsPanel({ goals, onAdd, onDelete }: Props) {
             <div key={goal.id} className="space-y-1.5 group">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm text-foreground font-medium truncate">{goal.name}</span>
-                <button
-                  onClick={() => onDelete(goal.id)}
-                  className="opacity-0 group-hover:opacity-100 transition text-muted-foreground hover:text-destructive"
-                  aria-label="Excluir meta"
-                >
-                  <Trash2 size={12} />
-                </button>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
+                  <button onClick={() => startEditing(goal)} className="text-muted-foreground hover:text-primary" aria-label={`Editar meta ${goal.name}`}>
+                    <Pencil size={12} />
+                  </button>
+                  <button onClick={() => onDelete(goal.id)} className="text-muted-foreground hover:text-destructive" aria-label={`Excluir meta ${goal.name}`}>
+                    <Trash2 size={12} />
+                  </button>
+                </div>
               </div>
               <div className="w-full bg-muted rounded-full h-1.5">
                 <div

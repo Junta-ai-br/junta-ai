@@ -1,4 +1,4 @@
-# Documentação — Grana.ai
+# Documentação — Junta.ai
 
 Esta pasta reune toda a documentação técnica utilizada durante o desenvolvimento do Grana.ai.
 

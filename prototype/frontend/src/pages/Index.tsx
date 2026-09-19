@@ -16,6 +16,7 @@ export default function Index() {
     completeOnboarding,
     addGoal,
     deleteGoal,
+    updateGoal,
     respondToSuggestion,
     respondToCategoryPick,
     respondToRecurringPick,
@@ -86,7 +87,7 @@ export default function Index() {
         {/* Right: Goals + Mini dashboard (~30%) */}
         <aside className="md:col-span-3 min-h-0 flex flex-col gap-4 md:gap-5 overflow-y-auto scrollbar-hide">
           <div className="flex-1 min-h-[240px]">
-            <GoalsPanel goals={state.goals} onAdd={addGoal} onDelete={deleteGoal} />
+            <GoalsPanel goals={state.goals} onAdd={addGoal} onUpdate={updateGoal} onDelete={deleteGoal} />
           </div>
           <HealthScore state={state} />
           <div className="flex-1 min-h-[240px]">
