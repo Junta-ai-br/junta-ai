@@ -55,7 +55,7 @@ function Header() {
           </a>
 
           <Link
-            to="/assistente"
+            to="/login"
             className="button button--primary header__cta"
           >
             Começar agora

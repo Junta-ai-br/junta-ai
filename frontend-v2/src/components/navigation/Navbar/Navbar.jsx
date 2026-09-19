@@ -76,7 +76,7 @@ function Navbar() {
 
           <li>
             <a
-              href="/assistente"
+              href="/login"
               className="navbar__mobile-cta"
               onClick={handleClose}
             >
