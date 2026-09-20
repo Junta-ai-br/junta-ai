@@ -9,6 +9,7 @@ import {
 } from "@/services/auth/auth.mock";
 import { useUser } from "@/contexts/useUser";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const RESEND_COOLDOWN = 30;
 
 export default function LoginForm() {
@@ -138,6 +139,7 @@ export default function LoginForm() {
         nome: profile.name || "",
         avatarUrl: profile.picture || "",
       });
+
       setEmail(profile.email);
       setStatus("Login realizado com sucesso.");
       setStep("success");
@@ -154,10 +156,10 @@ export default function LoginForm() {
     setError("Não foi possível entrar com o Google.");
   }
 
-  const loginWithGoogle = useGoogleLogin({
-    onSuccess: handleGoogleSuccess,
-    onError: handleGoogleError,
-  });
+  function handleGoogleUnavailable() {
+    clearMessages();
+    setError("O login com Google ainda não está disponível.");
+  }
 
   function handleEditEmail() {
     setStep("email");
@@ -172,15 +174,11 @@ export default function LoginForm() {
           ✓
         </div>
 
-        <p className="login-form__eyebrow">
-          ACESSO CONFIRMADO
-        </p>
+        <p className="login-form__eyebrow">ACESSO CONFIRMADO</p>
 
         <h2 id="login-title">Tudo pronto.</h2>
 
-        <p>
-          {status || "Sua identidade foi confirmada com sucesso."}
-        </p>
+        <p>{status || "Sua identidade foi confirmada com sucesso."}</p>
 
         <button
           type="button"
@@ -197,9 +195,7 @@ export default function LoginForm() {
     return (
       <>
         <div className="login-form__heading">
-          <p className="login-form__eyebrow">
-            BEM-VINDO(A) DE VOLTA
-          </p>
+          <p className="login-form__eyebrow">BEM-VINDO(A) DE VOLTA</p>
 
           <h2 id="login-title">
             Vamos continuar de onde paramos?
@@ -210,23 +206,13 @@ export default function LoginForm() {
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-          className="login-form__google"
-          onClick={() => {
-            clearMessages();
-            setLoadingAction("google");
-            loginWithGoogle();
-          }}
+        <GoogleLoginButton
           loading={loadingAction === "google"}
-          loadingText="Entrando com Google..."
           disabled={loadingAction !== null}
-        >
-          <GoogleIcon />
-          Continuar com Google
-        </Button>
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          onUnavailable={handleGoogleUnavailable}
+        />
 
         <div className="login-form__divider">
           <span>ou entre com seu e-mail</span>
@@ -273,13 +259,9 @@ export default function LoginForm() {
   return (
     <>
       <div className="login-form__heading">
-        <p className="login-form__eyebrow">
-          CHAVE DE ACESSO
-        </p>
+        <p className="login-form__eyebrow">CHAVE DE ACESSO</p>
 
-        <h2 id="login-title">
-          Confirme seu acesso
-        </h2>
+        <h2 id="login-title">Confirme seu acesso</h2>
 
         <p>
           Enviamos uma chave de 6 dígitos para {email}.
@@ -347,6 +329,69 @@ export default function LoginForm() {
 
       <Message error={error} status={status} />
     </>
+  );
+}
+
+function GoogleLoginButton({
+  loading,
+  disabled,
+  onSuccess,
+  onError,
+  onUnavailable,
+}) {
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <Button
+        type="button"
+        variant="secondary"
+        size="lg"
+        className="login-form__google"
+        onClick={onUnavailable}
+        disabled={disabled}
+      >
+        <GoogleIcon />
+        Continuar com Google
+      </Button>
+    );
+  }
+
+  return (
+    <GoogleLoginButtonConfigured
+      loading={loading}
+      disabled={disabled}
+      onSuccess={onSuccess}
+      onError={onError}
+    />
+  );
+}
+
+function GoogleLoginButtonConfigured({
+  loading,
+  disabled,
+  onSuccess,
+  onError,
+}) {
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess,
+    onError,
+  });
+
+  return (
+    <Button
+      type="button"
+      variant="secondary"
+      size="lg"
+      className="login-form__google"
+      onClick={() => {
+        loginWithGoogle();
+      }}
+      loading={loading}
+      loadingText="Entrando com Google..."
+      disabled={disabled}
+    >
+      <GoogleIcon />
+      Continuar com Google
+    </Button>
   );
 }
 
