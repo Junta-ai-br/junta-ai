@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { useTheme } from "@/contexts/useTheme";
+import { useUser } from "@/contexts/useUser";
 import { THEMES } from "@/utils/theme";
 
 import logoHorizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
@@ -55,6 +56,7 @@ export default function Assistente() {
      ========================================================================== */
 
   const { theme } = useTheme();
+  const { profile } = useUser();
 
   const isDark = theme === THEMES.DARK;
 
@@ -121,14 +123,9 @@ export default function Assistente() {
      User
      ========================================================================== */
 
-  /*
-   * TODO(AUTH):
-   * Substituir pelos dados do usuário autenticado.
-   */
-
   const user = {
-    name: "Fulano",
-    avatar: null,
+    name: profile.nome || profile.email?.split("@")[0] || "Usuário",
+    avatar: profile.avatarUrl || null,
   };
 
   /* ==========================================================================
@@ -463,6 +460,7 @@ export default function Assistente() {
                     src={user.avatar}
                     alt=""
                     className="assistant__user-avatar"
+                    referrerPolicy="no-referrer"
                   />
                 ) : (
                   <span className="assistant__user-avatar assistant__user-avatar--placeholder">
