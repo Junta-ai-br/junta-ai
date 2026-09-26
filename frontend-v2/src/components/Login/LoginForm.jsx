@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
@@ -8,34 +9,8 @@ import {
 } from "@/services/auth/auth.mock";
 import { useUser } from "@/contexts/useUser";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const RESEND_COOLDOWN = 30;
-
-function GoogleIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="login-form__google-icon"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="#4285F4"
-        d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21Z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.93-3.31.93-2.55 0-4.71-1.72-5.49-4.03H3.27v2.52A9.75 9.75 0 0 0 12 21.75Z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M6.51 13.85A5.86 5.86 0 0 1 6.2 12c0-.64.11-1.26.31-1.85V7.63H3.27A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.02 4.37l3.24-2.52Z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 6.12c1.43 0 2.71.49 3.73 1.46l2.8-2.8C16.84 3.19 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.73 5.38l3.24 2.52c.78-2.31 2.94-4.03 5.49-4.03Z"
-      />
-    </svg>
-  );
-}
 
 export default function LoginForm() {
   const { updateProfile } = useUser();
@@ -131,14 +106,59 @@ export default function LoginForm() {
     }, 250);
   }
 
-  function handleGoogleLogin() {
+  async function handleGoogleSuccess(response) {
     clearMessages();
     setLoadingAction("google");
 
-    window.setTimeout(() => {
-      setStatus("O login com Google estará disponível em breve.");
+    try {
+      if (!response.access_token) {
+        throw new Error("Google response has no access token.");
+      }
+
+      const profileResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${response.access_token}`,
+          },
+        },
+      );
+
+      if (!profileResponse.ok) {
+        throw new Error("Could not load Google profile.");
+      }
+
+      const profile = await profileResponse.json();
+
+      if (!profile.email) {
+        throw new Error("Google profile has no email.");
+      }
+
+      updateProfile({
+        email: profile.email,
+        nome: profile.name || "",
+        avatarUrl: profile.picture || "",
+      });
+
+      setEmail(profile.email);
+      setStatus("Login realizado com sucesso.");
+      setStep("success");
+    } catch {
+      setError("Não foi possível concluir o login com o Google.");
+    } finally {
       setLoadingAction(null);
-    }, 250);
+    }
+  }
+
+  function handleGoogleError() {
+    clearMessages();
+    setLoadingAction(null);
+    setError("Não foi possível entrar com o Google.");
+  }
+
+  function handleGoogleUnavailable() {
+    clearMessages();
+    setError("O login com Google ainda não está disponível.");
   }
 
   function handleEditEmail() {
@@ -154,15 +174,11 @@ export default function LoginForm() {
           ✓
         </div>
 
-        <p className="login-form__eyebrow">
-          ACESSO CONFIRMADO
-        </p>
+        <p className="login-form__eyebrow">ACESSO CONFIRMADO</p>
 
         <h2 id="login-title">Tudo pronto.</h2>
 
-        <p>
-          {status || "Sua identidade foi confirmada com sucesso."}
-        </p>
+        <p>{status || "Sua identidade foi confirmada com sucesso."}</p>
 
         <button
           type="button"
@@ -179,9 +195,7 @@ export default function LoginForm() {
     return (
       <>
         <div className="login-form__heading">
-          <p className="login-form__eyebrow">
-            BEM-VINDO(A) DE VOLTA
-          </p>
+          <p className="login-form__eyebrow">BEM-VINDO(A) DE VOLTA</p>
 
           <h2 id="login-title">
             Vamos continuar de onde paramos?
@@ -192,20 +206,13 @@ export default function LoginForm() {
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-          className="login-form__google"
-          onClick={handleGoogleLogin}
+        <GoogleLoginButton
+          loading={loadingAction === "google"}
           disabled={loadingAction !== null}
-          aria-busy={loadingAction === "google"}
-        >
-          <GoogleIcon />
-          {loadingAction === "google"
-            ? "Conectando..."
-            : "Continuar com Google"}
-        </Button>
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          onUnavailable={handleGoogleUnavailable}
+        />
 
         <div className="login-form__divider">
           <span>ou entre com seu e-mail</span>
@@ -252,13 +259,9 @@ export default function LoginForm() {
   return (
     <>
       <div className="login-form__heading">
-        <p className="login-form__eyebrow">
-          CHAVE DE ACESSO
-        </p>
+        <p className="login-form__eyebrow">CHAVE DE ACESSO</p>
 
-        <h2 id="login-title">
-          Confirme seu acesso
-        </h2>
+        <h2 id="login-title">Confirme seu acesso</h2>
 
         <p>
           Enviamos uma chave de 6 dígitos para {email}.
@@ -326,6 +329,96 @@ export default function LoginForm() {
 
       <Message error={error} status={status} />
     </>
+  );
+}
+
+function GoogleLoginButton({
+  loading,
+  disabled,
+  onSuccess,
+  onError,
+  onUnavailable,
+}) {
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <Button
+        type="button"
+        variant="secondary"
+        size="lg"
+        className="login-form__google"
+        onClick={onUnavailable}
+        disabled={disabled}
+      >
+        <GoogleIcon />
+        Continuar com Google
+      </Button>
+    );
+  }
+
+  return (
+    <GoogleLoginButtonConfigured
+      loading={loading}
+      disabled={disabled}
+      onSuccess={onSuccess}
+      onError={onError}
+    />
+  );
+}
+
+function GoogleLoginButtonConfigured({
+  loading,
+  disabled,
+  onSuccess,
+  onError,
+}) {
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess,
+    onError,
+  });
+
+  return (
+    <Button
+      type="button"
+      variant="secondary"
+      size="lg"
+      className="login-form__google"
+      onClick={() => {
+        loginWithGoogle();
+      }}
+      loading={loading}
+      loadingText="Entrando com Google..."
+      disabled={disabled}
+    >
+      <GoogleIcon />
+      Continuar com Google
+    </Button>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="login-form__google-icon"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="#4285F4"
+        d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.93-3.31.93-2.55 0-4.71-1.72-5.49-4.03H3.27v2.52A9.75 9.75 0 0 0 12 21.75Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M6.51 13.85A5.86 5.86 0 0 1 6.2 12c0-.64.11-1.26.31-1.85V7.63H3.27A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.02 4.37l3.24-2.52Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 6.12c1.43 0 2.71.49 3.73 1.46l2.8-2.8C16.84 3.19 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.73 5.38l3.24 2.52c.78-2.31 2.94-4.03 5.49-4.03Z"
+      />
+    </svg>
   );
 }
 

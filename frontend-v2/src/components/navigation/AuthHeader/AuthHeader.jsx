@@ -3,6 +3,7 @@ import { ChevronDown, LogOut, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useTheme } from "@/contexts/useTheme";
+import { useUser } from "@/contexts/useUser";
 import { THEMES } from "@/utils/theme";
 import logoHorizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
 import logoHorizontalPreta from "@/assets/logos/logo-horizontal-preta.svg";
@@ -14,7 +15,11 @@ export default function AuthHeader({ activePath = "/assistente" }) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
   const { theme } = useTheme();
-  const user = { name: "Fulano", avatar: null };
+  const { profile } = useUser();
+  const user = {
+    name: profile.nome || profile.email?.split("@")[0] || "Usuário",
+    avatar: profile.avatarUrl || null,
+  };
   const logo = theme === THEMES.DARK ? logoHorizontalBranca : logoHorizontalPreta;
 
   useEffect(() => {
@@ -49,7 +54,7 @@ export default function AuthHeader({ activePath = "/assistente" }) {
           <ThemeSwitch />
           <div className="assistant__user-menu" ref={userMenuRef}>
             <button type="button" className={`assistant__user${isUserMenuOpen ? " assistant__user--open" : ""}`} aria-label={`Menu de ${user.name}`} aria-expanded={isUserMenuOpen} aria-haspopup="menu" onClick={() => setIsUserMenuOpen((current) => !current)}>
-              {user.avatar ? <img src={user.avatar} alt="" className="assistant__user-avatar" /> : <span className="assistant__user-avatar assistant__user-avatar--placeholder">{user.name.charAt(0)}</span>}
+              {user.avatar ? <img src={user.avatar} alt="" className="assistant__user-avatar" referrerPolicy="no-referrer" /> : <span className="assistant__user-avatar assistant__user-avatar--placeholder">{user.name.charAt(0)}</span>}
               <span className="assistant__user-name">{user.name}</span>
               <ChevronDown size={16} />
             </button>

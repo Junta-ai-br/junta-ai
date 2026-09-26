@@ -43,6 +43,8 @@ export function getStoredProfile() {
     return {
       ...DEFAULT_PROFILE,
       ...parsed,
+      nome: parsed.nome || parsed.name || "",
+      avatarUrl: parsed.avatarUrl || parsed.picture || "",
       notifications: {
         ...DEFAULT_NOTIFICATIONS,
         ...(parsed.notifications || {}),
