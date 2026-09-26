@@ -1888,3 +1888,32 @@
     animation: none;
   }
 }
+
+.assistant--embedded {
+  width: var(--assistant-width, 100%);
+  max-width: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.assistant--embedded .assistant__navbar,
+.assistant--embedded .assistant__intro,
+.assistant--embedded .assistant__summary,
+.assistant--embedded .assistant__sidebar {
+  display: none;
+}
+
+.assistant--embedded .assistant__workspace {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.assistant--embedded .assistant__conversation {
+  height: var(--assistant-height, 360px);
+  min-height: 0;
+}
