@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import {
+  ArrowRight,
   CalendarDays,
   Check,
   ChevronRight,
   Clock3,
-  Goal,
   History,
+  Sparkles,
+  Target,
   WalletCards,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -20,23 +22,26 @@ const PERIOD_OPTIONS = [
   {
     id: "current_month",
     label: "Mês atual",
-    description:
-      "Considera as receitas e despesas do mês em andamento.",
+    description: "Receitas e despesas do mês em andamento.",
     icon: CalendarDays,
   },
   {
     id: "last_30_days",
     label: "Últimos 30 dias",
-    description:
-      "Considera sua movimentação financeira dos últimos 30 dias.",
+    description: "Sua movimentação financeira dos últimos 30 dias.",
     icon: Clock3,
   },
   {
     id: "last_3_months",
     label: "Média dos últimos 3 meses",
-    description:
-      "Usa a média da sua movimentação financeira dos últimos três meses.",
+    description: "A média da sua movimentação dos últimos três meses.",
     icon: WalletCards,
+  },
+  {
+    id: "no_history",
+    label: "Sem histórico",
+    description: "Crie sua meta sem usar movimentações anteriores.",
+    icon: Sparkles,
   },
 ];
 
@@ -74,20 +79,43 @@ function parseCurrency(value) {
   );
 }
 
+function formatCurrency(value) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+}
+
 export default function Planejador() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedPeriod = useMemo(
     () =>
       PERIOD_OPTIONS.find(
-        (option) =>
-          option.id === form.period
+        (option) => option.id === form.period
       ),
     [form.period]
   );
+
+  const numericGoalAmount = parseCurrency(form.goalAmount);
+  const numericGoalDeadline = Number(form.goalDeadline);
+
+  const monthlyReference = useMemo(() => {
+    if (
+      !numericGoalAmount ||
+      numericGoalAmount <= 0 ||
+      !numericGoalDeadline ||
+      numericGoalDeadline <= 0
+    ) {
+      return 0;
+    }
+
+    return numericGoalAmount / numericGoalDeadline;
+  }, [numericGoalAmount, numericGoalDeadline]);
+
+  const isWithoutHistory = form.period === "no_history";
 
   const updateField = (field, value) => {
     setForm((current) => ({
@@ -106,7 +134,7 @@ export default function Planejador() {
 
     if (!form.period) {
       nextErrors.period =
-        "Escolha um período para o planejamento.";
+        "Escolha uma base para o planejamento.";
     }
 
     if (!form.goalName.trim()) {
@@ -114,36 +142,27 @@ export default function Planejador() {
         "Informe o nome da sua meta.";
     }
 
-    const goalAmount =
-      parseCurrency(form.goalAmount);
-
     if (
       !form.goalAmount ||
-      !Number.isFinite(goalAmount) ||
-      goalAmount <= 0
+      !Number.isFinite(numericGoalAmount) ||
+      numericGoalAmount <= 0
     ) {
       nextErrors.goalAmount =
-        "Informe um valor válido para a meta.";
+        "Informe um valor maior que zero.";
     }
-
-    const deadline = Number(
-      form.goalDeadline
-    );
 
     if (
       !form.goalDeadline ||
-      !Number.isInteger(deadline) ||
-      deadline <= 0
+      !Number.isInteger(numericGoalDeadline) ||
+      numericGoalDeadline <= 0
     ) {
       nextErrors.goalDeadline =
-        "Informe um prazo válido em meses.";
+        "Informe um prazo maior que zero.";
     }
 
     setErrors(nextErrors);
 
-    return (
-      Object.keys(nextErrors).length === 0
-    );
+    return Object.keys(nextErrors).length === 0;
   };
 
   const handleSubmit = (event) => {
@@ -158,13 +177,12 @@ export default function Planejador() {
     /*
      * Neste primeiro passo não fazemos chamada ao backend.
      *
-     * O objeto abaixo já representa o contrato inicial
+     * O objeto abaixo representa o contrato inicial
      * que será utilizado pelo cálculo do planejamento.
      *
      * Na próxima etapa ele será alimentado pelas
      * transactions reais do usuário.
      */
-
     const planningData = {
       period: {
         type: form.period,
@@ -173,16 +191,11 @@ export default function Planejador() {
 
       goal: {
         name: form.goalName.trim(),
-        amount: parseCurrency(
-          form.goalAmount
-        ),
-        deadlineMonths: Number(
-          form.goalDeadline
-        ),
+        amount: numericGoalAmount,
+        deadlineMonths: numericGoalDeadline,
       },
 
-      createdAt:
-        new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     };
 
     console.log(
@@ -191,11 +204,10 @@ export default function Planejador() {
     );
 
     /*
-     * Temporariamente mantemos o objeto no estado
-     * da página. A persistência e a tela de resultado
-     * entram na próxima etapa.
+     * Temporariamente mantemos o comportamento apenas
+     * no frontend. Persistência e resultado entram
+     * na próxima etapa.
      */
-
     window.setTimeout(() => {
       setIsSubmitting(false);
     }, 400);
@@ -206,10 +218,6 @@ export default function Planejador() {
       <AuthHeader activePath="/planejador" />
 
       <div className="planner-page__container">
-        {/* ================================================================
-            Hero
-        ================================================================= */}
-
         <header className="planner-page__hero">
           <div className="planner-page__hero-content">
             <span className="planner-page__eyebrow">
@@ -221,9 +229,9 @@ export default function Planejador() {
             </h1>
 
             <p className="planner-page__description">
-              Transforme um objetivo em um plano
-              possível, usando sua realidade
-              financeira como ponto de partida.
+              Transforme um objetivo em um plano possível,
+              usando sua realidade financeira como ponto
+              de partida.
             </p>
           </div>
 
@@ -231,109 +239,93 @@ export default function Planejador() {
             to="/planejador/historico"
             className="planner-page__history-link"
           >
-            <History size={17} />
+            <History size={17} aria-hidden="true" />
             <span>Histórico</span>
           </Link>
         </header>
-
-        {/* ================================================================
-            Form
-        ================================================================= */}
 
         <form
           className="planner-form"
           onSubmit={handleSubmit}
           noValidate
         >
-          {/* ==============================================================
-              Period
-          ============================================================== */}
+          {/* Base do planejamento */}
 
           <Card
-            className="planner-section"
+            className="planner-section planner-section--base"
             padding="lg"
           >
             <div className="planner-section__header">
-              <div className="planner-section__number">
-                01
+              <div className="planner-section__icon">
+                <CalendarDays
+                  size={20}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
               </div>
 
-              <div>
-                <span className="planner-section__eyebrow">
-                  Base do planejamento
-                </span>
-
+              <div className="planner-section__heading">
                 <h2 className="planner-section__title">
                   Qual período você quer usar?
                 </h2>
 
                 <p className="planner-section__description">
-                  Escolha qual movimentação
-                  financeira será considerada para
-                  montar seu planejamento.
+                  Escolha a movimentação financeira que
+                  servirá de base para o seu planejamento.
                 </p>
               </div>
             </div>
 
             <div className="planner-periods">
-              {PERIOD_OPTIONS.map(
-                (option) => {
-                  const Icon = option.icon;
-                  const isSelected =
-                    form.period ===
-                    option.id;
+              {PERIOD_OPTIONS.map((option) => {
+                const Icon = option.icon;
+                const isSelected =
+                  form.period === option.id;
 
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      className={`planner-period-card ${
-                        isSelected
-                          ? "planner-period-card--selected"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        updateField(
-                          "period",
-                          option.id
-                        )
-                      }
-                      aria-pressed={
-                        isSelected
-                      }
-                    >
-                      <div className="planner-period-card__icon">
-                        <Icon
-                          size={20}
-                          strokeWidth={1.8}
-                        />
-                      </div>
-
-                      <div className="planner-period-card__content">
-                        <strong>
-                          {option.label}
-                        </strong>
-
-                        <span>
-                          {option.description}
-                        </span>
-                      </div>
-
-                      <span
-                        className="planner-period-card__check"
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`planner-period-card ${
+                      isSelected
+                        ? "planner-period-card--selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      updateField("period", option.id)
+                    }
+                    aria-pressed={isSelected}
+                  >
+                    <span className="planner-period-card__icon">
+                      <Icon
+                        size={19}
+                        strokeWidth={1.8}
                         aria-hidden="true"
-                      >
-                        {isSelected && (
-                          <Check
-                            size={15}
-                            strokeWidth={2.5}
-                          />
-                        )}
+                      />
+                    </span>
+
+                    <span className="planner-period-card__content">
+                      <strong>{option.label}</strong>
+
+                      <span>
+                        {option.description}
                       </span>
-                    </button>
-                  );
-                }
-              )}
+                    </span>
+
+                    <span
+                      className="planner-period-card__check"
+                      aria-hidden="true"
+                    >
+                      {isSelected && (
+                        <Check
+                          size={13}
+                          strokeWidth={3}
+                        />
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {errors.period && (
@@ -343,38 +335,34 @@ export default function Planejador() {
             )}
           </Card>
 
-          {/* ==============================================================
-              Goal
-          ============================================================== */}
+          {/* Meta */}
 
           <Card
-            className="planner-section"
+            className="planner-section planner-section--goal"
             padding="lg"
           >
             <div className="planner-section__header">
-              <div className="planner-section__number">
-                02
+              <div className="planner-section__icon">
+                <Target
+                  size={20}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
               </div>
 
-              <div>
-                <span className="planner-section__eyebrow">
-                  Sua meta
-                </span>
-
+              <div className="planner-section__heading">
                 <h2 className="planner-section__title">
                   O que você quer alcançar?
                 </h2>
 
                 <p className="planner-section__description">
-                  Defina o objetivo, o valor que
-                  você precisa e o prazo desejado.
+                  Defina sua meta, o valor que você precisa
+                  e em quanto tempo quer chegar lá.
                 </p>
               </div>
             </div>
 
             <div className="planner-fields">
-              {/* Nome */}
-
               <div className="planner-field planner-field--full">
                 <label
                   htmlFor="goal-name"
@@ -409,14 +397,12 @@ export default function Planejador() {
                     </span>
                   ) : (
                     <span>
-                      Dê um nome que faça
-                      sentido para você.
+                      Escolha um nome que faça sentido
+                      para você.
                     </span>
                   )}
                 </div>
               </div>
-
-              {/* Valor */}
 
               <div className="planner-field">
                 <label
@@ -459,8 +445,6 @@ export default function Planejador() {
                 )}
               </div>
 
-              {/* Prazo */}
-
               <div className="planner-field">
                 <label
                   htmlFor="goal-deadline"
@@ -482,9 +466,7 @@ export default function Planejador() {
                     min="1"
                     max="120"
                     placeholder="12"
-                    value={
-                      form.goalDeadline
-                    }
+                    value={form.goalDeadline}
                     onChange={(event) =>
                       updateField(
                         "goalDeadline",
@@ -505,70 +487,78 @@ export default function Planejador() {
             </div>
           </Card>
 
-          {/* ==============================================================
-              Preview
-          ============================================================== */}
+          {/* Prévia */}
 
           <Card
             className="planner-preview"
             padding="lg"
           >
-            <div className="planner-preview__icon">
-              <Goal
-                size={22}
-                strokeWidth={1.8}
-              />
+            <div className="planner-preview__top">
+              <div className="planner-preview__icon">
+                <Sparkles
+                  size={20}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
+              </div>
+
+              <div>
+                <span className="planner-preview__eyebrow">
+                  Prévia do planejamento
+                </span>
+
+                <h2 className="planner-preview__title">
+                  {form.goalName.trim() || "Sua meta"}
+                </h2>
+              </div>
             </div>
 
-            <div className="planner-preview__content">
-              <span className="planner-preview__eyebrow">
-                Seu planejamento
-              </span>
+            <div className="planner-preview__context">
+              <span>Base</span>
 
-              <h2 className="planner-preview__title">
-                {form.goalName.trim() ||
-                  "Sua próxima meta"}
-              </h2>
+              <strong>
+                {isWithoutHistory
+                  ? "Sem histórico financeiro"
+                  : selectedPeriod?.label}
+              </strong>
+            </div>
 
-              <p className="planner-preview__description">
-                {selectedPeriod
-                  ? `Vamos usar ${selectedPeriod.label.toLowerCase()} como base para analisar sua situação financeira.`
-                  : "Escolha um período para continuar."}
-              </p>
+            <div className="planner-preview__summary">
+              <div>
+                <span>Valor da meta</span>
 
-              <div className="planner-preview__summary">
-                <div>
-                  <span>Meta</span>
+                <strong>
+                  {form.goalAmount
+                    ? formatCurrency(numericGoalAmount)
+                    : "R$ 0,00"}
+                </strong>
+              </div>
 
-                  <strong>
-                    {form.goalAmount
-                      ? `R$ ${form.goalAmount}`
-                      : "R$ 0,00"}
-                  </strong>
-                </div>
+              <div>
+                <span>Prazo</span>
 
-                <div>
-                  <span>Prazo</span>
+                <strong>
+                  {numericGoalDeadline > 0
+                    ? `${numericGoalDeadline} ${
+                        numericGoalDeadline === 1
+                          ? "mês"
+                          : "meses"
+                      }`
+                    : "Não definido"}
+                </strong>
+              </div>
 
-                  <strong>
-                    {form.goalDeadline
-                      ? `${form.goalDeadline} ${
-                          Number(
-                            form.goalDeadline
-                          ) === 1
-                            ? "mês"
-                            : "meses"
-                        }`
-                      : "Não definido"}
-                  </strong>
-                </div>
+              <div className="planner-preview__highlight">
+                <span>Referência mensal</span>
+
+                <strong>
+                  {monthlyReference > 0
+                    ? formatCurrency(monthlyReference)
+                    : "—"}
+                </strong>
               </div>
             </div>
           </Card>
-
-          {/* ==============================================================
-              Submit
-          ============================================================== */}
 
           <div className="planner-form__actions">
             <Button
@@ -579,13 +569,12 @@ export default function Planejador() {
               loadingText="Preparando..."
               className="planner-form__submit"
             >
-              <span>
-                Criar planejamento
-              </span>
+              <span>Criar planejamento</span>
 
               <ChevronRight
                 size={18}
                 strokeWidth={2}
+                aria-hidden="true"
               />
             </Button>
           </div>
