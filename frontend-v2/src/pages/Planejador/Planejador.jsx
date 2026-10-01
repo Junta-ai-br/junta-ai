@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import {
-  ArrowRight,
   CalendarDays,
   Check,
   ChevronRight,
@@ -90,6 +89,8 @@ export default function Planejador() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [simulationAmount, setSimulationAmount] = useState(0);
 
   const selectedPeriod = useMemo(
     () =>
@@ -116,6 +117,48 @@ export default function Planejador() {
   }, [numericGoalAmount, numericGoalDeadline]);
 
   const isWithoutHistory = form.period === "no_history";
+
+  const simulationMin = useMemo(() => {
+    if (!monthlyReference) {
+      return 0;
+    }
+
+    return Math.max(
+      1,
+      Math.round(monthlyReference * 0.2)
+    );
+  }, [monthlyReference]);
+
+  const simulationMax = useMemo(() => {
+    if (!monthlyReference) {
+      return 0;
+    }
+
+    return Math.max(
+      simulationMin,
+      Math.round(monthlyReference * 2)
+    );
+  }, [monthlyReference, simulationMin]);
+
+  const estimatedMonths = useMemo(() => {
+    if (
+      !numericGoalAmount ||
+      numericGoalAmount <= 0 ||
+      !simulationAmount ||
+      simulationAmount <= 0
+    ) {
+      return 0;
+    }
+
+    return Math.ceil(
+      numericGoalAmount / simulationAmount
+    );
+  }, [numericGoalAmount, simulationAmount]);
+
+  const deadlineDifference =
+    estimatedMonths > 0
+      ? estimatedMonths - numericGoalDeadline
+      : 0;
 
   const updateField = (field, value) => {
     setForm((current) => ({
@@ -174,15 +217,6 @@ export default function Planejador() {
 
     setIsSubmitting(true);
 
-    /*
-     * Neste primeiro passo não fazemos chamada ao backend.
-     *
-     * O objeto abaixo representa o contrato inicial
-     * que será utilizado pelo cálculo do planejamento.
-     *
-     * Na próxima etapa ele será alimentado pelas
-     * transactions reais do usuário.
-     */
     const planningData = {
       period: {
         type: form.period,
@@ -203,15 +237,59 @@ export default function Planejador() {
       planningData
     );
 
-    /*
-     * Temporariamente mantemos o comportamento apenas
-     * no frontend. Persistência e resultado entram
-     * na próxima etapa.
-     */
+    const initialSimulation = Math.min(
+      Math.max(
+        Math.round(monthlyReference),
+        simulationMin
+      ),
+      simulationMax
+    );
+
     window.setTimeout(() => {
+      setSimulationAmount(initialSimulation);
+      setShowResult(true);
       setIsSubmitting(false);
     }, 400);
   };
+
+  const handleSimulationChange = (event) => {
+    setSimulationAmount(Number(event.target.value));
+  };
+
+  const simulationDescription = useMemo(() => {
+    if (!estimatedMonths) {
+      return "";
+    }
+
+    if (deadlineDifference < 0) {
+      const monthsBeforeDeadline =
+        Math.abs(deadlineDifference);
+
+      return `Com ${formatCurrency(
+        simulationAmount
+      )} por mês, você alcançaria sua meta ${monthsBeforeDeadline} ${
+        monthsBeforeDeadline === 1 ? "mês" : "meses"
+      } antes do prazo informado.`;
+    }
+
+    if (deadlineDifference > 0) {
+      return `Com ${formatCurrency(
+        simulationAmount
+      )} por mês, você precisaria de mais ${
+        deadlineDifference === 1
+          ? "1 mês"
+          : `${deadlineDifference} meses`
+      } além do prazo informado.`;
+    }
+
+    return `Com ${formatCurrency(
+      simulationAmount
+    )} por mês, você alcançaria sua meta dentro do prazo informado.`;
+  }, [
+    estimatedMonths,
+    deadlineDifference,
+    simulationAmount,
+  ]);
 
   return (
     <main className="planner-page">
@@ -579,6 +657,336 @@ export default function Planejador() {
             </Button>
           </div>
         </form>
+
+        {/* =====================================================
+            Resultado do planejamento
+            Estrutura baseada na referência visual do Planeja.ai
+            ===================================================== */}
+
+        {showResult && (
+          <section
+            className="planner-result-wrapper"
+            aria-labelledby="planner-result-title"
+          >
+            <div className="planner-result">
+              {/* Cabeçalho */}
+
+              <header className="planner-result__header">
+                <span className="planner-result__eyebrow">
+                  Resultado do seu planejamento
+                </span>
+
+                <h2
+                  id="planner-result-title"
+                  className="planner-result__title"
+                >
+                  {form.goalName.trim()}
+                </h2>
+
+                <p className="planner-result__description">
+                  A partir das informações que você definiu,
+                  este é o ponto de partida para a sua meta.
+                </p>
+              </header>
+
+              {/* Métricas principais */}
+
+              <div className="planner-result__metrics">
+                <article className="planner-result__metric-card">
+                  <span className="planner-result__metric-label">
+                    Valor da meta
+                  </span>
+
+                  <strong className="planner-result__metric-value">
+                    {formatCurrency(numericGoalAmount)}
+                  </strong>
+
+                  <span className="planner-result__metric-description">
+                    Valor que você quer alcançar
+                  </span>
+                </article>
+
+                <article className="planner-result__metric-card">
+                  <span className="planner-result__metric-label">
+                    Prazo
+                  </span>
+
+                  <strong className="planner-result__metric-value">
+                    {numericGoalDeadline}{" "}
+                    {numericGoalDeadline === 1
+                      ? "mês"
+                      : "meses"}
+                  </strong>
+
+                  <span className="planner-result__metric-description">
+                    Tempo definido para alcançar a meta
+                  </span>
+                </article>
+
+                <article className="planner-result__metric-card">
+                  <span className="planner-result__metric-label">
+                    Referência mensal
+                  </span>
+
+                  <strong className="planner-result__metric-value">
+                    {formatCurrency(monthlyReference)}
+                  </strong>
+
+                  <span className="planner-result__metric-description">
+                    Valor aproximado para guardar por mês
+                  </span>
+                </article>
+              </div>
+
+              {/* Análise */}
+
+              <article className="planner-result__card">
+                <div className="planner-result__card-header">
+                  <span className="planner-result__card-eyebrow">
+                    Análise da sua meta
+                  </span>
+
+                  <h3 className="planner-result__card-title">
+                    Um ponto de partida possível
+                  </h3>
+
+                  <p className="planner-result__card-description">
+                    Veja como o valor da meta e o prazo
+                    escolhido se relacionam.
+                  </p>
+                </div>
+
+                <div className="planner-result__details">
+                  <div className="planner-result__detail">
+                    <span className="planner-result__detail-label">
+                      Base considerada
+                    </span>
+
+                    <strong className="planner-result__detail-value">
+                      {isWithoutHistory
+                        ? "Sem histórico"
+                        : selectedPeriod?.label}
+                    </strong>
+                  </div>
+
+                  <div className="planner-result__detail">
+                    <span className="planner-result__detail-label">
+                      Referência mensal
+                    </span>
+
+                    <strong className="planner-result__detail-value">
+                      {formatCurrency(monthlyReference)}
+                    </strong>
+                  </div>
+
+                  <div className="planner-result__detail">
+                    <span className="planner-result__detail-label">
+                      Prazo escolhido
+                    </span>
+
+                    <strong className="planner-result__detail-value">
+                      {numericGoalDeadline}{" "}
+                      {numericGoalDeadline === 1
+                        ? "mês"
+                        : "meses"}
+                    </strong>
+                  </div>
+                </div>
+
+                <p className="planner-result__message">
+                  Para alcançar sua meta de{" "}
+                  <strong>
+                    {formatCurrency(numericGoalAmount)}
+                  </strong>{" "}
+                  em{" "}
+                  <strong>
+                    {numericGoalDeadline}{" "}
+                    {numericGoalDeadline === 1
+                      ? "mês"
+                      : "meses"}
+                  </strong>
+                  , a referência calculada é separar
+                  aproximadamente{" "}
+                  <strong>
+                    {formatCurrency(monthlyReference)}
+                  </strong>{" "}
+                  por mês.
+                </p>
+              </article>
+
+              {/* Simulador */}
+
+              <article className="planner-result__card">
+                <div className="planner-result__card-header">
+                  <span className="planner-result__card-eyebrow">
+                    Simule seu prazo
+                  </span>
+
+                  <h3 className="planner-result__card-title">
+                    Veja outros cenários
+                  </h3>
+
+                  <p className="planner-result__card-description">
+                    Ajuste quanto você conseguiria guardar
+                    por mês e veja como isso muda o tempo
+                    necessário para alcançar sua meta.
+                  </p>
+                </div>
+
+                <div className="planner-result__slider">
+                  <div className="planner-result__slider-header">
+                    <div className="planner-result__slider-question">
+                      <span className="planner-result__slider-label">
+                        Quanto você conseguiria guardar por
+                        mês?
+                      </span>
+
+                      <strong className="planner-result__slider-value">
+                        {formatCurrency(simulationAmount)}
+                      </strong>
+                    </div>
+
+                    <span className="planner-result__slider-current">
+                      Referência atual:{" "}
+                      {formatCurrency(monthlyReference)}
+                    </span>
+                  </div>
+
+                  <input
+                    className="planner-result__range"
+                    type="range"
+                    min={simulationMin}
+                    max={simulationMax}
+                    step="1"
+                    value={simulationAmount}
+                    onChange={handleSimulationChange}
+                    aria-label="Valor mensal para simulação"
+                  />
+
+                  <div className="planner-result__slider-scale">
+                    <span>
+                      {formatCurrency(simulationMin)}
+                    </span>
+
+                    <span>
+                      {formatCurrency(simulationMax)}
+                    </span>
+                  </div>
+
+                  <div className="planner-result__simulation">
+                    <div className="planner-result__simulation-main">
+                      <span className="planner-result__simulation-label">
+                        Prazo estimado para alcançar a meta
+                      </span>
+
+                      <strong className="planner-result__simulation-value">
+                        {estimatedMonths}{" "}
+                        <span>
+                          {estimatedMonths === 1
+                            ? "mês"
+                            : "meses"}
+                        </span>
+                      </strong>
+                    </div>
+
+                    <p className="planner-result__simulation-description">
+                      {simulationDescription}
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              {/* Insight + métricas */}
+
+              <div className="planner-result__bottom">
+                <article className="planner-result__insight">
+                  <div className="planner-result__insight-content">
+                    <span className="planner-result__insight-eyebrow">
+                      Insight do planejamento
+                    </span>
+
+                    <h3 className="planner-result__insight-title">
+                      Sua meta começa com uma referência
+                      clara.
+                    </h3>
+
+                    <p>
+                      Para alcançar{" "}
+                      <strong>
+                        {formatCurrency(numericGoalAmount)}
+                      </strong>{" "}
+                      em{" "}
+                      <strong>
+                        {numericGoalDeadline}{" "}
+                        {numericGoalDeadline === 1
+                          ? "mês"
+                          : "meses"}
+                      </strong>
+                      , a referência é separar cerca de{" "}
+                      <strong>
+                        {formatCurrency(monthlyReference)}
+                      </strong>{" "}
+                      por mês.
+                    </p>
+
+                    <p>
+                      Use a simulação acima para ajustar esse
+                      valor ao que realmente faz sentido para
+                      sua rotina financeira.
+                    </p>
+                  </div>
+                </article>
+
+                <aside className="planner-result__side">
+                  <article className="planner-result__mini-card">
+                    <span className="planner-result__mini-card-label">
+                      Valor da meta
+                    </span>
+
+                    <strong className="planner-result__mini-card-value">
+                      {formatCurrency(numericGoalAmount)}
+                    </strong>
+
+                    <span className="planner-result__mini-card-description">
+                      Valor definido para o objetivo
+                    </span>
+                  </article>
+
+                  <article className="planner-result__mini-card">
+                    <span className="planner-result__mini-card-label">
+                      Prazo
+                    </span>
+
+                    <strong className="planner-result__mini-card-value">
+                      {numericGoalDeadline}{" "}
+                      {numericGoalDeadline === 1
+                        ? "mês"
+                        : "meses"}
+                    </strong>
+
+                    <span className="planner-result__mini-card-description">
+                      Tempo definido para alcançar a meta
+                    </span>
+                  </article>
+
+                  <article className="planner-result__mini-card">
+                    <span className="planner-result__mini-card-label">
+                      Referência mensal
+                    </span>
+
+                    <strong className="planner-result__mini-card-value">
+                      {formatCurrency(monthlyReference)}
+                    </strong>
+
+                    <span className="planner-result__mini-card-description">
+                      Valor aproximado por mês
+                    </span>
+                  </article>
+                </aside>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );
