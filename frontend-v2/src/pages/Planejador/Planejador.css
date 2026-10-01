@@ -1107,15 +1107,13 @@ Responsive
    Métricas principais
    ========================================================= */
 
-.planner-result__metrics,
-.planner-result__summary {
+.planner-result__metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
-.planner-result__metric-card,
-.planner-result__summary-item {
+.planner-result__metric-card {
   display: flex;
   min-width: 0;
   min-height: 104px;
@@ -1129,8 +1127,7 @@ Responsive
   box-sizing: border-box;
 }
 
-.planner-result__metric-card:nth-child(3),
-.planner-result__summary-item:nth-child(3) {
+.planner-result__metric-card:nth-child(3) {
   border-color: color-mix(
     in srgb,
     var(--planner-primary) 78%,
@@ -1139,8 +1136,7 @@ Responsive
   background: var(--planner-primary);
 }
 
-.planner-result__metric-label,
-.planner-result__summary-label {
+.planner-result__metric-label {
   color: var(--planner-text-muted);
   font-size: 9px;
   font-weight: 700;
@@ -1149,16 +1145,14 @@ Responsive
   text-transform: uppercase;
 }
 
-.planner-result__metric-value,
-.planner-result__summary-value {
+.planner-result__metric-value {
   color: var(--planner-text);
   font-size: 21px;
   font-weight: 650;
   line-height: 1.2;
 }
 
-.planner-result__metric-description,
-.planner-result__summary-item > span:last-child {
+.planner-result__metric-description {
   color: var(--planner-text-secondary);
   font-size: 11px;
   line-height: 1.4;
@@ -1169,13 +1163,7 @@ Responsive
 .planner-result__metric-card:nth-child(3)
   .planner-result__metric-value,
 .planner-result__metric-card:nth-child(3)
-  .planner-result__metric-description,
-.planner-result__summary-item:nth-child(3)
-  .planner-result__summary-label,
-.planner-result__summary-item:nth-child(3)
-  .planner-result__summary-value,
-.planner-result__summary-item:nth-child(3)
-  > span:last-child {
+  .planner-result__metric-description {
   color: #fff;
 }
 
@@ -1224,22 +1212,25 @@ Responsive
   line-height: 1.55;
 }
 
-.planner-result__details {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+.planner-result__analysis-copy {
+  margin: 0;
+  color: var(--planner-text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.planner-result__base {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid var(--planner-border);
 }
 
-.planner-result__detail {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.planner-result__detail-label {
+.planner-result__base span {
   color: var(--planner-text-muted);
   font-size: 10px;
   font-weight: 600;
@@ -1248,23 +1239,11 @@ Responsive
   text-transform: uppercase;
 }
 
-.planner-result__detail-value {
+.planner-result__base strong {
   color: var(--planner-text);
   font-size: 14px;
   font-weight: 650;
   line-height: 1.4;
-}
-
-.planner-result__message {
-  margin: 20px 0 0;
-  color: var(--planner-text-secondary);
-  font-size: 13px;
-  line-height: 1.65;
-}
-
-.planner-result__message strong {
-  color: var(--planner-text);
-  font-weight: 650;
 }
 
 /* =========================================================
@@ -1431,24 +1410,9 @@ Responsive
   font-weight: 500;
 }
 
-.planner-result__simulation-description {
-  margin: 0;
-  color: var(--planner-text-secondary);
-  font-size: 11px;
-  line-height: 1.55;
-}
-
 /* =========================================================
-   Bloco final
-   Insight + métricas laterais
+   Insight do cenário
    ========================================================= */
-
-.planner-result__bottom {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 16px;
-  align-items: stretch;
-}
 
 .planner-result__insight {
   min-width: 0;
@@ -1457,10 +1421,6 @@ Responsive
   border-radius: 16px;
   background: var(--planner-surface);
   box-sizing: border-box;
-}
-
-.planner-result__insight-content {
-  min-width: 0;
 }
 
 .planner-result__insight-eyebrow {
@@ -1492,49 +1452,6 @@ Responsive
   margin-bottom: 0;
 }
 
-.planner-result__side {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-.planner-result__mini-card {
-  display: flex;
-  min-height: 0;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 18px;
-  border: 1px solid var(--planner-border);
-  border-radius: 14px;
-  background: var(--planner-surface);
-  box-sizing: border-box;
-}
-
-.planner-result__mini-card-label {
-  color: var(--planner-accent);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.planner-result__mini-card-value {
-  color: var(--planner-text);
-  font-size: 21px;
-  font-weight: 650;
-  line-height: 1.2;
-}
-
-.planner-result__mini-card-description {
-  color: var(--planner-text-secondary);
-  font-size: 10px;
-  line-height: 1.4;
-}
-
 /* =========================================================
    Responsividade do resultado
    ========================================================= */
@@ -1544,14 +1461,6 @@ Responsive
     margin-top: 40px;
   }
 
-  .planner-result__bottom {
-    grid-template-columns: 1fr;
-  }
-
-  .planner-result__side {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 640px) {
@@ -1568,14 +1477,11 @@ Responsive
     font-size: 12px;
   }
 
-  .planner-result__metrics,
-  .planner-result__summary,
-  .planner-result__details {
+  .planner-result__metrics {
     grid-template-columns: 1fr;
   }
 
   .planner-result__metric-card,
-  .planner-result__summary-item,
   .planner-result__card,
   .planner-result__insight {
     padding: 20px;
@@ -1599,10 +1505,6 @@ Responsive
   .planner-result__simulation {
     grid-template-columns: 1fr;
     gap: 16px;
-  }
-
-  .planner-result__side {
-    grid-template-columns: 1fr;
   }
 
   .planner-result__insight-title {

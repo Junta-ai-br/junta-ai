@@ -265,30 +265,23 @@ export default function Planejador() {
       const monthsBeforeDeadline =
         Math.abs(deadlineDifference);
 
-      return `Com ${formatCurrency(
-        simulationAmount
-      )} por mês, você alcançaria sua meta ${monthsBeforeDeadline} ${
+      return `Nesse cenário, você alcançaria sua meta ${monthsBeforeDeadline} ${
         monthsBeforeDeadline === 1 ? "mês" : "meses"
-      } antes do prazo informado.`;
+      } antes do prazo escolhido.`;
     }
 
     if (deadlineDifference > 0) {
-      return `Com ${formatCurrency(
-        simulationAmount
-      )} por mês, você precisaria de mais ${
+      return `Nesse cenário, você precisaria de mais ${
         deadlineDifference === 1
           ? "1 mês"
           : `${deadlineDifference} meses`
-      } além do prazo informado.`;
+      } além do prazo escolhido para alcançar a meta.`;
     }
 
-    return `Com ${formatCurrency(
-      simulationAmount
-    )} por mês, você alcançaria sua meta dentro do prazo informado.`;
+    return "O cenário simulado está alinhado ao prazo escolhido para esta meta.";
   }, [
     estimatedMonths,
     deadlineDifference,
-    simulationAmount,
   ]);
 
   return (
@@ -684,8 +677,8 @@ export default function Planejador() {
                 </h2>
 
                 <p className="planner-result__description">
-                  A partir das informações que você definiu,
-                  este é o ponto de partida para a sua meta.
+                  Veja a referência inicial, ajuste o valor mensal
+                  e acompanhe o impacto no prazo.
                 </p>
               </header>
 
@@ -694,7 +687,7 @@ export default function Planejador() {
               <div className="planner-result__metrics">
                 <article className="planner-result__metric-card">
                   <span className="planner-result__metric-label">
-                    Valor da meta
+                    Meta
                   </span>
 
                   <strong className="planner-result__metric-value">
@@ -738,7 +731,7 @@ export default function Planejador() {
                 </article>
               </div>
 
-              {/* Análise */}
+              {/* Análise da meta */}
 
               <article className="planner-result__card">
                 <div className="planner-result__card-header">
@@ -747,71 +740,29 @@ export default function Planejador() {
                   </span>
 
                   <h3 className="planner-result__card-title">
-                    Um ponto de partida possível
+                    Como este plano foi definido
                   </h3>
 
                   <p className="planner-result__card-description">
-                    Veja como o valor da meta e o prazo
-                    escolhido se relacionam.
+                    O critério usado para chegar à referência mensal.
                   </p>
                 </div>
 
-                <div className="planner-result__details">
-                  <div className="planner-result__detail">
-                    <span className="planner-result__detail-label">
-                      Base considerada
-                    </span>
-
-                    <strong className="planner-result__detail-value">
-                      {isWithoutHistory
-                        ? "Sem histórico"
-                        : selectedPeriod?.label}
-                    </strong>
-                  </div>
-
-                  <div className="planner-result__detail">
-                    <span className="planner-result__detail-label">
-                      Referência mensal
-                    </span>
-
-                    <strong className="planner-result__detail-value">
-                      {formatCurrency(monthlyReference)}
-                    </strong>
-                  </div>
-
-                  <div className="planner-result__detail">
-                    <span className="planner-result__detail-label">
-                      Prazo escolhido
-                    </span>
-
-                    <strong className="planner-result__detail-value">
-                      {numericGoalDeadline}{" "}
-                      {numericGoalDeadline === 1
-                        ? "mês"
-                        : "meses"}
-                    </strong>
-                  </div>
-                </div>
-
-                <p className="planner-result__message">
-                  Para alcançar sua meta de{" "}
-                  <strong>
-                    {formatCurrency(numericGoalAmount)}
-                  </strong>{" "}
-                  em{" "}
-                  <strong>
-                    {numericGoalDeadline}{" "}
-                    {numericGoalDeadline === 1
-                      ? "mês"
-                      : "meses"}
-                  </strong>
-                  , a referência calculada é separar
-                  aproximadamente{" "}
-                  <strong>
-                    {formatCurrency(monthlyReference)}
-                  </strong>{" "}
-                  por mês.
+                <p className="planner-result__analysis-copy">
+                  {isWithoutHistory
+                    ? "Sem histórico financeiro, a simulação parte do objetivo e do prazo informados. A referência mensal funciona como um ponto inicial para organizar essa meta."
+                    : "O período escolhido funciona como contexto para este plano. Nesta versão, a referência mensal é calculada a partir da meta e do prazo informados; os lançamentos financeiros desse período ainda não entram na conta."}
                 </p>
+
+                <div className="planner-result__base">
+                  <span>Base selecionada</span>
+
+                  <strong>
+                    {isWithoutHistory
+                      ? "Sem histórico financeiro"
+                      : selectedPeriod?.label}
+                  </strong>
+                </div>
               </article>
 
               {/* Simulador */}
@@ -889,101 +840,27 @@ export default function Planejador() {
                       </strong>
                     </div>
 
-                    <p className="planner-result__simulation-description">
-                      {simulationDescription}
-                    </p>
                   </div>
                 </div>
               </article>
 
-              {/* Insight + métricas */}
+              <article className="planner-result__insight">
+                <span className="planner-result__insight-eyebrow">
+                  Insight do cenário
+                </span>
 
-              <div className="planner-result__bottom">
-                <article className="planner-result__insight">
-                  <div className="planner-result__insight-content">
-                    <span className="planner-result__insight-eyebrow">
-                      Insight do planejamento
-                    </span>
+                <h3 className="planner-result__insight-title">
+                  {deadlineDifference < 0
+                    ? "Seu ritmo antecipa o prazo"
+                    : deadlineDifference > 0
+                      ? "Este ritmo pede mais tempo"
+                      : "Seu ritmo acompanha o prazo"}
+                </h3>
 
-                    <h3 className="planner-result__insight-title">
-                      Sua meta começa com uma referência
-                      clara.
-                    </h3>
-
-                    <p>
-                      Para alcançar{" "}
-                      <strong>
-                        {formatCurrency(numericGoalAmount)}
-                      </strong>{" "}
-                      em{" "}
-                      <strong>
-                        {numericGoalDeadline}{" "}
-                        {numericGoalDeadline === 1
-                          ? "mês"
-                          : "meses"}
-                      </strong>
-                      , a referência é separar cerca de{" "}
-                      <strong>
-                        {formatCurrency(monthlyReference)}
-                      </strong>{" "}
-                      por mês.
-                    </p>
-
-                    <p>
-                      Use a simulação acima para ajustar esse
-                      valor ao que realmente faz sentido para
-                      sua rotina financeira.
-                    </p>
-                  </div>
-                </article>
-
-                <aside className="planner-result__side">
-                  <article className="planner-result__mini-card">
-                    <span className="planner-result__mini-card-label">
-                      Valor da meta
-                    </span>
-
-                    <strong className="planner-result__mini-card-value">
-                      {formatCurrency(numericGoalAmount)}
-                    </strong>
-
-                    <span className="planner-result__mini-card-description">
-                      Valor definido para o objetivo
-                    </span>
-                  </article>
-
-                  <article className="planner-result__mini-card">
-                    <span className="planner-result__mini-card-label">
-                      Prazo
-                    </span>
-
-                    <strong className="planner-result__mini-card-value">
-                      {numericGoalDeadline}{" "}
-                      {numericGoalDeadline === 1
-                        ? "mês"
-                        : "meses"}
-                    </strong>
-
-                    <span className="planner-result__mini-card-description">
-                      Tempo definido para alcançar a meta
-                    </span>
-                  </article>
-
-                  <article className="planner-result__mini-card">
-                    <span className="planner-result__mini-card-label">
-                      Referência mensal
-                    </span>
-
-                    <strong className="planner-result__mini-card-value">
-                      {formatCurrency(monthlyReference)}
-                    </strong>
-
-                    <span className="planner-result__mini-card-description">
-                      Valor aproximado por mês
-                    </span>
-                  </article>
-                </aside>
-              </div>
+                <p aria-live="polite">
+                  {simulationDescription}
+                </p>
+              </article>
             </div>
           </section>
         )}
