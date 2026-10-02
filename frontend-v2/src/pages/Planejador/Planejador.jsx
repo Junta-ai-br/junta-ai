@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Banknote,
   CalendarDays,
@@ -7,17 +7,20 @@ import {
   Clock3,
   History,
   PiggyBank,
+  Plus,
+  Save,
   ReceiptText,
   Sparkles,
   Target,
   WalletCards,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import { loadTransactions } from "@/services/finance/store";
+import { savePlannerSimulation } from "@/services/planner/store";
 
 import "./Planejador.css";
 
@@ -194,6 +197,32 @@ export default function Planejador() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [simulationAmount, setSimulationAmount] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const savedRef = useRef(false);
+  const submissionTimer = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => () => window.clearTimeout(submissionTimer.current), []);
+
+  const invalidateSave = () => {
+    savedRef.current = false;
+    setIsSaved(false);
+    setSaveError("");
+  };
+
+  const handleNewSimulation = () => {
+    if (showResult && !savedRef.current &&
+      !window.confirm("Descartar a simulação não salva e iniciar uma nova?")) return;
+    window.clearTimeout(submissionTimer.current);
+    setIsSubmitting(false);
+    setForm(INITIAL_FORM);
+    setErrors({});
+    setShowResult(false);
+    setSimulationAmount(0);
+    invalidateSave();
+    window.scrollTo({ top: 0, behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  };
 
   const transactions = useMemo(() => loadTransactions(), []);
 
@@ -287,6 +316,10 @@ export default function Planejador() {
     estimatedMonths > 0 ? estimatedMonths - numericGoalDeadline : 0;
 
   const updateField = (field, value) => {
+    window.clearTimeout(submissionTimer.current);
+    setIsSubmitting(false);
+    setShowResult(false);
+    invalidateSave();
     setForm((current) => ({
       ...current,
       [field]: value,
@@ -338,6 +371,7 @@ export default function Planejador() {
     }
 
     setIsSubmitting(true);
+    invalidateSave();
 
     const planningData = {
       period: {
@@ -379,7 +413,8 @@ export default function Planejador() {
       simulationMax,
     );
 
-    window.setTimeout(() => {
+    window.clearTimeout(submissionTimer.current);
+    submissionTimer.current = window.setTimeout(() => {
       setSimulationAmount(initialSimulation);
       setShowResult(true);
       setIsSubmitting(false);
@@ -387,7 +422,37 @@ export default function Planejador() {
   };
 
   const handleSimulationChange = (event) => {
+    invalidateSave();
     setSimulationAmount(Number(event.target.value));
+  };
+
+  const handleSaveSimulation = () => {
+    if (!showResult || isSubmitting || savedRef.current ||
+      simulationAmount <= 0 || estimatedMonths <= 0) return;
+    savedRef.current = true;
+    try {
+      savePlannerSimulation({
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        period: { type: form.period, label: selectedPeriod.label, usesHistory: !isWithoutHistory },
+        goal: { name: form.goalName.trim(), amount: numericGoalAmount, deadlineMonths: numericGoalDeadline },
+        simulation: { monthlyAmount: simulationAmount, estimatedMonths },
+        historyContext: hasUsableHistory ? {
+          income: historyAnalysis.income,
+          fixedExpenses: historyAnalysis.fixedExpenses,
+          totalExpenses: historyAnalysis.totalExpenses,
+          available: historyAnalysis.available,
+          commitmentRate: historyAnalysis.commitmentRate,
+        } : null,
+      });
+      setIsSaved(true);
+      setSaveError("");
+    } catch {
+      savedRef.current = false;
+      setSaveError("Não foi possível salvar a simulação. Tente novamente.");
+      return;
+    }
+    navigate("/planejador/historico");
   };
 
   const simulationDescription = useMemo(() => {
@@ -525,6 +590,10 @@ export default function Planejador() {
             </p>
           </div>
 
+          <div className="planner-page__actions">
+          <Button variant="secondary" onClick={handleNewSimulation}>
+            <Plus size={17} aria-hidden="true" /> Nova simulação
+          </Button>
           <Link
             to="/planejador/historico"
             className="planner-page__history-link"
@@ -533,6 +602,7 @@ export default function Planejador() {
 
             <span>Histórico</span>
           </Link>
+          </div>
         </header>
 
         <form className="planner-form" onSubmit={handleSubmit} noValidate>
@@ -1116,6 +1186,13 @@ export default function Planejador() {
 
                 <p aria-live="polite">{simulationDescription}</p>
               </article>
+              <div className="planner-result__actions">
+                {saveError && <p role="alert">{saveError}</p>}
+                <Button onClick={handleSaveSimulation} disabled={isSaved || isSubmitting}>
+                  <Save size={17} aria-hidden="true" />
+                  {isSaved ? "Simulação salva" : "Salvar simulação"}
+                </Button>
+              </div>
             </div>
           </section>
         )}

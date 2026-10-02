@@ -6,7 +6,7 @@ import AuthLayout from "@/layouts/AuthLayout";
 import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
-import Planejador from "@/pages/Planejador/Planejador";
+import Planejador from "@/pages/Planejador";
 import Relatorios from "@/pages/Relatorios";
 import Perfil from "@/pages/Perfil";
 import ExcluirConta from "@/pages/ExcluirConta";

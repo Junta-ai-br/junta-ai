@@ -897,6 +897,19 @@ Responsive
    Identidade visual: Junta.ai
    ========================================================= */
 
+.planner-page__actions,
+.planner-result__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--spacing-12);
+}
+
+.planner-result__actions [role="alert"] {
+  color: var(--error);
+}
+
 .planner-result-wrapper {
   width: 100%;
   margin-top: 8px;
