@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import {
+  Banknote,
   CalendarDays,
   Check,
   ChevronRight,
   Clock3,
   History,
+  PiggyBank,
+  ReceiptText,
   Sparkles,
   Target,
   WalletCards,
@@ -14,6 +17,7 @@ import { Link } from "react-router-dom";
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
+import { loadTransactions } from "@/services/finance/store";
 
 import "./Planejador.css";
 
@@ -51,6 +55,109 @@ const INITIAL_FORM = {
   goalDeadline: "",
 };
 
+const FIXED_EXPENSE_CATEGORIES = new Set(["Moradia", "Transporte", "Saúde"]);
+
+function formatDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function getHistoryRange(period, referenceDate = new Date()) {
+  const end = new Date(referenceDate);
+
+  if (period === "current_month") {
+    return {
+      start: formatDateKey(new Date(end.getFullYear(), end.getMonth(), 1)),
+      end: formatDateKey(end),
+      divisor: 1,
+    };
+  }
+
+  if (period === "last_30_days") {
+    const start = new Date(end);
+    start.setDate(start.getDate() - 29);
+
+    return {
+      start: formatDateKey(start),
+      end: formatDateKey(end),
+      divisor: 1,
+    };
+  }
+
+  if (period === "last_3_months") {
+    const start = new Date(end.getFullYear(), end.getMonth() - 2, 1);
+
+    return {
+      start: formatDateKey(start),
+      end: formatDateKey(end),
+      divisor: 3,
+    };
+  }
+
+  return null;
+}
+
+function buildHistoryAnalysis(transactions, period) {
+  const range = getHistoryRange(period);
+
+  if (!range) {
+    return null;
+  }
+
+  const transactionsInRange = transactions.filter(
+    (transaction) =>
+      transaction.date >= range.start && transaction.date <= range.end,
+  );
+
+  if (!transactionsInRange.length) {
+    return {
+      hasData: false,
+      income: 0,
+      fixedExpenses: 0,
+      totalExpenses: 0,
+      available: 0,
+      commitmentRate: 0,
+    };
+  }
+
+  const incomeTotal = transactionsInRange
+    .filter((transaction) => transaction.amount > 0)
+    .reduce((total, transaction) => total + transaction.amount, 0);
+
+  const expenseTransactions = transactionsInRange.filter(
+    (transaction) => transaction.amount < 0,
+  );
+
+  const expensesTotal = expenseTransactions.reduce(
+    (total, transaction) => total + Math.abs(transaction.amount),
+    0,
+  );
+
+  const fixedExpensesTotal = expenseTransactions
+    .filter((transaction) => FIXED_EXPENSE_CATEGORIES.has(transaction.category))
+    .reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
+
+  const income = incomeTotal / range.divisor;
+  const totalExpenses = expensesTotal / range.divisor;
+  const fixedExpenses = fixedExpensesTotal / range.divisor;
+
+  const available = Math.max(income - totalExpenses, 0);
+
+  const commitmentRate = income > 0 ? (totalExpenses / income) * 100 : 0;
+
+  return {
+    hasData: true,
+    income,
+    fixedExpenses,
+    totalExpenses,
+    available,
+    commitmentRate,
+  };
+}
+
 function formatCurrencyInput(value) {
   const digits = value.replace(/\D/g, "");
 
@@ -71,11 +178,7 @@ function parseCurrency(value) {
     return 0;
   }
 
-  return Number(
-    value
-      .replace(/\./g, "")
-      .replace(",", ".")
-  );
+  return Number(value.replace(/\./g, "").replace(",", "."));
 }
 
 function formatCurrency(value) {
@@ -92,12 +195,11 @@ export default function Planejador() {
   const [showResult, setShowResult] = useState(false);
   const [simulationAmount, setSimulationAmount] = useState(0);
 
+  const transactions = useMemo(() => loadTransactions(), []);
+
   const selectedPeriod = useMemo(
-    () =>
-      PERIOD_OPTIONS.find(
-        (option) => option.id === form.period
-      ),
-    [form.period]
+    () => PERIOD_OPTIONS.find((option) => option.id === form.period),
+    [form.period],
   );
 
   const numericGoalAmount = parseCurrency(form.goalAmount);
@@ -118,27 +220,55 @@ export default function Planejador() {
 
   const isWithoutHistory = form.period === "no_history";
 
+  const historyAnalysis = useMemo(() => {
+    if (isWithoutHistory) {
+      return null;
+    }
+
+    return buildHistoryAnalysis(transactions, form.period);
+  }, [transactions, form.period, isWithoutHistory]);
+
+  const hasUsableHistory = Boolean(historyAnalysis?.hasData);
+
+  const hasHistoryIncome = hasUsableHistory && historyAnalysis.income > 0;
+
+  const historyMonthlyCapacity = hasHistoryIncome
+    ? historyAnalysis.available
+    : 0;
+
+  /*
+   * Enquanto a integração definitiva com backend/MCP/AI Service
+   * não está disponível, o histórico local funciona como fonte
+   * transitória para contextualizar o planejamento.
+   *
+   * Quando existe margem financeira positiva identificada,
+   * ela passa a ser a referência inicial do simulador.
+   *
+   * Se não existe histórico suficiente ou margem disponível,
+   * preservamos a referência matemática básica da meta.
+   */
+  const usesHistoryReference =
+    !isWithoutHistory && hasHistoryIncome && historyMonthlyCapacity > 0;
+
+  const planningMonthlyReference = usesHistoryReference
+    ? historyMonthlyCapacity
+    : monthlyReference;
+
   const simulationMin = useMemo(() => {
-    if (!monthlyReference) {
+    if (!planningMonthlyReference) {
       return 0;
     }
 
-    return Math.max(
-      1,
-      Math.round(monthlyReference * 0.2)
-    );
-  }, [monthlyReference]);
+    return Math.max(1, Math.round(planningMonthlyReference * 0.2));
+  }, [planningMonthlyReference]);
 
   const simulationMax = useMemo(() => {
-    if (!monthlyReference) {
+    if (!planningMonthlyReference) {
       return 0;
     }
 
-    return Math.max(
-      simulationMin,
-      Math.round(monthlyReference * 2)
-    );
-  }, [monthlyReference, simulationMin]);
+    return Math.max(simulationMin, Math.round(planningMonthlyReference * 2));
+  }, [planningMonthlyReference, simulationMin]);
 
   const estimatedMonths = useMemo(() => {
     if (
@@ -150,15 +280,11 @@ export default function Planejador() {
       return 0;
     }
 
-    return Math.ceil(
-      numericGoalAmount / simulationAmount
-    );
+    return Math.ceil(numericGoalAmount / simulationAmount);
   }, [numericGoalAmount, simulationAmount]);
 
   const deadlineDifference =
-    estimatedMonths > 0
-      ? estimatedMonths - numericGoalDeadline
-      : 0;
+    estimatedMonths > 0 ? estimatedMonths - numericGoalDeadline : 0;
 
   const updateField = (field, value) => {
     setForm((current) => ({
@@ -176,13 +302,11 @@ export default function Planejador() {
     const nextErrors = {};
 
     if (!form.period) {
-      nextErrors.period =
-        "Escolha uma base para o planejamento.";
+      nextErrors.period = "Escolha uma base para o planejamento.";
     }
 
     if (!form.goalName.trim()) {
-      nextErrors.goalName =
-        "Informe o nome da sua meta.";
+      nextErrors.goalName = "Informe o nome da sua meta.";
     }
 
     if (
@@ -190,8 +314,7 @@ export default function Planejador() {
       !Number.isFinite(numericGoalAmount) ||
       numericGoalAmount <= 0
     ) {
-      nextErrors.goalAmount =
-        "Informe um valor maior que zero.";
+      nextErrors.goalAmount = "Informe um valor maior que zero.";
     }
 
     if (
@@ -199,8 +322,7 @@ export default function Planejador() {
       !Number.isInteger(numericGoalDeadline) ||
       numericGoalDeadline <= 0
     ) {
-      nextErrors.goalDeadline =
-        "Informe um prazo maior que zero.";
+      nextErrors.goalDeadline = "Informe um prazo maior que zero.";
     }
 
     setErrors(nextErrors);
@@ -221,6 +343,7 @@ export default function Planejador() {
       period: {
         type: form.period,
         label: selectedPeriod?.label || "",
+        usesHistory: !isWithoutHistory,
       },
 
       goal: {
@@ -229,20 +352,31 @@ export default function Planejador() {
         deadlineMonths: numericGoalDeadline,
       },
 
+      /*
+       * Snapshot transitório utilizado apenas pelo frontend.
+       * Futuramente estes dados deverão vir das integrações
+       * responsáveis pelo contexto financeiro.
+       */
+      historyContext:
+        !isWithoutHistory && historyAnalysis
+          ? {
+              hasData: historyAnalysis.hasData,
+              income: historyAnalysis.income,
+              fixedExpenses: historyAnalysis.fixedExpenses,
+              totalExpenses: historyAnalysis.totalExpenses,
+              available: historyAnalysis.available,
+              commitmentRate: historyAnalysis.commitmentRate,
+            }
+          : null,
+
       createdAt: new Date().toISOString(),
     };
 
-    console.log(
-      "Junta.ai — planejamento:",
-      planningData
-    );
+    console.log("Junta.ai — planejamento:", planningData);
 
     const initialSimulation = Math.min(
-      Math.max(
-        Math.round(monthlyReference),
-        simulationMin
-      ),
-      simulationMax
+      Math.max(Math.round(planningMonthlyReference), simulationMin),
+      simulationMax,
     );
 
     window.setTimeout(() => {
@@ -262,8 +396,7 @@ export default function Planejador() {
     }
 
     if (deadlineDifference < 0) {
-      const monthsBeforeDeadline =
-        Math.abs(deadlineDifference);
+      const monthsBeforeDeadline = Math.abs(deadlineDifference);
 
       return `Nesse cenário, você alcançaria sua meta ${monthsBeforeDeadline} ${
         monthsBeforeDeadline === 1 ? "mês" : "meses"
@@ -272,16 +405,105 @@ export default function Planejador() {
 
     if (deadlineDifference > 0) {
       return `Nesse cenário, você precisaria de mais ${
-        deadlineDifference === 1
-          ? "1 mês"
-          : `${deadlineDifference} meses`
+        deadlineDifference === 1 ? "1 mês" : `${deadlineDifference} meses`
       } além do prazo escolhido para alcançar a meta.`;
     }
 
     return "O cenário simulado está alinhado ao prazo escolhido para esta meta.";
+  }, [estimatedMonths, deadlineDifference]);
+
+  const historyInsight = useMemo(() => {
+    if (isWithoutHistory) {
+      return null;
+    }
+
+    if (!historyAnalysis?.hasData) {
+      return {
+        tone: "neutral",
+        status: "Histórico insuficiente",
+        title: "Ainda não há movimentações suficientes",
+        viability:
+          "Não encontramos movimentações no período selecionado para relacionar esta meta ao seu histórico financeiro.",
+        diagnosis:
+          "Sem dados suficientes, o planejamento continua usando apenas o valor da meta e o prazo informado como referência.",
+        suggestion:
+          "Você pode escolher outro período ou continuar com a simulação básica.",
+      };
+    }
+
+    if (!hasHistoryIncome) {
+      return {
+        tone: "attention",
+        status: "Sem renda identificada",
+        title: "Precisamos de mais contexto financeiro",
+        viability:
+          "Encontramos movimentações no período, mas nenhuma entrada positiva que possa servir como referência de renda.",
+        diagnosis:
+          "Sem uma referência de entrada, não é possível estimar com segurança quanto do orçamento pode ser destinado à meta.",
+        suggestion:
+          "Revise seus lançamentos de entrada ou escolha outro período para o planejamento.",
+      };
+    }
+
+    const required = monthlyReference;
+    const available = historyAnalysis.available;
+
+    const difference = available - required;
+
+    const canReachDeadline = available >= required;
+
+    const commitmentRate = historyAnalysis.commitmentRate.toLocaleString(
+      "pt-BR",
+      {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      },
+    );
+
+    return {
+      tone: canReachDeadline ? "positive" : "attention",
+
+      status: canReachDeadline ? "Meta viável no prazo" : "Meta pede ajuste",
+
+      title: canReachDeadline
+        ? "Seu histórico comporta a referência mensal"
+        : "A referência mensal supera sua margem atual",
+
+      viability: canReachDeadline
+        ? `Para alcançar ${formatCurrency(
+            numericGoalAmount,
+          )} em ${numericGoalDeadline} ${
+            numericGoalDeadline === 1 ? "mês" : "meses"
+          }, a referência seria ${formatCurrency(
+            required,
+          )} por mês. O histórico selecionado indica uma margem média de ${formatCurrency(
+            available,
+          )}.`
+        : `Sua meta pede aproximadamente ${formatCurrency(
+            required,
+          )} por mês, enquanto o histórico selecionado indica uma margem de ${formatCurrency(
+            available,
+          )}. A diferença atual é de ${formatCurrency(
+            Math.abs(difference),
+          )} por mês.`,
+
+      diagnosis: `No período selecionado, foram considerados ${formatCurrency(
+        historyAnalysis.income,
+      )} em entradas e ${formatCurrency(
+        historyAnalysis.totalExpenses,
+      )} em saídas. Aproximadamente ${commitmentRate}% da renda identificada está comprometida com despesas.`,
+
+      suggestion: canReachDeadline
+        ? "Você pode usar o simulador abaixo para testar quanto dessa margem deseja realmente reservar para a meta."
+        : "Você pode testar um prazo maior ou ajustar o valor mensal no simulador antes de definir o planejamento.",
+    };
   }, [
-    estimatedMonths,
-    deadlineDifference,
+    isWithoutHistory,
+    historyAnalysis,
+    hasHistoryIncome,
+    monthlyReference,
+    numericGoalAmount,
+    numericGoalDeadline,
   ]);
 
   return (
@@ -291,18 +513,15 @@ export default function Planejador() {
       <div className="planner-page__container">
         <header className="planner-page__hero">
           <div className="planner-page__hero-content">
-            <span className="planner-page__eyebrow">
-              Planejador
-            </span>
+            <span className="planner-page__eyebrow">Planejador</span>
 
             <h1 className="planner-page__title">
               Planeje uma meta do seu jeito.
             </h1>
 
             <p className="planner-page__description">
-              Transforme um objetivo em um plano possível,
-              usando sua realidade financeira como ponto
-              de partida.
+              Transforme um objetivo em um plano possível, usando sua realidade
+              financeira como ponto de partida.
             </p>
           </div>
 
@@ -311,28 +530,18 @@ export default function Planejador() {
             className="planner-page__history-link"
           >
             <History size={17} aria-hidden="true" />
+
             <span>Histórico</span>
           </Link>
         </header>
 
-        <form
-          className="planner-form"
-          onSubmit={handleSubmit}
-          noValidate
-        >
+        <form className="planner-form" onSubmit={handleSubmit} noValidate>
           {/* Base do planejamento */}
 
-          <Card
-            className="planner-section planner-section--base"
-            padding="lg"
-          >
+          <Card className="planner-section planner-section--base" padding="lg">
             <div className="planner-section__header">
               <div className="planner-section__icon">
-                <CalendarDays
-                  size={20}
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                />
+                <CalendarDays size={20} strokeWidth={1.8} aria-hidden="true" />
               </div>
 
               <div className="planner-section__heading">
@@ -341,8 +550,8 @@ export default function Planejador() {
                 </h2>
 
                 <p className="planner-section__description">
-                  Escolha a movimentação financeira que
-                  servirá de base para o seu planejamento.
+                  Escolha a movimentação financeira que servirá de base para o
+                  seu planejamento.
                 </p>
               </div>
             </div>
@@ -350,49 +559,34 @@ export default function Planejador() {
             <div className="planner-periods">
               {PERIOD_OPTIONS.map((option) => {
                 const Icon = option.icon;
-                const isSelected =
-                  form.period === option.id;
+
+                const isSelected = form.period === option.id;
 
                 return (
                   <button
                     key={option.id}
                     type="button"
                     className={`planner-period-card ${
-                      isSelected
-                        ? "planner-period-card--selected"
-                        : ""
+                      isSelected ? "planner-period-card--selected" : ""
                     }`}
-                    onClick={() =>
-                      updateField("period", option.id)
-                    }
+                    onClick={() => updateField("period", option.id)}
                     aria-pressed={isSelected}
                   >
                     <span className="planner-period-card__icon">
-                      <Icon
-                        size={19}
-                        strokeWidth={1.8}
-                        aria-hidden="true"
-                      />
+                      <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
                     </span>
 
                     <span className="planner-period-card__content">
                       <strong>{option.label}</strong>
 
-                      <span>
-                        {option.description}
-                      </span>
+                      <span>{option.description}</span>
                     </span>
 
                     <span
                       className="planner-period-card__check"
                       aria-hidden="true"
                     >
-                      {isSelected && (
-                        <Check
-                          size={13}
-                          strokeWidth={3}
-                        />
-                      )}
+                      {isSelected && <Check size={13} strokeWidth={3} />}
                     </span>
                   </button>
                 );
@@ -400,25 +594,16 @@ export default function Planejador() {
             </div>
 
             {errors.period && (
-              <p className="planner-field__error">
-                {errors.period}
-              </p>
+              <p className="planner-field__error">{errors.period}</p>
             )}
           </Card>
 
           {/* Meta */}
 
-          <Card
-            className="planner-section planner-section--goal"
-            padding="lg"
-          >
+          <Card className="planner-section planner-section--goal" padding="lg">
             <div className="planner-section__header">
               <div className="planner-section__icon">
-                <Target
-                  size={20}
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                />
+                <Target size={20} strokeWidth={1.8} aria-hidden="true" />
               </div>
 
               <div className="planner-section__heading">
@@ -427,18 +612,15 @@ export default function Planejador() {
                 </h2>
 
                 <p className="planner-section__description">
-                  Defina sua meta, o valor que você precisa
-                  e em quanto tempo quer chegar lá.
+                  Defina sua meta, o valor que você precisa e em quanto tempo
+                  quer chegar lá.
                 </p>
               </div>
             </div>
 
             <div className="planner-fields">
               <div className="planner-field planner-field--full">
-                <label
-                  htmlFor="goal-name"
-                  className="planner-field__label"
-                >
+                <label htmlFor="goal-name" className="planner-field__label">
                   Nome da meta
                 </label>
 
@@ -446,18 +628,13 @@ export default function Planejador() {
                   id="goal-name"
                   type="text"
                   className={`planner-field__input ${
-                    errors.goalName
-                      ? "planner-field__input--error"
-                      : ""
+                    errors.goalName ? "planner-field__input--error" : ""
                   }`}
                   placeholder="Ex.: Viagem para Portugal"
                   value={form.goalName}
                   maxLength={80}
                   onChange={(event) =>
-                    updateField(
-                      "goalName",
-                      event.target.value
-                    )
+                    updateField("goalName", event.target.value)
                   }
                 />
 
@@ -467,27 +644,19 @@ export default function Planejador() {
                       {errors.goalName}
                     </span>
                   ) : (
-                    <span>
-                      Escolha um nome que faça sentido
-                      para você.
-                    </span>
+                    <span>Escolha um nome que faça sentido para você.</span>
                   )}
                 </div>
               </div>
 
               <div className="planner-field">
-                <label
-                  htmlFor="goal-amount"
-                  className="planner-field__label"
-                >
+                <label htmlFor="goal-amount" className="planner-field__label">
                   Valor da meta
                 </label>
 
                 <div
                   className={`planner-field__money ${
-                    errors.goalAmount
-                      ? "planner-field__money--error"
-                      : ""
+                    errors.goalAmount ? "planner-field__money--error" : ""
                   }`}
                 >
                   <span>R$</span>
@@ -501,9 +670,7 @@ export default function Planejador() {
                     onChange={(event) =>
                       updateField(
                         "goalAmount",
-                        formatCurrencyInput(
-                          event.target.value
-                        )
+                        formatCurrencyInput(event.target.value),
                       )
                     }
                   />
@@ -517,18 +684,13 @@ export default function Planejador() {
               </div>
 
               <div className="planner-field">
-                <label
-                  htmlFor="goal-deadline"
-                  className="planner-field__label"
-                >
+                <label htmlFor="goal-deadline" className="planner-field__label">
                   Prazo desejado
                 </label>
 
                 <div
                   className={`planner-field__suffix ${
-                    errors.goalDeadline
-                      ? "planner-field__suffix--error"
-                      : ""
+                    errors.goalDeadline ? "planner-field__suffix--error" : ""
                   }`}
                 >
                   <input
@@ -539,10 +701,7 @@ export default function Planejador() {
                     placeholder="12"
                     value={form.goalDeadline}
                     onChange={(event) =>
-                      updateField(
-                        "goalDeadline",
-                        event.target.value
-                      )
+                      updateField("goalDeadline", event.target.value)
                     }
                   />
 
@@ -560,17 +719,10 @@ export default function Planejador() {
 
           {/* Prévia */}
 
-          <Card
-            className="planner-preview"
-            padding="lg"
-          >
+          <Card className="planner-preview" padding="lg">
             <div className="planner-preview__top">
               <div className="planner-preview__icon">
-                <Sparkles
-                  size={20}
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                />
+                <Sparkles size={20} strokeWidth={1.8} aria-hidden="true" />
               </div>
 
               <div>
@@ -611,20 +763,22 @@ export default function Planejador() {
                 <strong>
                   {numericGoalDeadline > 0
                     ? `${numericGoalDeadline} ${
-                        numericGoalDeadline === 1
-                          ? "mês"
-                          : "meses"
+                        numericGoalDeadline === 1 ? "mês" : "meses"
                       }`
                     : "Não definido"}
                 </strong>
               </div>
 
               <div className="planner-preview__highlight">
-                <span>Referência mensal</span>
+                <span>
+                  {usesHistoryReference
+                    ? "Margem do histórico"
+                    : "Referência mensal"}
+                </span>
 
                 <strong>
-                  {monthlyReference > 0
-                    ? formatCurrency(monthlyReference)
+                  {planningMonthlyReference > 0
+                    ? formatCurrency(planningMonthlyReference)
                     : "—"}
                 </strong>
               </div>
@@ -642,19 +796,12 @@ export default function Planejador() {
             >
               <span>Criar planejamento</span>
 
-              <ChevronRight
-                size={18}
-                strokeWidth={2}
-                aria-hidden="true"
-              />
+              <ChevronRight size={18} strokeWidth={2} aria-hidden="true" />
             </Button>
           </div>
         </form>
 
-        {/* =====================================================
-            Resultado do planejamento
-            Estrutura baseada na referência visual do Planeja.ai
-            ===================================================== */}
+        {/* Resultado do planejamento */}
 
         {showResult && (
           <section
@@ -662,23 +809,19 @@ export default function Planejador() {
             aria-labelledby="planner-result-title"
           >
             <div className="planner-result">
-              {/* Cabeçalho */}
-
               <header className="planner-result__header">
                 <span className="planner-result__eyebrow">
                   Resultado do seu planejamento
                 </span>
 
-                <h2
-                  id="planner-result-title"
-                  className="planner-result__title"
-                >
+                <h2 id="planner-result-title" className="planner-result__title">
                   {form.goalName.trim()}
                 </h2>
 
                 <p className="planner-result__description">
-                  Veja a referência inicial, ajuste o valor mensal
-                  e acompanhe o impacto no prazo.
+                  {isWithoutHistory
+                    ? "Veja a referência inicial, ajuste o valor mensal e acompanhe o impacto no prazo."
+                    : "Veja como a sua meta se relaciona com o histórico financeiro selecionado e simule outros cenários."}
                 </p>
               </header>
 
@@ -686,9 +829,7 @@ export default function Planejador() {
 
               <div className="planner-result__metrics">
                 <article className="planner-result__metric-card">
-                  <span className="planner-result__metric-label">
-                    Meta
-                  </span>
+                  <span className="planner-result__metric-label">Meta</span>
 
                   <strong className="planner-result__metric-value">
                     {formatCurrency(numericGoalAmount)}
@@ -700,15 +841,11 @@ export default function Planejador() {
                 </article>
 
                 <article className="planner-result__metric-card">
-                  <span className="planner-result__metric-label">
-                    Prazo
-                  </span>
+                  <span className="planner-result__metric-label">Prazo</span>
 
                   <strong className="planner-result__metric-value">
                     {numericGoalDeadline}{" "}
-                    {numericGoalDeadline === 1
-                      ? "mês"
-                      : "meses"}
+                    {numericGoalDeadline === 1 ? "mês" : "meses"}
                   </strong>
 
                   <span className="planner-result__metric-description">
@@ -718,52 +855,178 @@ export default function Planejador() {
 
                 <article className="planner-result__metric-card">
                   <span className="planner-result__metric-label">
-                    Referência mensal
+                    {usesHistoryReference
+                      ? "Margem do histórico"
+                      : "Referência mensal"}
                   </span>
 
                   <strong className="planner-result__metric-value">
-                    {formatCurrency(monthlyReference)}
+                    {formatCurrency(planningMonthlyReference)}
                   </strong>
 
                   <span className="planner-result__metric-description">
-                    Valor aproximado para guardar por mês
+                    {usesHistoryReference
+                      ? "Valor disponível após as saídas consideradas"
+                      : "Valor aproximado para guardar por mês"}
                   </span>
                 </article>
               </div>
 
-              {/* Análise da meta */}
+              {/* Análise baseada no histórico */}
 
-              <article className="planner-result__card">
-                <div className="planner-result__card-header">
-                  <span className="planner-result__card-eyebrow">
-                    Análise da sua meta
-                  </span>
+              {!isWithoutHistory && (
+                <section
+                  className="planner-result__history"
+                  aria-labelledby="planner-history-title"
+                >
+                  <article className="planner-result__history-analysis">
+                    <div className="planner-result__history-heading">
+                      <span className="planner-result__card-eyebrow">
+                        Insight financeiro
+                      </span>
 
-                  <h3 className="planner-result__card-title">
-                    Como este plano foi definido
-                  </h3>
+                      <div className="planner-result__history-title-row">
+                        <h3
+                          id="planner-history-title"
+                          className="planner-result__card-title"
+                        >
+                          Análise baseada no seu histórico
+                        </h3>
 
-                  <p className="planner-result__card-description">
-                    O critério usado para chegar à referência mensal.
+                        <span
+                          className={`planner-result__history-status planner-result__history-status--${historyInsight?.tone}`}
+                        >
+                          {historyInsight?.status}
+                        </span>
+                      </div>
+
+                      <p className="planner-result__card-description">
+                        Base considerada: {selectedPeriod?.label}
+                      </p>
+                    </div>
+
+                    <div className="planner-result__history-sections">
+                      <div className="planner-result__history-section">
+                        <strong>Viabilidade da meta</strong>
+
+                        <p>{historyInsight?.viability}</p>
+                      </div>
+
+                      <div className="planner-result__history-section">
+                        <strong>Diagnóstico financeiro</strong>
+
+                        <p>{historyInsight?.diagnosis}</p>
+                      </div>
+
+                      <div className="planner-result__history-section">
+                        <strong>Próximo passo</strong>
+
+                        <p>{historyInsight?.suggestion}</p>
+                      </div>
+                    </div>
+                  </article>
+
+                  <div className="planner-result__financial-cards">
+                    <article className="planner-result__financial-card">
+                      <div className="planner-result__financial-card-label">
+                        <Banknote
+                          size={16}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+
+                        <span>Renda considerada</span>
+                      </div>
+
+                      <strong>
+                        {historyAnalysis?.hasData
+                          ? formatCurrency(historyAnalysis.income)
+                          : "—"}
+                      </strong>
+
+                      <p>
+                        {form.period === "last_3_months"
+                          ? "Média mensal das entradas"
+                          : "Entradas no período selecionado"}
+                      </p>
+                    </article>
+
+                    <article className="planner-result__financial-card">
+                      <div className="planner-result__financial-card-label">
+                        <ReceiptText
+                          size={16}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+
+                        <span>Custos fixos estimados</span>
+                      </div>
+
+                      <strong>
+                        {historyAnalysis?.hasData
+                          ? formatCurrency(historyAnalysis.fixedExpenses)
+                          : "—"}
+                      </strong>
+
+                      <p>
+                        Moradia, transporte e saúde identificados no histórico
+                      </p>
+                    </article>
+
+                    <article className="planner-result__financial-card">
+                      <div className="planner-result__financial-card-label">
+                        <PiggyBank
+                          size={16}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+
+                        <span>Margem disponível</span>
+                      </div>
+
+                      <strong>
+                        {historyAnalysis?.hasData
+                          ? formatCurrency(historyAnalysis.available)
+                          : "—"}
+                      </strong>
+
+                      <p>Entradas menos todas as saídas consideradas</p>
+                    </article>
+                  </div>
+                </section>
+              )}
+
+              {/* Análise sem histórico */}
+
+              {isWithoutHistory && (
+                <article className="planner-result__card">
+                  <div className="planner-result__card-header">
+                    <span className="planner-result__card-eyebrow">
+                      Análise da sua meta
+                    </span>
+
+                    <h3 className="planner-result__card-title">
+                      Como este plano foi definido
+                    </h3>
+
+                    <p className="planner-result__card-description">
+                      O critério usado para chegar à referência mensal.
+                    </p>
+                  </div>
+
+                  <p className="planner-result__analysis-copy">
+                    Sem histórico financeiro, a simulação parte exclusivamente
+                    do objetivo e do prazo informados. A referência mensal
+                    funciona como um ponto inicial para organizar essa meta.
                   </p>
-                </div>
 
-                <p className="planner-result__analysis-copy">
-                  {isWithoutHistory
-                    ? "Sem histórico financeiro, a simulação parte do objetivo e do prazo informados. A referência mensal funciona como um ponto inicial para organizar essa meta."
-                    : "O período escolhido funciona como contexto para este plano. Nesta versão, a referência mensal é calculada a partir da meta e do prazo informados; os lançamentos financeiros desse período ainda não entram na conta."}
-                </p>
+                  <div className="planner-result__base">
+                    <span>Base selecionada</span>
 
-                <div className="planner-result__base">
-                  <span>Base selecionada</span>
-
-                  <strong>
-                    {isWithoutHistory
-                      ? "Sem histórico financeiro"
-                      : selectedPeriod?.label}
-                  </strong>
-                </div>
-              </article>
+                    <strong>Sem histórico financeiro</strong>
+                  </div>
+                </article>
+              )}
 
               {/* Simulador */}
 
@@ -778,9 +1041,8 @@ export default function Planejador() {
                   </h3>
 
                   <p className="planner-result__card-description">
-                    Ajuste quanto você conseguiria guardar
-                    por mês e veja como isso muda o tempo
-                    necessário para alcançar sua meta.
+                    Ajuste quanto você conseguiria guardar por mês e veja como
+                    isso muda o tempo necessário para alcançar sua meta.
                   </p>
                 </div>
 
@@ -788,8 +1050,7 @@ export default function Planejador() {
                   <div className="planner-result__slider-header">
                     <div className="planner-result__slider-question">
                       <span className="planner-result__slider-label">
-                        Quanto você conseguiria guardar por
-                        mês?
+                        Quanto você conseguiria guardar por mês?
                       </span>
 
                       <strong className="planner-result__slider-value">
@@ -798,8 +1059,11 @@ export default function Planejador() {
                     </div>
 
                     <span className="planner-result__slider-current">
-                      Referência atual:{" "}
-                      {formatCurrency(monthlyReference)}
+                      {usesHistoryReference
+                        ? "Margem identificada: "
+                        : "Referência atual: "}
+
+                      {formatCurrency(planningMonthlyReference)}
                     </span>
                   </div>
 
@@ -815,13 +1079,9 @@ export default function Planejador() {
                   />
 
                   <div className="planner-result__slider-scale">
-                    <span>
-                      {formatCurrency(simulationMin)}
-                    </span>
+                    <span>{formatCurrency(simulationMin)}</span>
 
-                    <span>
-                      {formatCurrency(simulationMax)}
-                    </span>
+                    <span>{formatCurrency(simulationMax)}</span>
                   </div>
 
                   <div className="planner-result__simulation">
@@ -832,17 +1092,14 @@ export default function Planejador() {
 
                       <strong className="planner-result__simulation-value">
                         {estimatedMonths}{" "}
-                        <span>
-                          {estimatedMonths === 1
-                            ? "mês"
-                            : "meses"}
-                        </span>
+                        <span>{estimatedMonths === 1 ? "mês" : "meses"}</span>
                       </strong>
                     </div>
-
                   </div>
                 </div>
               </article>
+
+              {/* Insight do cenário */}
 
               <article className="planner-result__insight">
                 <span className="planner-result__insight-eyebrow">
@@ -857,9 +1114,7 @@ export default function Planejador() {
                       : "Seu ritmo acompanha o prazo"}
                 </h3>
 
-                <p aria-live="polite">
-                  {simulationDescription}
-                </p>
+                <p aria-live="polite">{simulationDescription}</p>
               </article>
             </div>
           </section>
