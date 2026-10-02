@@ -1,0 +1,15 @@
+.dashboard-chat {
+  padding: 0 5vw 36px;
+}
+
+.dashboard-chat__title {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 760px) {
+  .dashboard-chat {
+    padding: 0 16px 24px;
+  }
+}

@@ -29,7 +29,13 @@ function createChatTransactionId() {
   return `chat-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-export default function Assistente() {
+export default function Assistente({
+  className = "",
+  variant = "full",
+  height,
+  width,
+  isEmbedded = false,
+} = {}) {
   /* ==========================================================================
      State
      ========================================================================== */
@@ -63,6 +69,11 @@ export default function Assistente() {
   const logo = isDark
     ? logoHorizontalBranca
     : logoHorizontalPreta;
+  const embedded = isEmbedded || variant === "embedded";
+  const embeddedStyle = {
+    "--assistant-height": typeof height === "number" ? `${height}px` : height || "360px",
+    "--assistant-width": typeof width === "number" ? `${width}px` : width || "100%",
+  };
 
   /* ==========================================================================
      User Menu
@@ -350,7 +361,10 @@ export default function Assistente() {
   };
 
   return (
-    <main className="assistant">
+    <main
+      className={`assistant${embedded ? " assistant--embedded" : ""}${className ? ` ${className}` : ""}`}
+      style={embeddedStyle}
+    >
 
       {/* ==================================================================
           Navigation
