@@ -4,47 +4,23 @@ Visual orientado pela linguagem editorial da Landing.
 ========================================================= */
 
 .planner-page {
-  --planner-primary: var(--brand-primary, #7140fa);
-  --planner-primary-hover: var(
-    --brand-primary-hover,
-    #6032e8
-  );
-  --planner-accent: var(--brand-accent, #38a3a5);
+  --planner-primary: var(--brand-primary);
+  --planner-primary-hover: var(--brand-primary-hover);
+  --planner-accent: var(--brand-accent);
 
-  --planner-bg: var(
-    --color-background,
-    var(--background, #0d0f14)
-  );
+  --planner-bg: var(--background);
 
-  --planner-surface: var(
-    --color-surface,
-    var(--surface, #151821)
-  );
+  --planner-surface: var(--surface);
 
-  --planner-surface-soft: var(
-    --color-surface-secondary,
-    var(--surface-secondary, #1b2030)
-  );
+  --planner-surface-soft: #1b2030;
 
-  --planner-border: var(
-    --color-border,
-    var(--border, #252b3a)
-  );
+  --planner-border: var(--border);
 
-  --planner-text: var(
-    --color-text-primary,
-    var(--text-primary, #f5f5f7)
-  );
+  --planner-text: var(--text-primary);
 
-  --planner-text-secondary: var(
-    --color-text-secondary,
-    var(--text-secondary, #9ca7bc)
-  );
+  --planner-text-secondary: var(--text-secondary);
 
-  --planner-text-muted: var(
-    --color-text-muted,
-    var(--text-muted, #6f7a90)
-  );
+  --planner-text-muted: var(--text-muted);
 
   min-height: 100vh;
   background: var(--planner-bg);
@@ -61,22 +37,19 @@ html[data-theme="light"] .planner-page,
 body.light .planner-page,
 body.light-mode .planner-page,
 .light .planner-page {
-  --planner-bg: #f7f9fc;
-  --planner-surface: #ffffff;
+  --planner-bg: var(--background);
+  --planner-surface: var(--white);
   --planner-surface-soft: #f4f7fb;
 
-  --planner-border: #dbe3ed;
+  --planner-border: var(--border);
 
-  --planner-text: #151a24;
+  --planner-text: var(--text-primary);
   --planner-text-secondary: #526581;
   --planner-text-muted: #8292aa;
 
-  --planner-primary: var(--brand-primary, #7140fa);
-  --planner-primary-hover: var(
-    --brand-primary-hover,
-    #6032e8
-  );
-  --planner-accent: var(--brand-accent, #38a3a5);
+  --planner-primary: var(--brand-primary);
+  --planner-primary-hover: var(--brand-primary-hover);
+  --planner-accent: var(--brand-accent);
 }
 
 .planner-page__container {
@@ -126,7 +99,7 @@ Hero
   color: var(--planner-accent);
 
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   letter-spacing: 0.04em;
   line-height: 1;
 }
@@ -157,7 +130,7 @@ Hero
 
   font-family: inherit;
   font-size: clamp(44px, 5vw, 68px);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: -0.055em;
   line-height: 0.98;
 }
@@ -187,13 +160,13 @@ Hero
   color: var(--planner-text);
 
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   text-decoration: none;
 
   transition:
-    border-color 160ms ease,
-    background 160ms ease,
-    transform 160ms ease;
+    border-color var(--transition-fast) ease,
+    background var(--transition-fast) ease,
+    transform var(--transition-fast) ease;
 }
 
 .planner-page__history-link:hover {
@@ -333,10 +306,10 @@ Period selector
   cursor: pointer;
 
   transition:
-    border-color 160ms ease,
-    background 160ms ease,
-    transform 160ms ease,
-    box-shadow 160ms ease;
+    border-color var(--transition-fast) ease,
+    background var(--transition-fast) ease,
+    transform var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
 
 .planner-period-card:hover {
@@ -457,7 +430,7 @@ Period selector
 
   border-radius: 50%;
 
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .planner-period-card--selected
@@ -577,7 +550,7 @@ Fields
   color: var(--planner-text);
 
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .planner-field__input,
@@ -598,9 +571,9 @@ Fields
   color: var(--planner-text);
 
   transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    background 160ms ease;
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease,
+    background var(--transition-fast) ease;
 }
 
 .planner-field__input {
@@ -647,7 +620,7 @@ Fields
   color: var(--planner-text-secondary);
 
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .planner-field__money input,
@@ -676,7 +649,7 @@ Fields
   color: var(--planner-text-secondary);
 
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .planner-field__footer {
@@ -695,7 +668,7 @@ Fields
 
   margin-top: 7px;
 
-  color: #ff5c64;
+  color: var(--error);
 
   font-size: 11px;
   line-height: 1.4;
@@ -704,7 +677,7 @@ Fields
 .planner-field__input--error,
 .planner-field__money--error,
 .planner-field__suffix--error {
-  border-color: #ff4d57;
+  border-color: var(--error);
 }
 
 /* =========================================================
@@ -756,7 +729,7 @@ body.light-mode
 .light
   .planner-page
   .planner-field__suffix {
-  background: #ffffff;
+  background: var(--white);
 }
 
 /* =========================================================
@@ -837,7 +810,7 @@ Preview
   color: var(--planner-accent);
 
   font-size: 10px;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -871,14 +844,14 @@ Preview
   color: var(--planner-text-muted);
 
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .planner-preview__context strong {
   color: var(--planner-text-secondary);
 
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .planner-preview__summary {
@@ -902,8 +875,8 @@ Preview
   color: var(--planner-text-muted);
 
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide);
   text-transform: uppercase;
 }
 
@@ -1080,7 +1053,7 @@ Responsive
   margin: 0;
   color: var(--planner-accent);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: 0.09em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -1090,7 +1063,7 @@ Responsive
   margin: 0;
   color: var(--planner-text);
   font-size: clamp(34px, 4vw, 50px);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: -0.045em;
   line-height: 1.04;
 }
@@ -1139,7 +1112,7 @@ Responsive
 .planner-result__metric-label {
   color: var(--planner-text-muted);
   font-size: 9px;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: 0.09em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -1164,7 +1137,7 @@ Responsive
   .planner-result__metric-value,
 .planner-result__metric-card:nth-child(3)
   .planner-result__metric-description {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 /* =========================================================
@@ -1190,7 +1163,7 @@ Responsive
 .planner-result__card-eyebrow {
   color: var(--planner-accent);
   font-size: 9px;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: 0.08em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -1201,7 +1174,7 @@ Responsive
   color: var(--planner-text);
   font-size: 25px;
   font-weight: 650;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--letter-spacing-tight);
   line-height: 1.15;
 }
 
@@ -1233,7 +1206,7 @@ Responsive
 .planner-result__base span {
   color: var(--planner-text-muted);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   letter-spacing: 0.04em;
   line-height: 1.3;
   text-transform: uppercase;
@@ -1407,7 +1380,7 @@ Responsive
   margin-left: 6px;
   color: var(--planner-text-secondary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 /* =========================================================
@@ -1426,7 +1399,7 @@ Responsive
 .planner-result__insight-eyebrow {
   color: var(--planner-accent);
   font-size: 9px;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   letter-spacing: 0.08em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -1437,7 +1410,7 @@ Responsive
   color: var(--planner-text);
   font-size: 23px;
   font-weight: 650;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--letter-spacing-tight);
   line-height: 1.15;
 }
 
@@ -1445,7 +1418,7 @@ Responsive
   margin: 0 0 14px;
   color: var(--planner-text-secondary);
   font-size: 12px;
-  line-height: 1.6;
+  line-height: var(--line-height-normal);
 }
 
 .planner-result__insight p:last-child {
