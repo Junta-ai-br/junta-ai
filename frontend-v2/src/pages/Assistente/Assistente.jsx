@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "motion/react";
 import {
   ChevronDown,
   LogOut,
   Menu,
-  SendHorizontal,
   TrendingDown,
   TrendingUp,
   WalletCards,
@@ -14,20 +12,19 @@ import {
 
 import { useTheme } from "@/contexts/useTheme";
 import { useUser } from "@/contexts/useUser";
+import useFinanceData from "@/contexts/useFinanceData";
 import { THEMES } from "@/utils/theme";
 
 import logoHorizontalBranca from "@/assets/logos/logo-horizontal-branca.svg";
 import logoHorizontalPreta from "@/assets/logos/logo-horizontal-preta.svg";
 
 import ThemeSwitch from "@/components/navigation/ThemeSwitch";
-import { CATEGORY_META, aggregateByCategory, loadCategories, loadCategoryColors, loadGoals, loadTransactions, saveGoals, saveTransactions } from "@/services/finance/store";
+import AssistantConversation from "@/components/chat/AssistantConversation";
+import { aggregateByCategory, summarizeTransactions } from "@/services/finance/store";
 import { calculateFinancialHealth } from "@/services/finance/financeHealth";
+import useAssistantConversation from "@/hooks/useAssistantConversation";
 
 import "./Assistente.css";
-
-function createChatTransactionId() {
-  return `chat-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
 
 export default function Assistente({
   className = "",
@@ -42,18 +39,30 @@ export default function Assistente({
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [pendingExpense, setPendingExpense] = useState(null);
-  const [transactions, setTransactions] = useState(loadTransactions);
-  const [categories, setCategories] = useState(loadCategories);
-  const [categoryColors, setCategoryColors] = useState(loadCategoryColors);
-  const [goals, setGoals] = useState(loadGoals);
   const [goalFormOpen, setGoalFormOpen] = useState(false);
   const [editingGoalId, setEditingGoalId] = useState(null);
   const [goalName, setGoalName] = useState("");
   const [goalTarget, setGoalTarget] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [goalDueDate, setGoalDueDate] = useState("");
+  const {
+    transactions,
+    categories,
+    categoryColors,
+    goals,
+    addTransaction,
+    updateGoals,
+  } = useFinanceData();
+
+  const conversation = useAssistantConversation({ addTransaction });
+  const {
+    inputValue,
+    setInputValue,
+    messages,
+    pendingExpense,
+    isTyping,
+    handleSubmit,
+    registerExpense,
+  } = conversation;
 
   const userMenuRef = useRef(null);
 
@@ -108,25 +117,6 @@ export default function Assistente({
         "keydown",
         handleEscape
       );
-    };
-  }, []);
-
-  useEffect(() => {
-    const refreshFinanceData = () => {
-      setTransactions(loadTransactions());
-      setCategories(loadCategories());
-      setCategoryColors(loadCategoryColors());
-      setGoals(loadGoals());
-    };
-
-    window.addEventListener("junta:transactions-changed", refreshFinanceData);
-    window.addEventListener("junta:categories-changed", refreshFinanceData);
-    window.addEventListener("junta:goals-changed", refreshFinanceData);
-
-    return () => {
-      window.removeEventListener("junta:transactions-changed", refreshFinanceData);
-      window.removeEventListener("junta:categories-changed", refreshFinanceData);
-      window.removeEventListener("junta:goals-changed", refreshFinanceData);
     };
   }, []);
 
@@ -188,6 +178,7 @@ export default function Assistente({
     setEditingGoalId(currentGoal?.id || null);
     setGoalName(currentGoal?.name || "");
     setGoalTarget(currentGoal ? String(currentGoal.target).replace(".", ",") : "");
+    setGoalDueDate(currentGoal?.dueDate || "");
     setGoalFormOpen(true);
   };
 
@@ -196,25 +187,24 @@ export default function Assistente({
     setEditingGoalId(null);
     setGoalName("");
     setGoalTarget("");
+    setGoalDueDate("");
   };
 
   const submitGoal = (event) => {
     event.preventDefault();
     const name = goalName.trim();
     const target = Number(goalTarget.replace(",", "."));
-    if (!name || !Number.isFinite(target) || target <= 0) return;
+    if (!name || !Number.isFinite(target) || target <= 0 || !goalDueDate) return;
     const nextGoals = editingGoalId
-      ? goals.map((item) => item.id === editingGoalId ? { ...item, name, target: Math.max(target, goalBalance) } : item)
-      : [...goals, { id: `goal-${Date.now()}`, name, current: 0, target }];
-    setGoals(nextGoals);
-    saveGoals(nextGoals);
+      ? goals.map((item) => item.id === editingGoalId ? { ...item, name, target: Math.max(target, goalBalance), dueDate: goalDueDate } : item)
+      : [...goals, { id: `goal-${Date.now()}`, name, current: 0, target, dueDate: goalDueDate }];
+    updateGoals(nextGoals);
     closeGoalForm();
   };
 
   const deleteGoal = (id) => {
     const nextGoals = goals.filter((item) => item.id !== id);
-    setGoals(nextGoals);
-    saveGoals(nextGoals);
+    updateGoals(nextGoals);
   };
 
   const moveGoal = (id, direction) => {
@@ -223,19 +213,12 @@ export default function Assistente({
     if (index < 0 || nextIndex < 0 || nextIndex >= goals.length) return;
     const nextGoals = [...goals];
     [nextGoals[index], nextGoals[nextIndex]] = [nextGoals[nextIndex], nextGoals[index]];
-    setGoals(nextGoals);
-    saveGoals(nextGoals);
+    updateGoals(nextGoals);
   };
 
   const financialHealth = calculateFinancialHealth(transactions);
 
-  const monthlyIncome = transactions
-    .filter((item) => item.amount > 0)
-    .reduce((sum, item) => sum + item.amount, 0);
-  const monthlyExpenses = transactions
-    .filter((item) => item.amount < 0)
-    .reduce((sum, item) => sum + Math.abs(item.amount), 0);
-  const balance = monthlyIncome - monthlyExpenses;
+  const { income: monthlyIncome, expenses: monthlyExpenses, balance } = summarizeTransactions(transactions);
   const balanceClass =
     balance > 0
       ? "assistant__summary-value--positive"
@@ -243,10 +226,10 @@ export default function Assistente({
         ? "assistant__summary-value--negative"
         : "assistant__summary-value--neutral";
   const categoryData = aggregateByCategory(transactions, categories, categoryColors);
-  const monthlyBalanceClass = monthlyIncome - monthlyExpenses >= 0
+  const monthlyBalanceClass = balance >= 0
     ? "assistant__widget-month-value--positive"
     : "assistant__widget-month-value--negative";
-  const monthlyBalanceFormatted = `R$ ${(monthlyIncome - monthlyExpenses).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+  const monthlyBalanceFormatted = `R$ ${balance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
   const monthlyOverview = {
     categories: categoryData.map((category) => ({ ...category, percentage: category.pct, emoji: category.icon })),
     transactions: transactions.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4).map((transaction) => ({
@@ -268,89 +251,6 @@ export default function Assistente({
   /* ==========================================================================
      Chat
      ========================================================================== */
-
-  const appendTransaction = (transaction, successMessage) => {
-    const next = [...transactions, transaction];
-
-    try {
-      saveTransactions(next);
-      setTransactions(next);
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        { id: Date.now() + 1, type: "assistant", text: successMessage },
-      ]);
-    } catch {
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        { id: Date.now() + 1, type: "assistant", text: "Não consegui salvar esse lançamento. Tente novamente." },
-      ]);
-    } finally {
-      setPendingExpense(null);
-      setIsTyping(false);
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const message = inputValue.trim();
-
-    if (!message || isTyping) {
-      return;
-    }
-
-    const userMessage = {
-      id: Date.now(),
-      type: "user",
-      text: message,
-    };
-
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      userMessage,
-    ]);
-
-    setInputValue("");
-    setIsTyping(true);
-
-    /*
-     * TODO(IA):
-     * Substituir este mock pela chamada real ao agente/backend.
-     */
-
-    const entryMatch = message.match(/\bentrada\s*:?\s*([\d]+(?:[.,]\d{1,2})?)/i);
-    const exitMatch = message.match(/\b(sa[ií]da|gastei)\s*:?\s*([\d]+(?:[.,]\d{1,2})?)/i);
-    const amount = Number((entryMatch?.[1] || exitMatch?.[2] || "0").replace(",", "."));
-    const today = new Date().toISOString().split("T")[0];
-
-    if (amount > 0 && entryMatch) {
-      appendTransaction(
-        { id: createChatTransactionId(), date: today, category: "Renda", desc: "Entrada via chat", amount, icon: CATEGORY_META.Renda.icon },
-        "Entrada registrada. Seus gráficos já foram atualizados.",
-      );
-      return;
-    }
-
-    if (amount > 0 && exitMatch) {
-      setPendingExpense({ amount, date: today, desc: "Saída via chat" });
-      setMessages((currentMessages) => [...currentMessages, { id: Date.now() + 1, type: "assistant", text: "Qual categoria devo usar para essa saída?" }]);
-      setIsTyping(false);
-      return;
-    }
-
-    window.setTimeout(() => {
-      setMessages((currentMessages) => [...currentMessages, { id: Date.now() + 1, type: "assistant", text: "Entendi! 💜 Vou considerar essa informação no seu planejamento financeiro." }]);
-      setIsTyping(false);
-    }, 1000);
-  };
-
-  const registerExpense = (category) => {
-    if (!pendingExpense) return;
-    appendTransaction(
-      { id: createChatTransactionId(), ...pendingExpense, category, amount: -pendingExpense.amount, icon: CATEGORY_META[category]?.icon || "💰" },
-      `Saída registrada em ${category}. Seus gráficos já foram atualizados.`,
-    );
-  };
 
   /* ==========================================================================
      Navigation
@@ -671,179 +571,16 @@ export default function Assistente({
             Conversation
             ================================================================= */}
 
-        <section
-          className="assistant__conversation"
-          aria-label="Conversa com o Junta.ai"
-        >
-
-          <div className="assistant__conversation-content">
-
-            <div className="assistant__messages">
-
-              {/* Empty State */}
-
-              {messages.length === 0 && !isTyping && (
-                <div className="assistant__empty-state">
-
-                  <div className="assistant__empty-icon">
-                    <img
-                      src="/src/assets/logos/logo-icon.svg"
-                      alt=""
-                    />
-                  </div>
-
-                  <h2>
-                    Vamos conversar sobre seu dinheiro?
-                  </h2>
-
-                  <p>
-                    Me conte sobre seus gastos, receitas
-                    ou objetivos. Eu posso ajudar você a
-                    entender melhor sua vida financeira.
-                  </p>
-
-                </div>
-              )}
-
-              {/* Messages */}
-
-              {messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  className={`assistant__message assistant__message--${message.type}`}
-                  initial={{
-                    opacity: 0,
-                    y: 12,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-
-                  <div className="assistant__message-bubble">
-
-                    {message.type === "assistant" && (
-                      <span
-                        className="assistant__message-brand"
-                        aria-hidden="true"
-                      >
-                        <img
-                          src="/src/assets/logos/logo-icon.svg"
-                          alt=""
-                        />
-                      </span>
-                    )}
-
-                    <p>
-                      {message.text}
-                    </p>
-
-                  </div>
-
-                </motion.div>
-              ))}
-
-              {pendingExpense && (
-                <div className="assistant__message assistant__message--assistant">
-                  <div className="assistant__message-bubble assistant__category-picker">
-                    {categories.filter((category) => category !== "Renda").map((category) => (
-                      <button type="button" key={category} onClick={() => registerExpense(category)}>
-                        {CATEGORY_META[category]?.icon || "💰"} {category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Typing Indicator */}
-
-              {isTyping && (
-                <motion.div
-                  className="assistant__message assistant__message--assistant"
-                  initial={{
-                    opacity: 0,
-                    y: 8,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.25,
-                  }}
-                >
-
-                  <div className="assistant__message-bubble assistant__message-bubble--typing">
-
-                    <span
-                      className="assistant__message-brand"
-                      aria-hidden="true"
-                    >
-                      <img
-                        src="/src/assets/logos/logo-icon.svg"
-                        alt=""
-                      />
-                    </span>
-
-                    <span
-                      className="assistant__typing"
-                      aria-label="Junta.ai está digitando"
-                    >
-                      <span />
-                      <span />
-                      <span />
-                    </span>
-
-                  </div>
-
-                </motion.div>
-              )}
-
-            </div>
-
-          </div>
-
-          {/* Composer */}
-
-          <form
-            className="assistant__composer"
-            onSubmit={handleSubmit}
-          >
-
-            <input
-              type="text"
-              className="assistant__composer-input"
-              placeholder="Digite uma mensagem..."
-              aria-label="Mensagem"
-              value={inputValue}
-              onChange={(event) =>
-                setInputValue(event.target.value)
-              }
-            />
-
-            <button
-              type="submit"
-              className="assistant__composer-button"
-              aria-label="Enviar mensagem"
-              disabled={
-                !inputValue.trim() || isTyping
-              }
-            >
-              <SendHorizontal
-                size={18}
-                strokeWidth={2}
-                aria-hidden="true"
-              />
-            </button>
-
-          </form>
-
-        </section>
+        <AssistantConversation
+          messages={messages}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          isTyping={isTyping}
+          pendingExpense={pendingExpense}
+          categories={categories}
+          handleSubmit={handleSubmit}
+          registerExpense={registerExpense}
+        />
 
         {/* =================================================================
             Sidebar
@@ -868,8 +605,9 @@ export default function Assistente({
             </div>
 
             {goalFormOpen && <form className="assistant__goal-form" onSubmit={submitGoal}>
-              <input autoFocus value={goalName} onChange={(event) => setGoalName(event.target.value)} placeholder="Nome da meta" required />
-              <input value={goalTarget} onChange={(event) => setGoalTarget(event.target.value.replace(/[^\d.,]/g, ""))} placeholder="Valor alvo" inputMode="decimal" required />
+              <input autoFocus aria-label="Nome da meta" value={goalName} onChange={(event) => setGoalName(event.target.value)} placeholder="Nome da meta" required />
+              <input aria-label="Valor alvo" value={goalTarget} onChange={(event) => setGoalTarget(event.target.value.replace(/[^\d.,]/g, ""))} placeholder="Valor alvo" inputMode="decimal" required />
+              <input aria-label="Prazo" type="date" value={goalDueDate} onChange={(event) => setGoalDueDate(event.target.value)} required />
               <div><button type="button" onClick={closeGoalForm}>Cancelar</button><button type="submit">{editingGoalId ? "Salvar" : "Criar"}</button></div>
             </form>}
 
@@ -888,6 +626,7 @@ export default function Assistente({
                 <strong className="assistant__widget-value">{percentage}%</strong>
                 <div className="assistant__goal-progress"><span style={{ width: `${percentage}%` }} /></div>
                 <div className="assistant__widget-footer"><span>R$ {current.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span><span>de R$ {item.target.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></div>
+                <p className="assistant__widget-caption">Prazo: {item.dueDate ? item.dueDate.split("-").reverse().join("/") : "Não definido"}</p>
                 <p className="assistant__widget-caption">R$ {remaining.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} restantes</p>
               </div>;
             })}

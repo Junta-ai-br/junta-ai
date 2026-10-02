@@ -19,6 +19,7 @@ import {
   saveDateRange,
   saveGoals,
   saveTransactions,
+  summarizeTransactions,
 } from "./store";
 
 beforeEach(() => {
@@ -120,6 +121,23 @@ describe("finance selectors and aggregations", () => {
     { date: "2026-08-03", category: "Alimentação", amount: -100 },
     { date: "2026-09-01", category: "Moradia", amount: -50 },
   ];
+
+  it("summarizes income, expenses, balance, and count without mutating transactions", () => {
+    const items = [
+      { amount: 1000 },
+      { amount: -250 },
+      { amount: 0 },
+    ];
+
+    expect(summarizeTransactions(items)).toEqual({
+      income: 1000,
+      expenses: 250,
+      balance: 750,
+      transactionCount: 3,
+    });
+    expect(summarizeTransactions([])).toEqual({ income: 0, expenses: 0, balance: 0, transactionCount: 0 });
+    expect(items).toEqual([{ amount: 1000 }, { amount: -250 }, { amount: 0 }]);
+  });
 
   it("filters inclusively by range and treats a null range as all time", () => {
     expect(filterByRange(transactions, { start: "2026-08-02", end: "2026-08-03" })).toEqual(transactions.slice(1, 3));

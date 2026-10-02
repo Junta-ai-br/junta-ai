@@ -113,6 +113,20 @@ export function filterByRange(transactions, range) {
   return transactions.filter((transaction) => transaction.date >= range.start && transaction.date <= range.end);
 }
 
+export function summarizeTransactions(transactions = []) {
+  const summary = transactions.reduce((totals, transaction) => {
+    if (transaction.amount > 0) totals.income += transaction.amount;
+    if (transaction.amount < 0) totals.expenses += Math.abs(transaction.amount);
+    return totals;
+  }, { income: 0, expenses: 0 });
+
+  return {
+    ...summary,
+    balance: summary.income - summary.expenses,
+    transactionCount: transactions.length,
+  };
+}
+
 export function aggregateByCategory(transactions, categories = [], categoryColors = {}) {
   const values = {};
   categories.filter((category) => category !== "Renda").forEach((category) => {
@@ -181,9 +195,7 @@ export function aggregateCategoryHistory(transactions, categories = [], category
   };
 }
 
-export function formatMoney(value) {
-  return `R$ ${Math.abs(value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+export { formatMoney } from "@/utils/formatters";
 
 export function formatDateBR(date) {
   const [year, month, day] = date.split("-");

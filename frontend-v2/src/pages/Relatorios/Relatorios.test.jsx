@@ -14,9 +14,9 @@ describe("report period helpers", () => {
     expect(getPeriodRange(month, period)).toEqual(expected);
   });
 
-  it("calculates the immediately preceding range, including leap days", () => {
+  it("calculates the immediately preceding calendar month instead of subtracting raw days", () => {
     expect(getPreviousRange({ start: "2024-03-01", end: "2024-03-31" })).toEqual({
-      start: "2024-01-30",
+      start: "2024-02-01",
       end: "2024-02-29",
     });
   });

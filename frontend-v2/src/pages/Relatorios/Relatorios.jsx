@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -26,7 +26,8 @@ import {
 } from "recharts";
 
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
-import { loadDateRange, loadTransactions } from "@/services/finance/store";
+import useFinanceData from "@/contexts/useFinanceData";
+import { loadDateRange } from "@/services/finance/store";
 import { formatCurrency } from "@/utils/formatters";
 import { exportToCSV, exportToExcel, exportToPDF } from "@/utils/report-exporters";
 import { buildReport, getPeriodRange, getPreviousRange } from "./report-utils";
@@ -43,17 +44,7 @@ function useReportQuery() {
   const [period, setPeriod] = useState("monthly");
   const [date, setDate] = useState(() => loadDateRange().start.slice(0, 7));
   const [status, setStatus] = useState("success");
-  const [transactions, setTransactions] = useState(loadTransactions);
-
-  useEffect(() => {
-    const refresh = () => setTransactions(loadTransactions());
-    window.addEventListener("junta:transactions-changed", refresh);
-    window.addEventListener("storage", refresh);
-    return () => {
-      window.removeEventListener("junta:transactions-changed", refresh);
-      window.removeEventListener("storage", refresh);
-    };
-  }, []);
+  const { transactions } = useFinanceData();
 
   const range = useMemo(() => getPeriodRange(date, period), [date, period]);
   const previousRange = useMemo(() => getPreviousRange(range), [range]);
