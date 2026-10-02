@@ -33,7 +33,13 @@ function createChatTransactionId() {
     .slice(2)}`;
 }
 
-export default function Assistente() {
+export default function Assistente({
+  className = "",
+  variant = "full",
+  height,
+  width,
+  isEmbedded = false,
+} = {}) {
   /* ==========================================================================
      State
      ========================================================================== */
@@ -65,6 +71,12 @@ export default function Assistente() {
       profile.email?.split("@")[0] ||
       "Usuário",
     avatar: profile.avatarUrl || null,
+  };
+
+  const embedded = isEmbedded || variant === "embedded";
+  const embeddedStyle = {
+    "--assistant-height": typeof height === "number" ? `${height}px` : height || "360px",
+    "--assistant-width": typeof width === "number" ? `${width}px` : width || "100%",
   };
 
   /* ==========================================================================
@@ -550,7 +562,10 @@ export default function Assistente() {
   };
 
   return (
-    <main className="assistant">
+    <main
+      className={`assistant${embedded ? " assistant--embedded" : ""}${className ? ` ${className}` : ""}`}
+      style={embeddedStyle}
+    >
 
       {/* ==================================================================
           Navigation
