@@ -3,16 +3,41 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import AppRoutes from "@/app/routes";
+import Assistente from "./Assistente";
 import { loadGoals, loadTransactions } from "@/services/finance/store";
 import { renderWithFinanceProvider } from "@/test-utils";
 
 describe("Assistente chat", () => {
+  it("preserves the embedded chat options without rendering a second navigation", async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    const { container } = renderWithFinanceProvider(
+      <Assistente variant="embedded" className="test-chat" height={280} width={420} />,
+    );
+
+    const chat = container.querySelector(".assistant--embedded");
+    expect(chat).toHaveClass("test-chat");
+    expect(chat.style.getPropertyValue("--assistant-height")).toBe("280px");
+    expect(chat.style.getPropertyValue("--assistant-width")).toBe("420px");
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+
+    await user.type(screen.getByRole("textbox", { name: "Mensagem" }), "gastei 25");
+    await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
+    await user.click(await screen.findByRole("button", { name: /Alimentação/ }));
+
+    expect(await screen.findByText("Saída registrada em Alimentação. Seus gráficos já foram atualizados.")).toBeInTheDocument();
+    expect(loadTransactions()).toEqual(expect.arrayContaining([
+      expect.objectContaining({ desc: "Saída via chat", category: "Alimentação", amount: -25 }),
+    ]));
+  });
   it("prevents empty messages and shows the typing state while replying", async () => {
     localStorage.clear();
     const user = userEvent.setup();
     renderWithFinanceProvider(<AppRoutes />, { route: "/assistente" });
 
     const input = await screen.findByRole("textbox", { name: "Mensagem" });
+    expect(screen.getAllByRole("navigation", { name: "Navegação principal" })).toHaveLength(1);
+    expect(screen.getByRole("link", { name: "Planejador" })).toHaveAttribute("href", "/planejador");
     const sendButton = screen.getByRole("button", { name: "Enviar mensagem" });
     expect(sendButton).toBeDisabled();
 

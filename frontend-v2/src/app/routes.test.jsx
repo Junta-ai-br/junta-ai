@@ -11,6 +11,12 @@ beforeEach(() => {
 });
 
 describe("lazy finance routes", () => {
+  it("integrates the Planner route with the shared navigation", async () => {
+    renderWithFinanceProvider(<AppRoutes />, { route: "/planejador" });
+
+    expect(await screen.findByRole("heading", { name: "Planeje uma meta do seu jeito." })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Planejador" })).toHaveAttribute("href", "/planejador");
+  });
   it("loads the monthly finance view asynchronously", async () => {
     renderWithFinanceProvider(<AppRoutes />, { route: "/visao-mes" });
 

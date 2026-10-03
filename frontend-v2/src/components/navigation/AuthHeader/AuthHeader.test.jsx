@@ -10,11 +10,14 @@ describe("AuthHeader", () => {
 
     expect(screen.getByRole("navigation", { name: "Navegação principal" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Planejador" })).toHaveAttribute("href", "/planejador");
     expect(screen.getByRole("link", { name: "Relatórios" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Menu de Usuário" }));
     expect(screen.getByRole("menu", { name: "Opções de Usuário" })).toBeInTheDocument();
     expect(screen.getByRole("menuitem", { name: "Perfil" })).toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
   it("renders finance actions and dispatches category creation", () => {

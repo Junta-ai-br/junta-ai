@@ -41,7 +41,12 @@ export default function AuthHeader({
     const closeUserMenu = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) setIsUserMenuOpen(false);
     };
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setIsUserMenuOpen(false);
+    };
+
     document.addEventListener("mousedown", closeUserMenu);
+    document.addEventListener("keydown", closeOnEscape);
     return () => document.removeEventListener("mousedown", closeUserMenu);
   }, []);
 
@@ -62,6 +67,7 @@ export default function AuthHeader({
         <nav className={`${styles.navigation}${isMenuOpen ? ` ${styles.navigationOpen}` : ""}`} aria-label="Navegação principal">
           <Link to="/assistente" className={linkClass("/assistente")} onClick={closeMenu}>Assistente</Link>
           <Link to="/dashboard" className={linkClass("/dashboard")} onClick={closeMenu}>Dashboard</Link>
+          <Link to="/planejador" className={linkClass("/planejador")} onClick={closeMenu}>Planejador</Link>
           <Link to="/relatorios" className={linkClass("/relatorios")} onClick={closeMenu}>Relatórios</Link>
           <Link to="/perfil" className={`${styles.navLink} ${styles.navLinkMobileOnly}`} onClick={closeMenu}>Perfil</Link>
           <Link to="/" className={`${styles.logout} ${styles.logoutMobileOnly}`} onClick={handleLogout}><LogOut size={16} /><span>Sair</span></Link>
