@@ -47,7 +47,10 @@ export default function AuthHeader({
 
     document.addEventListener("mousedown", closeUserMenu);
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("mousedown", closeUserMenu);
+    return () => {
+      document.removeEventListener("mousedown", closeUserMenu);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, []);
 
   const closeMenu = () => setIsMenuOpen(false);
