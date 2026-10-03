@@ -1,5 +1,26 @@
-import { filterByRange } from "@/services/finance/store";
+import { filterByRange, summarizeTransactions } from "@/services/finance/store";
 import { formatCurrency, formatPeriod } from "@/utils/formatters";
+
+const toUtcDate = (value) => {
+  if (value instanceof Date) return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()));
+  return new Date(`${value}T00:00:00Z`);
+};
+
+export function getMonthStart(value) {
+  const date = toUtcDate(value);
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+}
+
+export function getMonthEnd(value) {
+  const date = toUtcDate(value);
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0));
+}
+
+export function getRangeMonthCount(range) {
+  const start = toUtcDate(range.start);
+  const end = toUtcDate(range.end);
+  return (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + (end.getUTCMonth() - start.getUTCMonth()) + 1;
+}
 
 export function getPeriodRange(month, period) {
   const [year, monthNumber] = month.split("-").map(Number);
@@ -12,12 +33,15 @@ export function getPeriodRange(month, period) {
 }
 
 export function getPreviousRange(range) {
-  const start = new Date(`${range.start}T00:00:00Z`);
-  const end = new Date(`${range.end}T00:00:00Z`);
-  const duration = Math.round((end - start) / 86400000) + 1;
-  const previousEnd = new Date(start.getTime() - 86400000);
-  const previousStart = new Date(previousEnd.getTime() - (duration - 1) * 86400000);
-  return { start: previousStart.toISOString().slice(0, 10), end: previousEnd.toISOString().slice(0, 10) };
+  const start = getMonthStart(range.start);
+  const span = getRangeMonthCount(range);
+  const previousStart = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() - span, 1));
+  const previousEnd = new Date(Date.UTC(previousStart.getUTCFullYear(), previousStart.getUTCMonth() + span, 0));
+
+  return {
+    start: previousStart.toISOString().slice(0, 10),
+    end: previousEnd.toISOString().slice(0, 10),
+  };
 }
 
 export function getChange(current, previous) {
@@ -29,13 +53,8 @@ export function getChange(current, previous) {
 export function buildReport(transactions, range, previousRange) {
   const current = filterByRange(transactions, range);
   const previous = filterByRange(transactions, previousRange);
-  const summarize = (items) => {
-    const income = items.filter((item) => item.amount > 0).reduce((sum, item) => sum + item.amount, 0);
-    const expenses = items.filter((item) => item.amount < 0).reduce((sum, item) => sum + Math.abs(item.amount), 0);
-    return { income, expenses, balance: income - expenses };
-  };
-  const summary = summarize(current);
-  const previousSummary = summarize(previous);
+  const summary = summarizeTransactions(current);
+  const previousSummary = summarizeTransactions(previous);
   const weeks = Array.from({ length: 5 }, (_, index) => ({ label: `Semana ${index + 1}`, income: 0, expenses: 0 }));
   current.forEach((item) => {
     const day = Number(item.date.slice(8, 10));

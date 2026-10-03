@@ -8,6 +8,11 @@
   font-size: 0.95rem;
 }
 
+.dashboard-chat .assistant__conversation {
+  height: 360px;
+  min-height: 360px;
+}
+
 @media (max-width: 760px) {
   .dashboard-chat {
     padding: 0 16px 24px;

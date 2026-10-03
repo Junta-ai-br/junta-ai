@@ -1,5 +1,7 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
+import Spinner from "@/components/feedback/Spinner";
 import LandingLayout from "@/layouts/LandingLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 
@@ -7,7 +9,6 @@ import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
 import Planejador from "@/pages/Planejador";
-import Relatorios from "@/pages/Relatorios";
 import Perfil from "@/pages/Perfil";
 import ExcluirConta from "@/pages/ExcluirConta";
 import Planos from "@/pages/Planos";
@@ -16,55 +17,42 @@ import Contato from "@/pages/Contato";
 import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
 import FeedbackPage from "@/pages/FeedbackPage/FeedbackPage";
-import VisaoMes from "@/pages/VisaoMes/VisaoMes";
-
 import Login from "@/pages/Login/Login";
 import Cadastro from "@/pages/Cadastro/Cadastro";
 
+const Relatorios = lazy(() => import("@/pages/Relatorios"));
+const VisaoMes = lazy(() => import("@/pages/VisaoMes/VisaoMes"));
+
 function AppRoutes() {
   return (
-    <Routes>
-      {/* ================================================================
-          ÁREA PÚBLICA
-          ================================================================ */}
-      <Route element={<LandingLayout />}>
-        <Route path="/" element={<Landing />} />
-        <Route path="/planos" element={<Planos />} />
-        <Route path="/sobre" element={<Sobre />} />
-        <Route path="/contato" element={<Contato />} />
-        <Route path="/privacidade" element={<Privacidade />} />
-        <Route path="/termos" element={<Termos />} />
-        <Route path="/feedback" element={<FeedbackPage />} />
-      </Route>
+    <Suspense fallback={<Spinner />}>
+      <Routes>
+        {/* Área pública */}
+        <Route element={<LandingLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/planos" element={<Planos />} />
+          <Route path="/sobre" element={<Sobre />} />
+          <Route path="/contato" element={<Contato />} />
+          <Route path="/privacidade" element={<Privacidade />} />
+          <Route path="/termos" element={<Termos />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
+        </Route>
 
-      {/* ================================================================
-          AUTENTICAÇÃO E ÁREA INTERNA
-          ================================================================ */}
-      <Route element={<AuthLayout />}>
-        {/* Autenticação */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/cadastro" element={<Cadastro />} />
+        {/* Área de autenticação e área interna */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
 
-        {/* Navegação principal do Agente */}
-        <Route path="/assistente" element={<Assistente />} />
-        <Route path="/planejador" element={<Planejador />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/relatorios" element={<Relatorios />} />
-
-        {/* Visão financeira */}
-        <Route
-          path="/visao-mes"
-          element={<VisaoMes variant="month" />}
-        />
-
-        {/* Perfil */}
-        <Route path="/perfil" element={<Perfil />} />
-        <Route
-          path="/perfil/excluir-conta"
-          element={<ExcluirConta />}
-        />
-      </Route>
-    </Routes>
+          <Route path="/assistente" element={<Assistente />} />
+          <Route path="/planejador" element={<Planejador />} />
+          <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/relatorios" element={<Relatorios />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }
 

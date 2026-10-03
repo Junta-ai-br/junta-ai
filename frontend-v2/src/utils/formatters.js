@@ -1,15 +1,36 @@
-const currencyFormatter = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
 const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
   month: "long",
   year: "numeric",
 });
 
+function normalizeNumber(value, fallback = 0) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return fallback;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+}
+
 export function formatCurrency(value) {
-  return currencyFormatter.format(value);
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(normalizeNumber(value)).replace(/\u00a0/g, " ");
+}
+
+export function formatMoney(value) {
+  return formatCurrency(Math.abs(normalizeNumber(value)));
+}
+
+export function formatPercent(value) {
+  const numeric = normalizeNumber(value);
+  const normalized = Math.abs(numeric) > 1 ? numeric / 100 : numeric;
+
+  return new Intl.NumberFormat("pt-BR", {
+    style: "percent",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(normalized).replace(/\u00a0/g, " ");
 }
 
 export function formatPeriod(value) {
@@ -24,5 +45,5 @@ export function formatCompactCurrency(value) {
     currency: "BRL",
     notation: "compact",
     maximumFractionDigits: 1,
-  }).format(value);
+  }).format(normalizeNumber(value)).replace(/\u00a0/g, " ");
 }

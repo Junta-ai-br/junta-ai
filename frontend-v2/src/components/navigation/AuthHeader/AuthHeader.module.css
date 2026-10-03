@@ -1,0 +1,279 @@
+.navbar {
+  position: relative;
+  width: min(1232px, 100%);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbarInner {
+  display: flex;
+  align-items: center;
+  min-height: 4.5rem;
+  gap: 2rem;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.logo img {
+  display: block;
+  width: auto;
+  height: 2.6rem;
+  object-fit: contain;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  color: var(--text-secondary);
+  font-size: var(--font-body);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease-standard), background-color var(--transition-fast) var(--ease-standard), border-color var(--transition-fast) var(--ease-standard);
+}
+
+.navLink:hover {
+  color: var(--text-primary);
+  background: rgba(113, 64, 250, 0.08);
+  border-color: rgba(113, 64, 250, 0.16);
+}
+
+.navLinkActive {
+  color: var(--brand-primary);
+  background: rgba(113, 64, 250, 0.10);
+  border-color: rgba(113, 64, 250, 0.18);
+}
+
+.navbarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-shrink: 0;
+  margin-left: 0.75rem;
+}
+
+.financeActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categoryButton {
+  padding: 9px 12px;
+  border: 1px solid var(--finance-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--finance-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.userMenu {
+  position: relative;
+}
+
+.user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.35rem 0.25rem 0.25rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--font-body);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast) var(--ease-standard), border-color var(--transition-fast) var(--ease-standard);
+}
+
+.user:hover,
+.userOpen {
+  background: rgba(113, 64, 250, 0.08);
+  border-color: rgba(113, 64, 250, 0.16);
+}
+
+.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userAvatarPlaceholder {
+  background: var(--brand-primary);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: var(--font-semibold);
+}
+
+.userName {
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.user svg {
+  transition: transform var(--transition-fast) var(--ease-standard);
+}
+
+.userOpen svg {
+  transform: rotate(180deg);
+}
+
+.userDropdown {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.65rem);
+  right: 0;
+  width: 190px;
+  padding: 0.45rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 24px rgba(113, 64, 250, 0.06);
+  animation: dropdownIn 160ms ease-out;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-5px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.userDropdownItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0.6rem;
+  padding: 0.7rem 0.75rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: var(--font-small);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-fast) var(--ease-standard), background-color var(--transition-fast) var(--ease-standard);
+}
+
+.userDropdownItem:hover {
+  background: rgba(113, 64, 250, 0.08);
+  color: var(--text-primary);
+}
+
+.userDropdownDivider {
+  height: 1px;
+  margin: 0.35rem 0.45rem;
+  background: var(--border);
+}
+
+.userDropdownLogout:hover {
+  background: rgba(217, 92, 92, 0.08);
+  color: #d95c5c;
+}
+
+.menuToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.navLinkMobileOnly,
+.logoutMobileOnly {
+  display: none;
+}
+
+.logout {
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.8rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: var(--font-small);
+  font-weight: var(--font-medium);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logout:hover {
+  background: rgba(113, 64, 250, 0.08);
+  color: var(--text-primary);
+}
+
+@media (max-width: 992px) {
+  .navbar { padding-inline: 1rem; }
+  .navbarInner { gap: 1rem; }
+  .navigation { gap: 0.15rem; }
+  .navLink { padding-inline: 0.7rem; font-size: var(--font-small); }
+  .userName { display: none; }
+}
+
+@media (max-width: 768px) {
+  .navbar { padding-inline: 0.75rem; border-radius: 1.25rem; }
+  .navbarInner { min-height: 3.75rem; }
+  .logo img { height: 2.2rem; }
+  .navigation {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 0.75rem);
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+  .navigationOpen { display: flex; }
+  .navLink { width: 100%; padding: 0.8rem; border-radius: 0.7rem; }
+  .navLinkMobileOnly,
+  .logoutMobileOnly { display: flex; }
+  .userMenu,
+  .user { display: none; }
+  .menuToggle { display: flex; }
+  .navbarActions { margin-left: auto; }
+}
