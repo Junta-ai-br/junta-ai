@@ -17,6 +17,7 @@ import Privacidade from "@/pages/Privacidade";
 import Termos from "@/pages/Termos";
 import FeedbackPage from "@/pages/FeedbackPage/FeedbackPage";
 import VisaoMes from "@/pages/VisaoMes/VisaoMes";
+import HistoricoPlanejador from "@/pages/Planejador/Historico";
 
 import Login from "@/pages/Login/Login";
 import Cadastro from "@/pages/Cadastro/Cadastro";
@@ -48,21 +49,16 @@ function AppRoutes() {
         {/* Navegação principal do Agente */}
         <Route path="/assistente" element={<Assistente />} />
         <Route path="/planejador" element={<Planejador />} />
+        <Route path="/planejador/historico" element={<HistoricoPlanejador />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
 
         {/* Visão financeira */}
-        <Route
-          path="/visao-mes"
-          element={<VisaoMes variant="month" />}
-        />
+        <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
 
         {/* Perfil */}
         <Route path="/perfil" element={<Perfil />} />
-        <Route
-          path="/perfil/excluir-conta"
-          element={<ExcluirConta />}
-        />
+        <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
       </Route>
     </Routes>
   );

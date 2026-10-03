@@ -17,3 +17,18 @@ export function savePlannerSimulation(simulation) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...simulations, simulation]));
   return simulation;
 }
+
+export function removePlannerSimulation(id) {
+  const simulations = loadPlannerSimulations();
+
+  const nextSimulations = simulations.filter(
+    (simulation) => simulation.id !== id
+  );
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(nextSimulations)
+  );
+
+  return nextSimulations;
+}
