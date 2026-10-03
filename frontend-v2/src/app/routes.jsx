@@ -6,6 +6,7 @@ import AuthLayout from "@/layouts/AuthLayout";
 import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
+import Planejador from "@/pages/Planejador";
 import Relatorios from "@/pages/Relatorios";
 import Perfil from "@/pages/Perfil";
 import ExcluirConta from "@/pages/ExcluirConta";
@@ -23,7 +24,9 @@ import Cadastro from "@/pages/Cadastro/Cadastro";
 function AppRoutes() {
   return (
     <Routes>
-      {/* Área pública */}
+      {/* ================================================================
+          ÁREA PÚBLICA
+          ================================================================ */}
       <Route element={<LandingLayout />}>
         <Route path="/" element={<Landing />} />
         <Route path="/planos" element={<Planos />} />
@@ -34,17 +37,32 @@ function AppRoutes() {
         <Route path="/feedback" element={<FeedbackPage />} />
       </Route>
 
-      {/* Área de autenticação e área interna */}
+      {/* ================================================================
+          AUTENTICAÇÃO E ÁREA INTERNA
+          ================================================================ */}
       <Route element={<AuthLayout />}>
+        {/* Autenticação */}
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
 
+        {/* Navegação principal do Agente */}
         <Route path="/assistente" element={<Assistente />} />
-        <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
+        <Route path="/planejador" element={<Planejador />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorios" element={<Relatorios />} />
+
+        {/* Visão financeira */}
+        <Route
+          path="/visao-mes"
+          element={<VisaoMes variant="month" />}
+        />
+
+        {/* Perfil */}
         <Route path="/perfil" element={<Perfil />} />
-        <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
+        <Route
+          path="/perfil/excluir-conta"
+          element={<ExcluirConta />}
+        />
       </Route>
     </Routes>
   );
