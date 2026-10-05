@@ -106,7 +106,6 @@ export default function AuthHeader({
             </button>
             {isUserMenuOpen && <div className={styles.userDropdown} role="menu" aria-label={`Opções de ${user.name}`}>
               <Link to="/perfil" className={styles.userDropdownItem} role="menuitem" onClick={() => setIsUserMenuOpen(false)}>Perfil</Link>
-              <Link to="/configuracoes" className={styles.userDropdownItem} role="menuitem" onClick={() => setIsUserMenuOpen(false)}>Configurações</Link>
               <div className={styles.userDropdownDivider} />
               <Link to="/" className={`${styles.userDropdownItem} ${styles.userDropdownLogout}`} role="menuitem" onClick={handleLogout}><LogOut size={16} /><span>Sair</span></Link>
             </div>}

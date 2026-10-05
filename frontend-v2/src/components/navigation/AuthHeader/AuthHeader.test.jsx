@@ -16,6 +16,9 @@ describe("AuthHeader", () => {
     fireEvent.click(screen.getByRole("button", { name: "Menu de Usuário" }));
     expect(screen.getByRole("menu", { name: "Opções de Usuário" })).toBeInTheDocument();
     expect(screen.getByRole("menuitem", { name: "Perfil" })).toBeInTheDocument();
+    expect(screen.getAllByRole("menuitem").map((item) => item.textContent)).toEqual(["Perfil", "Sair"]);
+    expect(screen.getByRole("menuitem", { name: "Perfil" })).toHaveAttribute("href", "/perfil");
+    expect(screen.getByRole("menuitem", { name: "Sair" })).toHaveAttribute("href", "/");
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
