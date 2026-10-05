@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import { API_URL } from "@/services/api";
+import { loginWithGoogle } from "@/services/auth/auth.api";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
@@ -13,7 +16,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const RESEND_COOLDOWN = 30;
 
 export default function LoginForm() {
-  const { updateProfile } = useUser();
+  const { updateProfile, establishSession, endSession } = useUser();
 
   const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
@@ -85,6 +88,7 @@ export default function LoginForm() {
         return;
       }
 
+      endSession();
       updateProfile({ email });
 
       setStatus(result.message);
@@ -107,6 +111,40 @@ export default function LoginForm() {
   }
 
   async function handleGoogleSuccess(response) {
+    if (loadingAction) return;
+    clearMessages();
+    setLoadingAction("google");
+
+    try {
+      if (typeof response?.credential !== "string" || !response.credential.trim()) {
+        throw new Error("Google response has no ID token.");
+      }
+
+      const tokens = await loginWithGoogle(response.credential);
+      establishSession(tokens);
+      // Claims only populate the display profile. Authentication is validated by the backend.
+      let profile = {};
+      try {
+        profile = jwtDecode(response.credential) || {};
+      } catch {
+        // Missing display data must not discard a backend-confirmed session.
+      }
+      updateProfile({
+        email: profile.email || "",
+        nome: profile.name || "",
+        avatarUrl: profile.picture || "",
+      });
+      setEmail(profile.email || "");
+      setStatus("Login realizado com sucesso.");
+      setStep("success");
+    } catch {
+      setError("Não foi possível concluir o login com o Google.");
+    } finally {
+      setLoadingAction(null);
+    }
+  }
+
+  async function handleLegacyGoogleSuccess(response) {
     clearMessages();
     setLoadingAction("google");
 
@@ -134,6 +172,7 @@ export default function LoginForm() {
         throw new Error("Google profile has no email.");
       }
 
+      endSession();
       updateProfile({
         email: profile.email,
         nome: profile.name || "",
@@ -210,6 +249,7 @@ export default function LoginForm() {
           loading={loadingAction === "google"}
           disabled={loadingAction !== null}
           onSuccess={handleGoogleSuccess}
+          onLegacySuccess={handleLegacyGoogleSuccess}
           onError={handleGoogleError}
           onUnavailable={handleGoogleUnavailable}
         />
@@ -336,6 +376,7 @@ function GoogleLoginButton({
   loading,
   disabled,
   onSuccess,
+  onLegacySuccess,
   onError,
   onUnavailable,
 }) {
@@ -355,11 +396,30 @@ function GoogleLoginButton({
     );
   }
 
+  if (API_URL) {
+    return (
+      <div aria-busy={loading}>
+        {disabled ? (
+          <p role="status">{loading ? "Entrando com Google..." : "Aguarde..."}</p>
+        ) : (
+          <GoogleLogin
+            onSuccess={onSuccess}
+            onError={onError}
+            theme="outline"
+            size="large"
+            text="continue_with"
+            locale="pt-BR"
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <GoogleLoginButtonConfigured
       loading={loading}
       disabled={disabled}
-      onSuccess={onSuccess}
+      onSuccess={onLegacySuccess}
       onError={onError}
     />
   );

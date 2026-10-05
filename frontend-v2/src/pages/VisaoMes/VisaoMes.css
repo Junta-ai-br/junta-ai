@@ -39,6 +39,12 @@
 .category-empty { color: #888; font-size: .9rem; }
 .transaction-list { display: grid; gap: 5px; }
 .transaction { justify-content: flex-start; }
+.transaction-actions { display: flex; flex: 0 0 auto !important; gap: 8px; }
+.transaction-actions button { border: 0; padding: 4px 2px; color: #7c3aed; background: transparent; cursor: pointer; font-size: .8rem; }
+.transaction-actions button:last-child { color: #d45c5c; }
+.transaction-category-filter { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: .85rem; }
+.transaction-category-filter select, .category-modal select { min-width: 140px; padding: 8px 10px; border: 1px solid #777; border-radius: 7px; background: transparent; color: inherit; }
+.finance-empty-state { margin: 16px 5vw 0; padding: 14px 16px; border: 1px solid rgba(127,127,127,.25); border-radius: 8px; color: #777; }
 .transaction-icon { font-size: 1.25rem; }
 .transaction div { flex: 1; }
 .transaction strong, .transaction small { display: block; }
@@ -48,6 +54,7 @@
 .category-modal form { width: min(100%, 380px); padding: 22px; border: 1px solid; border-radius: 12px; }
 .category-modal h2 { margin-top: 0; }
 .category-modal input { width: 100%; padding: 11px; border: 1px solid #777; border-radius: 7px; background: transparent; color: inherit; box-sizing: border-box; }
+.category-modal form > label:not(.category-color-field) { display: grid; gap: 5px; margin-top: 10px; font-size: .88rem; }
 .category-modal form > div { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
 .category-color-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: .9rem; }
 .category-color-field input[type="color"] { width: 48px; height: 36px; padding: 2px; cursor: pointer; }

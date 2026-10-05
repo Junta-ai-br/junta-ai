@@ -1,8 +1,9 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Planejador from "@/pages/Planejador";
 import { loadPlannerSimulations } from "@/services/planner/store";
+import { renderWithFinanceProvider } from "@/test-utils";
+import { saveTransactions } from "@/services/finance/store";
 
 const navigate = vi.hoisted(() => vi.fn());
 vi.mock("react-router-dom", async (original) => ({ ...(await original()), useNavigate: () => navigate }));
@@ -15,7 +16,7 @@ function setup(withHistory = false) {
     { date, amount: 4000, category: "Renda" },
     { date, amount: -1000, category: "Moradia" },
   ]));
-  const view = render(<MemoryRouter><Planejador /></MemoryRouter>);
+  const view = renderWithFinanceProvider(<Planejador />);
   if (!withHistory) fireEvent.click(screen.getByRole("button", { name: /Sem histórico/ }));
   fireEvent.change(view.container.querySelector("#goal-name"), { target: { value: "Reserva" } });
   fireEvent.change(view.container.querySelector("#goal-amount"), { target: { value: "1200000" } });
@@ -104,5 +105,41 @@ describe("Planner actions", () => {
     act(() => vi.advanceTimersByTime(400));
     expect(screen.queryByRole("slider")).not.toBeInTheDocument();
     expect(loadPlannerSimulations()).toEqual([]);
+  });
+  it("preserves cents in the generated reference and saved slider snapshot", () => {
+    const view = setup();
+    fireEvent.change(view.container.querySelector("#goal-amount"), { target: { value: "500000" } });
+    fireEvent.change(view.container.querySelector("#goal-deadline"), { target: { value: "6" } });
+    fireEvent.click(screen.getByRole("button", { name: /Criar planejamento/ }));
+    act(() => vi.advanceTimersByTime(400));
+    expect(screen.getByRole("slider")).toHaveValue("833.34");
+    expect(screen.getByRole("slider")).toHaveAttribute("step", "0.01");
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "900.25" } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar simulação" }));
+    expect(loadPlannerSimulations()[0].simulation).toEqual({ monthlyAmount: 900.25, estimatedMonths: 6 });
+  });
+  it("keeps exact cent amounts and supports goals below one real", () => {
+    const view = setup();
+    fireEvent.change(view.container.querySelector("#goal-amount"), { target: { value: "1" } });
+    fireEvent.change(view.container.querySelector("#goal-deadline"), { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: /Criar planejamento/ }));
+    act(() => vi.advanceTimersByTime(400));
+    expect(screen.getByRole("slider")).toHaveValue("0.01");
+    fireEvent.click(screen.getByRole("button", { name: "Salvar simulação" }));
+    expect(loadPlannerSimulations()[0].simulation).toEqual({ monthlyAmount: 0.01, estimatedMonths: 1 });
+  });
+  it("uses financial updates from the shared provider when regenerating", () => {
+    setup(true);
+    const now = new Date();
+    const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+    act(() => saveTransactions([
+      { date, amount: 5000, category: "Renda" },
+      { date, amount: -1000, category: "Moradia" },
+    ]));
+    fireEvent.click(screen.getByRole("button", { name: /Criar planejamento/ }));
+    act(() => vi.advanceTimersByTime(400));
+    expect(screen.getByRole("slider")).toHaveValue("4000");
+    fireEvent.click(screen.getByRole("button", { name: "Salvar simulação" }));
+    expect(loadPlannerSimulations()[0].historyContext).toMatchObject({ income: 5000, available: 4000 });
   });
 });
