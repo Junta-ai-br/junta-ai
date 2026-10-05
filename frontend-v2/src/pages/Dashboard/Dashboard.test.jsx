@@ -20,8 +20,8 @@ describe("Dashboard", () => {
       },
     });
 
+    expect(await screen.findByRole("heading", { name: "Converse com o Assistente" })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Converse com o Assistente" })).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Mensagem" })).toBeInTheDocument();
     expect(screen.getByText("Vamos conversar sobre seu dinheiro?")).toBeInTheDocument();
     expect(within(screen.getByText("Receitas").closest("article")).getByText("R$ 1.000,00")).toBeInTheDocument();
