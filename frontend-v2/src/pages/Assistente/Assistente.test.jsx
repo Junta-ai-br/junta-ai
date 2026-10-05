@@ -95,7 +95,7 @@ describe("Assistente chat", () => {
       initialFinanceData: { transactions: [], goals: [] },
     });
 
-    const goalsRegion = within(screen.getByRole("complementary", { name: "Resumo da sua vida financeira" }));
+    const goalsRegion = within(await screen.findByRole("complementary", { name: "Resumo da sua vida financeira" }));
     await user.click(goalsRegion.getByRole("button", { name: /Nova meta/ }));
     await user.click(screen.getByRole("button", { name: "Criar" }));
     expect(loadGoals()).toEqual([]);
