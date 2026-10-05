@@ -9,6 +9,7 @@ import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Assistente from "@/pages/Assistente";
 import Planejador from "@/pages/Planejador";
+import HistoricoPlanejador from "@/pages/Planejador/Historico";
 import Perfil from "@/pages/Perfil";
 import ExcluirConta from "@/pages/ExcluirConta";
 import Planos from "@/pages/Planos";
@@ -45,6 +46,7 @@ function AppRoutes() {
 
           <Route path="/assistente" element={<Assistente />} />
           <Route path="/planejador" element={<Planejador />} />
+          <Route path="/planejador/historico" element={<HistoricoPlanejador />} />
           <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/relatorios" element={<Relatorios />} />

@@ -11,6 +11,12 @@ beforeEach(() => {
 });
 
 describe("lazy finance routes", () => {
+  it("integrates Planner history with the shared navigation", async () => {
+    renderWithFinanceProvider(<AppRoutes />, { route: "/planejador/historico" });
+    expect(await screen.findByRole("heading", { name: "Histórico de simulações" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Planejador" })).toHaveAttribute("href", "/planejador");
+    expect(screen.getByRole("link", { name: "Nova simulação" })).toHaveAttribute("href", "/planejador");
+  });
   it("integrates the Planner route with the shared navigation", async () => {
     renderWithFinanceProvider(<AppRoutes />, { route: "/planejador" });
 

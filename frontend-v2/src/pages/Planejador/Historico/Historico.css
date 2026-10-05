@@ -1,0 +1,605 @@
+/* =========================================================
+   Histórico do Planejador
+   ========================================================= */
+
+.planner-history-page {
+  min-height: 100vh;
+
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+.planner-history-page__container {
+  width: min(100% - 48px, 1180px);
+
+  margin: 0 auto;
+  padding: 72px 0 96px;
+}
+
+/* =========================================================
+   Hero
+   ========================================================= */
+
+.planner-history-page__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-32);
+
+  margin-bottom: var(--spacing-32);
+}
+
+.planner-history-page__heading {
+  min-width: 0;
+}
+
+.planner-history-page__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  margin-bottom: var(--spacing-12);
+
+  color: var(--brand-accent);
+
+  font-size: 12px;
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: var(--line-height-normal);
+  text-transform: uppercase;
+}
+
+.planner-history-page__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.08;
+}
+
+.planner-history-page__description {
+  max-width: 620px;
+
+  margin: var(--spacing-12) 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+  line-height: var(--line-height-normal);
+}
+
+/* =========================================================
+   Nova simulação
+   ========================================================= */
+
+.planner-history-page__new {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+
+  min-height: 44px;
+  padding: 0 var(--spacing-16);
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background: var(--surface);
+  color: var(--text-primary);
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: var(--font-semibold);
+
+  transition:
+    border-color var(--transition-fast) ease,
+    background var(--transition-fast) ease,
+    color var(--transition-fast) ease,
+    transform var(--transition-fast) ease;
+}
+
+.planner-history-page__new:hover {
+  border-color: var(--brand-primary);
+
+  background: color-mix(
+    in srgb,
+    var(--brand-primary) 8%,
+    var(--surface)
+  );
+
+  color: var(--brand-primary);
+}
+
+.planner-history-page__new:active {
+  transform: translateY(1px);
+}
+
+.planner-history-page__new:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   Erro
+   ========================================================= */
+
+.planner-history-page__error {
+  margin-bottom: var(--spacing-24);
+  padding: var(--spacing-12) var(--spacing-16);
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--error) 35%,
+      var(--border)
+    );
+
+  border-radius: 12px;
+
+  background: color-mix(
+    in srgb,
+    var(--error) 8%,
+    var(--surface)
+  );
+
+  color: var(--error);
+
+  font-size: 13px;
+  line-height: var(--line-height-normal);
+}
+
+/* =========================================================
+   Lista
+   ========================================================= */
+
+.planner-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+/* =========================================================
+   Card
+   ========================================================= */
+
+.planner-history-card {
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease,
+    transform var(--transition-fast) ease;
+}
+
+.planner-history-card:hover {
+  border-color: var(--border-strong);
+}
+
+.planner-history-card--expanded {
+  border-color: color-mix(
+    in srgb,
+    var(--brand-primary) 24%,
+    var(--border)
+  );
+}
+
+.planner-history-card__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-24);
+
+  min-height: 112px;
+
+  padding: var(--spacing-20);
+}
+
+.planner-history-card__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.planner-history-card__eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--brand-primary);
+
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.planner-history-card__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-8) var(--spacing-16);
+}
+
+.planner-history-card__title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: 20px;
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.25;
+}
+
+.planner-history-card__date {
+  color: var(--text-muted);
+
+  font-size: 11px;
+  line-height: var(--line-height-normal);
+}
+
+.planner-history-card__summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  margin-top: 7px;
+
+  color: var(--text-secondary);
+
+  font-size: 12px;
+  line-height: var(--line-height-normal);
+}
+
+.planner-history-card__summary strong {
+  color: inherit;
+  font-weight: var(--font-medium);
+}
+
+.planner-history-card__separator {
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   Ações
+   ========================================================= */
+
+.planner-history-card__actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--spacing-12);
+}
+
+.planner-history-card__details,
+.planner-history-card__delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+
+  min-height: 42px;
+
+  padding: 0 var(--spacing-16);
+
+  border-radius: 10px;
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: var(--font-medium);
+
+  cursor: pointer;
+
+  transition:
+    border-color var(--transition-fast) ease,
+    background var(--transition-fast) ease,
+    color var(--transition-fast) ease;
+}
+
+.planner-history-card__details {
+  border: 1px solid var(--border);
+
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+}
+
+.planner-history-card__details:hover {
+  border-color: var(--border-strong);
+
+  background: color-mix(
+    in srgb,
+    var(--brand-primary) 6%,
+    var(--surface-elevated)
+  );
+}
+
+.planner-history-card__delete {
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--error) 38%,
+      var(--border)
+    );
+
+  background: transparent;
+  color: var(--error);
+}
+
+.planner-history-card__delete:hover {
+  background: color-mix(
+    in srgb,
+    var(--error) 8%,
+    transparent
+  );
+
+  border-color: var(--error);
+}
+
+.planner-history-card__details:focus-visible,
+.planner-history-card__delete:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   Detalhes
+   ========================================================= */
+
+.planner-history-card__details-content {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-16);
+
+  padding:
+    var(--spacing-20)
+    var(--spacing-20)
+    var(--spacing-24);
+
+  border-top: 1px solid var(--border);
+
+  background: color-mix(
+    in srgb,
+    var(--surface-elevated) 65%,
+    var(--surface)
+  );
+}
+
+.planner-history-card__detail {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.planner-history-card__detail span {
+  color: var(--text-muted);
+
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.planner-history-card__detail strong {
+  overflow-wrap: anywhere;
+
+  color: var(--text-primary);
+
+  font-size: 14px;
+  font-weight: var(--font-semibold);
+  line-height: 1.4;
+}
+
+/* =========================================================
+   Estado vazio
+   ========================================================= */
+
+.planner-history-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  max-width: 620px;
+
+  margin: 72px auto 0;
+  padding: 56px var(--spacing-32);
+
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  background: var(--surface);
+
+  text-align: center;
+
+  box-shadow: var(--shadow-sm);
+}
+
+.planner-history-empty__icon {
+  display: grid;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  margin-bottom: var(--spacing-16);
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--brand-primary) 28%,
+      var(--border)
+    );
+
+  border-radius: 14px;
+
+  background: color-mix(
+    in srgb,
+    var(--brand-primary) 8%,
+    var(--surface)
+  );
+
+  color: var(--brand-primary);
+}
+
+.planner-history-empty__eyebrow {
+  color: var(--brand-accent);
+
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.planner-history-empty__title {
+  margin: 7px 0 8px;
+
+  color: var(--text-primary);
+
+  font-size: 24px;
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.planner-history-empty__description {
+  max-width: 420px;
+
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  line-height: var(--line-height-normal);
+}
+
+.planner-history-empty__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+
+  min-height: 42px;
+
+  margin-top: var(--spacing-24);
+  padding: 0 var(--spacing-16);
+
+  border-radius: 999px;
+
+  background: var(--brand-primary);
+  color: var(--text-inverse);
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: var(--font-semibold);
+
+  transition:
+    opacity var(--transition-fast) ease,
+    transform var(--transition-fast) ease;
+}
+
+.planner-history-empty__action:hover {
+  opacity: 0.92;
+}
+
+.planner-history-empty__action:active {
+  transform: translateY(1px);
+}
+
+.planner-history-empty__action:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   Responsividade
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .planner-history-page__container {
+    width: min(100% - 32px, 760px);
+    padding-top: 48px;
+  }
+
+  .planner-history-card__details-content {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .planner-history-page__container {
+    width: min(100% - 24px, 560px);
+    padding: 36px 0 64px;
+  }
+
+  .planner-history-page__hero {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--spacing-20);
+
+    margin-bottom: var(--spacing-24);
+  }
+
+  .planner-history-page__title {
+    font-size: 36px;
+  }
+
+  .planner-history-page__new {
+    width: 100%;
+  }
+
+  .planner-history-card__main {
+    align-items: stretch;
+    flex-direction: column;
+
+    min-height: auto;
+
+    padding: var(--spacing-16);
+  }
+
+  .planner-history-card__actions {
+    width: 100%;
+  }
+
+  .planner-history-card__details,
+  .planner-history-card__delete {
+    flex: 1;
+  }
+
+  .planner-history-card__details-content {
+    grid-template-columns: 1fr;
+
+    padding:
+      var(--spacing-16)
+      var(--spacing-16)
+      var(--spacing-20);
+  }
+
+  .planner-history-empty {
+    margin-top: 40px;
+    padding: 40px var(--spacing-20);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planner-history-page *,
+  .planner-history-page *::before,
+  .planner-history-page *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

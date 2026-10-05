@@ -19,7 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
-import { loadTransactions } from "@/services/finance/store";
+import useFinanceData from "@/contexts/useFinanceData";
 import { savePlannerSimulation } from "@/services/planner/store";
 
 import "./Planejador.css";
@@ -191,6 +191,10 @@ function formatCurrency(value) {
   }).format(value);
 }
 
+function roundUpToCents(value) {
+  return Math.ceil(Number((value * 100).toFixed(8))) / 100;
+}
+
 export default function Planejador() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -224,7 +228,7 @@ export default function Planejador() {
     window.scrollTo({ top: 0, behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
 
-  const transactions = useMemo(() => loadTransactions(), []);
+  const { transactions } = useFinanceData();
 
   const selectedPeriod = useMemo(
     () => PERIOD_OPTIONS.find((option) => option.id === form.period),
@@ -288,7 +292,7 @@ export default function Planejador() {
       return 0;
     }
 
-    return Math.max(1, Math.round(planningMonthlyReference * 0.2));
+    return Math.max(0.01, roundUpToCents(planningMonthlyReference * 0.2));
   }, [planningMonthlyReference]);
 
   const simulationMax = useMemo(() => {
@@ -296,7 +300,7 @@ export default function Planejador() {
       return 0;
     }
 
-    return Math.max(simulationMin, Math.round(planningMonthlyReference * 2));
+    return Math.max(simulationMin, roundUpToCents(planningMonthlyReference * 2));
   }, [planningMonthlyReference, simulationMin]);
 
   const estimatedMonths = useMemo(() => {
@@ -409,7 +413,7 @@ export default function Planejador() {
     console.log("Junta.ai — planejamento:", planningData);
 
     const initialSimulation = Math.min(
-      Math.max(Math.round(planningMonthlyReference), simulationMin),
+      Math.max(roundUpToCents(planningMonthlyReference), simulationMin),
       simulationMax,
     );
 
@@ -1142,7 +1146,7 @@ export default function Planejador() {
                     type="range"
                     min={simulationMin}
                     max={simulationMax}
-                    step="1"
+                    step="0.01"
                     value={simulationAmount}
                     onChange={handleSimulationChange}
                     aria-label="Valor mensal para simulação"
