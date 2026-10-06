@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Spinner from "@/components/feedback/Spinner";
 import LandingLayout from "@/layouts/LandingLayout";
 import AuthLayout from "@/layouts/AuthLayout";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const Landing = lazy(() => import("@/pages/Landing"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -44,14 +45,16 @@ function AppRoutes() {
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
 
-          <Route path="/assistente" element={<Assistente />} />
-          <Route path="/planejador" element={<Planejador />} />
-          <Route path="/planejador/historico" element={<HistoricoPlanejador />} />
-          <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/relatorios" element={<Relatorios />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/assistente" element={<Assistente />} />
+            <Route path="/planejador" element={<Planejador />} />
+            <Route path="/planejador/historico" element={<HistoricoPlanejador />} />
+            <Route path="/visao-mes" element={<VisaoMes variant="month" />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/relatorios" element={<Relatorios />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/perfil/excluir-conta" element={<ExcluirConta />} />
+          </Route>
         </Route>
       </Routes>
     </Suspense>

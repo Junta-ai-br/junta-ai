@@ -3,6 +3,21 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const google = vi.hoisted(() => ({ credential: undefined, login: vi.fn(), legacySuccess: null }));
 const loginWithGoogle = vi.hoisted(() => vi.fn());
+const navigation = vi.hoisted(() => vi.fn());
+
+vi.mock("react-router-dom", async (importOriginal) => {
+  const router = await importOriginal();
+  return {
+    ...router,
+    useNavigate: () => {
+      const navigate = router.useNavigate();
+      return (...args) => {
+        navigation(...args);
+        return navigate(...args);
+      };
+    },
+  };
+});
 
 vi.mock("@react-oauth/google", () => ({
   GoogleOAuthProvider: ({ children }) => <div data-testid="google-provider">{children}</div>,
@@ -25,7 +40,35 @@ async function renderLogin(clientId = "", apiUrl = "") {
   vi.resetModules();
   const { default: AppProviders } = await import("@/app/providers");
   const { default: LoginForm } = await import("./LoginForm");
-  render(<AppProviders><LoginForm /></AppProviders>);
+  const { MemoryRouter, Routes, Route, useLocation } = await import("react-router-dom");
+  const { useUser } = await import("@/contexts/useUser");
+
+  function Destination() {
+    const { isAuthenticated, profile } = useUser();
+    return (
+      <div>
+        <p>Assistente de teste</p>
+        <p>{isAuthenticated ? "Sessão confirmada" : "Sem sessão"}</p>
+        <p>{profile.email}</p>
+      </div>
+    );
+  }
+
+  function Location() {
+    return <output data-testid="location">{useLocation().pathname}</output>;
+  }
+
+  render(
+    <MemoryRouter initialEntries={["/login"]}>
+      <AppProviders>
+        <Location />
+        <Routes>
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/assistente" element={<Destination />} />
+        </Routes>
+      </AppProviders>
+    </MemoryRouter>,
+  );
 }
 
 beforeEach(() => {
@@ -54,6 +97,8 @@ describe("Google login and compatibility", () => {
     fireEvent.change(await screen.findByRole("textbox", { name: "Chave de acesso" }), { target: { value: "123456" } });
     fireEvent.click(screen.getByRole("button", { name: "Confirmar chave" }));
     expect(await screen.findByText("Tudo pronto.")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    expect(navigation).not.toHaveBeenCalled();
     expect(JSON.parse(localStorage.getItem("junta_user_profile")).email).toBe("ana@example.com");
     expect(loginWithGoogle).not.toHaveBeenCalled();
     expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
@@ -74,6 +119,8 @@ describe("Google login and compatibility", () => {
     expect(screen.queryByText("Google oficial")).not.toBeInTheDocument();
     expect(loginWithGoogle).not.toHaveBeenCalled();
     expect(await screen.findByText("Tudo pronto.")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    expect(navigation).not.toHaveBeenCalled();
     expect(fetchProfile).toHaveBeenCalledWith("https://www.googleapis.com/oauth2/v3/userinfo", {
       headers: { Authorization: "Bearer legacy-access" },
     });
@@ -81,22 +128,41 @@ describe("Google login and compatibility", () => {
     expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
   });
 
-  it("rejects responses without credential without contacting the backend", async () => {
+  it.each([undefined, "", "   "])("rejects credential %j without contacting the backend or navigating", async (credential) => {
+    google.credential = credential;
     await renderLogin("configured-client", "https://api.example.test");
     fireEvent.click(screen.getByText("Google oficial"));
     expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível concluir");
     expect(loginWithGoogle).not.toHaveBeenCalled();
     expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
+    expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    expect(navigation).not.toHaveBeenCalled();
   });
 
-  it("exchanges the ID token and persists application tokens and display profile", async () => {
+  it("navigates to /assistente only after the backend confirms and the session and profile are established", async () => {
     google.credential = `eyJhbGciOiJSUzI1NiJ9.${btoa(JSON.stringify({ email: "ana@example.com", name: "Ana", picture: "https://example.test/avatar" }))}.signature`;
     const tokens = { accessToken: "app-access", refreshToken: "app-refresh", expiresInSeconds: 900 };
-    loginWithGoogle.mockResolvedValue(tokens);
+    navigation.mockImplementation(() => {
+      expect(loginWithGoogle).toHaveBeenCalledWith(google.credential);
+      expect(JSON.parse(sessionStorage.getItem("junta_auth_session"))).toMatchObject(tokens);
+    });
+    let confirmLogin;
+    loginWithGoogle.mockReturnValue(new Promise((resolve) => { confirmLogin = resolve; }));
     await renderLogin("configured-client", "https://api.example.test");
     fireEvent.click(screen.getByText("Google oficial"));
-    expect(await screen.findByText("Tudo pronto.")).toBeInTheDocument();
     expect(loginWithGoogle).toHaveBeenCalledWith(google.credential);
+    expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    expect(navigation).not.toHaveBeenCalled();
+    expect(screen.getByText("Entrando com Google...")).toBeInTheDocument();
+    expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
+    expect(localStorage.getItem("junta_user_profile")).toBeNull();
+
+    confirmLogin(tokens);
+    expect(await screen.findByText("Assistente de teste")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent("/assistente");
+    expect(navigation).toHaveBeenCalledExactlyOnceWith("/assistente");
+    expect(screen.getByText("Sessão confirmada")).toBeInTheDocument();
+    expect(screen.getByText("ana@example.com")).toBeInTheDocument();
     expect(JSON.parse(sessionStorage.getItem("junta_auth_session"))).toEqual({ ...tokens, expiresAt: expect.any(Number) });
     expect(JSON.parse(localStorage.getItem("junta_user_profile"))).toMatchObject({ email: "ana@example.com", nome: "Ana" });
   });
@@ -110,6 +176,8 @@ describe("Google login and compatibility", () => {
     expect(screen.getByRole("button", { name: "Receber código" })).toBeEnabled();
     expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
     expect(localStorage.getItem("junta_user_profile")).toBeNull();
+    expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    expect(navigation).not.toHaveBeenCalled();
   });
 
   it("handles Google errors without blocking the email form", async () => {
@@ -117,6 +185,8 @@ describe("Google login and compatibility", () => {
     fireEvent.click(screen.getByText("Erro Google"));
     expect(screen.getByRole("alert")).toHaveTextContent("Não foi possível entrar");
     expect(screen.getByRole("button", { name: "Receber código" })).toBeEnabled();
+    expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    expect(navigation).not.toHaveBeenCalled();
   });
 
   it("keeps backend-confirmed authentication when display token decoding fails", async () => {
@@ -126,7 +196,10 @@ describe("Google login and compatibility", () => {
     localStorage.setItem("junta_user_profile", JSON.stringify({ email: "old@example.com", nome: "Old", avatarUrl: "old-avatar" }));
     await renderLogin("configured-client", "https://api.example.test");
     fireEvent.click(screen.getByText("Google oficial"));
-    expect(await screen.findByText("Tudo pronto.")).toBeInTheDocument();
+    expect(await screen.findByText("Assistente de teste")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent("/assistente");
+    expect(navigation).toHaveBeenCalledExactlyOnceWith("/assistente");
+    expect(screen.getByText("Sessão confirmada")).toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(loginWithGoogle).toHaveBeenCalledWith(google.credential);
     expect(JSON.parse(sessionStorage.getItem("junta_auth_session"))).toMatchObject(tokens);
