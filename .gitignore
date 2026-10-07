@@ -153,3 +153,6 @@ dist-ssr
 
 # Obsidian (configuração pessoal)
 brain/.obsidian/workspace.json
+
+# Autenticação API Auth0
+.env
