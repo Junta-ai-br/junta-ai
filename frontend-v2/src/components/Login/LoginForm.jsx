@@ -3,14 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "@/services/api";
-import { loginWithGoogle } from "@/services/auth/auth.api";
+import { loginWithGoogle, requestAccessCode, verifyAccessCode } from "@/services/auth/auth.api";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
-import {
-  authenticateWithMock,
-  isValidEmail,
-} from "@/services/auth/auth.mock";
+import { isValidEmail } from "@/services/auth/auth.mock";
 import { useUser } from "@/contexts/useUser";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -43,8 +40,9 @@ export default function LoginForm() {
     setStatus("");
   }
 
-  function handleEmailSubmit(event) {
+  async function handleEmailSubmit(event) {
     event.preventDefault();
+    if (loadingAction) return;
 
     const normalizedEmail = email.trim();
 
@@ -55,61 +53,61 @@ export default function LoginForm() {
       return;
     }
 
-    setEmail(normalizedEmail);
     setLoadingAction("email");
 
-    window.setTimeout(() => {
+    try {
+      await requestAccessCode(normalizedEmail);
+      setEmail(normalizedEmail);
       setStatus("Enviamos uma chave de acesso para o seu e-mail.");
       setStep("code");
       setCooldown(RESEND_COOLDOWN);
+    } catch {
+      setError("Não foi possível enviar o código agora. Tente novamente em instantes.");
+    } finally {
       setLoadingAction(null);
-    }, 250);
+    }
   }
 
-  function handleCodeSubmit(event) {
+  async function handleCodeSubmit(event) {
     event.preventDefault();
+    if (loadingAction) return;
 
     clearMessages();
 
-    if (code.length !== 6) {
+    if (!/^\d{6}$/.test(code)) {
       setError("Digite o código de 6 dígitos recebido por e-mail.");
       return;
     }
 
     setLoadingAction("code");
 
-    const result = authenticateWithMock({
-      email,
-      token: code,
-    });
-
-    window.setTimeout(() => {
-      if (!result.success) {
-        setError(result.message);
-        setLoadingAction(null);
-        return;
-      }
-
-      endSession();
+    try {
+      const tokens = await verifyAccessCode(email, code);
+      establishSession(tokens);
       updateProfile({ email });
-
-      setStatus(result.message);
-      setStep("success");
+      navigate("/assistente");
+    } catch {
+      setError("Código inválido ou expirado. Solicite um novo.");
+    } finally {
       setLoadingAction(null);
-    }, 250);
+    }
   }
 
-  function handleResend() {
+  async function handleResend() {
     if (cooldown > 0 || loadingAction) return;
 
     clearMessages();
     setLoadingAction("resend");
 
-    window.setTimeout(() => {
+    try {
+      await requestAccessCode(email);
       setStatus("Uma nova chave de acesso foi enviada para o seu e-mail.");
       setCooldown(RESEND_COOLDOWN);
+    } catch {
+      setError("Não foi possível enviar o código agora. Tente novamente em instantes.");
+    } finally {
       setLoadingAction(null);
-    }, 250);
+    }
   }
 
   async function handleGoogleSuccess(response) {
