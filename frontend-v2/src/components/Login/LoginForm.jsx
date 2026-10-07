@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "@/services/api";
@@ -16,6 +17,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const RESEND_COOLDOWN = 30;
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const { updateProfile, establishSession, endSession } = useUser();
 
   const [step, setStep] = useState("email");
@@ -136,7 +138,7 @@ export default function LoginForm() {
       });
       setEmail(profile.email || "");
       setStatus("Login realizado com sucesso.");
-      setStep("success");
+      navigate("/assistente");
     } catch {
       setError("Não foi possível concluir o login com o Google.");
     } finally {

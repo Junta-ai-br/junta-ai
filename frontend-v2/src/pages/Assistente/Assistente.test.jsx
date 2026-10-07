@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -6,6 +6,12 @@ import AppRoutes from "@/app/routes";
 import Assistente from "./Assistente";
 import { loadGoals, loadTransactions } from "@/services/finance/store";
 import { renderWithFinanceProvider } from "@/test-utils";
+import { saveSession } from "@/services/auth/session";
+
+beforeEach(() => {
+  sessionStorage.clear();
+  saveSession({ accessToken: "test-access", refreshToken: "test-refresh", expiresInSeconds: 900 });
+});
 
 describe("Assistente chat", () => {
   it("preserves the embedded chat options without rendering a second navigation", async () => {

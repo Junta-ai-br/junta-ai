@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import AppRoutes from "@/app/routes";
 import * as reportExporters from "@/utils/report-exporters";
 import { renderWithFinanceProvider } from "@/test-utils";
+import { saveSession } from "@/services/auth/session";
 
 vi.mock("recharts", async () => import("@/test/rechartsMock"));
 
@@ -23,6 +24,8 @@ function renderReports(transactions = REPORT_TRANSACTIONS) {
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
+  saveSession({ accessToken: "test-access", refreshToken: "test-refresh", expiresInSeconds: 900 });
 });
 
 afterEach(() => {
