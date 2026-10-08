@@ -1,4 +1,4 @@
-import { useState } from "react";
+import usePublicForm from "@/hooks/usePublicForm";
 import { Send } from "lucide-react";
 
 import Button from "@/components/common/Button";
@@ -33,49 +33,13 @@ const subjectOptions = [
 ];
 
 function Contato() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    subjectOther: "",
-    message: "",
-  });
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setFormData((currentData) => ({
-      ...currentData,
-      [name]: value,
-    }));
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    // Integração com o backend será adicionada posteriormente.
-    setIsSubmitted(true);
-  }
-
-  function handleNewMessage() {
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      subjectOther: "",
-      message: "",
-    });
-
-    setIsSubmitted(false);
-  }
+  const { formData, isSubmitted, isSending, error, fieldErrors, fieldProps, handleChange, handleSubmit, handleNewMessage } = usePublicForm("contact");
 
   if (isSubmitted) {
     return (
       <main className="page">
         <div className="page__container">
-          <div className="page__success">
+          <div className="page__success" role="status">
             <div className="page__success-icon">
               <Send size={24} strokeWidth={1.8} />
             </div>
@@ -130,7 +94,7 @@ function Contato() {
           </p>
         </header>
 
-        <form className="page__form" onSubmit={handleSubmit}>
+        <form className="page__form" onSubmit={handleSubmit} noValidate aria-busy={isSending}>
           <div className="page__fields">
             <div className="page__field">
               <label htmlFor="name">Nome</label>
@@ -138,6 +102,7 @@ function Contato() {
               <input
                 id="name"
                 name="name"
+                {...fieldProps("name")}
                 type="text"
                 placeholder="Seu nome"
                 value={formData.name}
@@ -152,6 +117,7 @@ function Contato() {
               <input
                 id="email"
                 name="email"
+                {...fieldProps("email")}
                 type="email"
                 placeholder="seuemail@exemplo.com"
                 value={formData.email}
@@ -173,6 +139,7 @@ function Contato() {
               <select
                 id="subject"
                 name="subject"
+                {...fieldProps("subject")}
                 value={formData.subject}
                 onChange={handleChange}
                 required
@@ -198,6 +165,7 @@ function Contato() {
                 <input
                   id="subjectOther"
                   name="subjectOther"
+                  {...fieldProps("subjectOther")}
                   type="text"
                   placeholder="Conte brevemente sobre o assunto"
                   value={formData.subjectOther}
@@ -215,6 +183,7 @@ function Contato() {
               <textarea
                 id="message"
                 name="message"
+                {...fieldProps("message")}
                 rows="6"
                 placeholder="Conte pra gente o que você gostaria de saber."
                 value={formData.message}
@@ -224,12 +193,21 @@ function Contato() {
             </div>
           </div>
 
+          {Object.entries(fieldErrors).map(([field, message]) => message && (
+            <p className="page__error" id={`contact-${field}-error`} key={field}>
+              {{ name: "Nome", email: "E-mail", subject: "Assunto", subjectOther: "Qual assunto?", message: "Mensagem" }[field]}: {message}
+            </p>
+          ))}
+          {error && <p className="page__error" role="alert">{error}</p>}
+          {isSending && <p className="page__helper" role="status">Enviando mensagem…</p>}
           <div className="page__actions">
             <Button
               type="submit"
               variant="primary"
               size="lg"
               className="page__submit"
+              loading={isSending}
+              loadingText="Enviando…"
             >
               Enviar mensagem
               <Send size={17} strokeWidth={1.8} />

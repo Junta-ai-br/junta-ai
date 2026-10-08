@@ -1,4 +1,4 @@
-import { useState } from "react";
+import usePublicForm from "@/hooks/usePublicForm";
 import { Send } from "lucide-react";
 
 import Button from "@/components/common/Button";
@@ -41,37 +41,13 @@ const subjectOptions = [
 ];
 
 function FeedbackPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    subjectOther: "",
-    message: "",
-  });
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setFormData((currentData) => ({
-      ...currentData,
-      [name]: value,
-    }));
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    // Integração com o backend será adicionada posteriormente.
-    setIsSubmitted(true);
-  }
+  const { formData, isSubmitted, isSending, error, fieldErrors, fieldProps, handleChange, handleSubmit, handleNewMessage } = usePublicForm("feedback");
 
   if (isSubmitted) {
     return (
       <section className="feedback-page feedback-page--success">
         <div className="feedback-page__container">
-          <div className="feedback-page__success">
+          <div className="feedback-page__success" role="status">
             <div className="feedback-page__success-icon">
               <Send size={24} strokeWidth={1.8} />
             </div>
@@ -95,7 +71,7 @@ function FeedbackPage() {
               variant="primary"
               size="lg"
               className="feedback-page__success-button"
-              onClick={() => setIsSubmitted(false)}
+              onClick={handleNewMessage}
             >
               Enviar outro feedback
             </Button>
@@ -124,7 +100,7 @@ function FeedbackPage() {
           </p>
         </div>
 
-        <form className="feedback-page__form" onSubmit={handleSubmit}>
+        <form className="feedback-page__form" onSubmit={handleSubmit} noValidate aria-busy={isSending}>
           <div className="feedback-page__fields">
             <div className="feedback-page__field">
               <label htmlFor="name">Nome</label>
@@ -132,6 +108,7 @@ function FeedbackPage() {
               <input
                 id="name"
                 name="name"
+                {...fieldProps("name")}
                 type="text"
                 placeholder="Seu nome"
                 value={formData.name}
@@ -146,6 +123,7 @@ function FeedbackPage() {
               <input
                 id="email"
                 name="email"
+                {...fieldProps("email")}
                 type="email"
                 placeholder="seuemail@exemplo.com"
                 value={formData.email}
@@ -167,6 +145,7 @@ function FeedbackPage() {
               <select
                 id="subject"
                 name="subject"
+                {...fieldProps("subject")}
                 value={formData.subject}
                 onChange={handleChange}
                 required
@@ -192,6 +171,7 @@ function FeedbackPage() {
                 <input
                   id="subjectOther"
                   name="subjectOther"
+                  {...fieldProps("subjectOther")}
                   type="text"
                   placeholder="Conte brevemente sobre o assunto"
                   value={formData.subjectOther}
@@ -209,6 +189,7 @@ function FeedbackPage() {
               <textarea
                 id="message"
                 name="message"
+                {...fieldProps("message")}
                 rows="6"
                 placeholder="O que você gostaria que a gente soubesse?"
                 value={formData.message}
@@ -218,12 +199,21 @@ function FeedbackPage() {
             </div>
           </div>
 
+          {Object.entries(fieldErrors).map(([field, message]) => message && (
+            <p className="feedback-page__error" id={`feedback-${field}-error`} key={field}>
+              {{ name: "Nome", email: "E-mail", subject: "Assunto", subjectOther: "Qual assunto?", message: "Mensagem" }[field]}: {message}
+            </p>
+          ))}
+          {error && <p className="feedback-page__error" role="alert">{error}</p>}
+          {isSending && <p className="feedback-page__helper" role="status">Enviando feedback…</p>}
           <div className="feedback-page__actions">
             <Button
               type="submit"
               variant="primary"
               size="lg"
               className="feedback-page__submit"
+              loading={isSending}
+              loadingText="Enviando…"
             >
               Compartilhar feedback
               <Send size={17} strokeWidth={1.8} />
