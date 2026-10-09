@@ -182,6 +182,14 @@
     rgba(113, 64, 250, 0.12);
 }
 
+.page__error {
+  color: var(--error);
+  font-family: var(--body-family);
+  font-size: var(--font-small);
+  line-height: var(--line-height-normal);
+  margin: var(--spacing-12) 0 0;
+}
+
 .page__helper {
   font-family: var(--body-family);
   font-size: var(--font-caption);
