@@ -117,6 +117,33 @@ async function finishCooldown() {
 }
 
 describe("real email OTP", () => {
+  it("blocks repeated request and verification submissions before React renders loading", async () => {
+    let completeRequest;
+    requestAccessCode.mockReturnValue(new Promise((resolve) => { completeRequest = resolve; }));
+    await renderLogin("", "https://api.example.test");
+    const emailInput = screen.getByRole("textbox", { name: "Seu e-mail" });
+    fireEvent.change(emailInput, { target: { value: "ana@example.com" } });
+    await act(async () => {
+      fireEvent.submit(emailInput.closest("form"));
+      fireEvent.submit(emailInput.closest("form"));
+    });
+    expect(requestAccessCode).toHaveBeenCalledExactlyOnceWith("ana@example.com");
+    await act(async () => { completeRequest(); });
+
+    let completeVerification;
+    verifyAccessCode.mockReturnValue(new Promise((resolve) => { completeVerification = resolve; }));
+    const codeInput = screen.getByRole("textbox", { name: "Chave de acesso" });
+    fireEvent.change(codeInput, { target: { value: "012345" } });
+    await act(async () => {
+      fireEvent.submit(codeInput.closest("form"));
+      fireEvent.submit(codeInput.closest("form"));
+    });
+    expect(verifyAccessCode).toHaveBeenCalledExactlyOnceWith("ana@example.com", "012345");
+    expect(sessionCalls.establish).not.toHaveBeenCalled();
+    await act(async () => { completeVerification({ accessToken: "otp-access", refreshToken: "otp-refresh", expiresInSeconds: 900 }); });
+    expect(navigation).toHaveBeenCalledExactlyOnceWith("/assistente");
+  });
+
   it("rejects invalid email without calling the API", async () => {
     await renderLogin("", "https://api.example.test");
     fireEvent.change(screen.getByRole("textbox", { name: "Seu e-mail" }), { target: { value: "invalid" } });
@@ -164,7 +191,11 @@ describe("real email OTP", () => {
     await finishCooldown();
     let confirm;
     requestAccessCode.mockReturnValueOnce(new Promise((resolve) => { confirm = resolve; }));
-    fireEvent.click(screen.getByRole("button", { name: "Reenviar chave" }));
+    await act(async () => {
+      const resend = screen.getByRole("button", { name: "Reenviar chave" });
+      fireEvent.click(resend);
+      fireEvent.click(resend);
+    });
     expect(requestAccessCode).toHaveBeenLastCalledWith("ana@example.com");
     expect(requestAccessCode).toHaveBeenCalledTimes(2);
     expect(screen.getByRole("button", { name: "Enviando..." })).toBeDisabled();
@@ -225,7 +256,7 @@ describe("real email OTP", () => {
   });
 
   it("does not establish a session, update the profile or navigate on verification failure", async () => {
-    verifyAccessCode.mockRejectedValue(new Error("Internal database failure"));
+    verifyAccessCode.mockRejectedValue({ response: { status: 401, data: { mensagem: "Internal database failure" } } });
     await renderLogin("", "https://api.example.test");
     const input = await requestCode();
     fireEvent.change(input, { target: { value: "654321" } });
@@ -246,10 +277,65 @@ describe("real email OTP", () => {
     const input = await requestCode();
     fireEvent.change(input, { target: { value: "654321" } });
     fireEvent.click(screen.getByRole("button", { name: "Confirmar chave" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Código inválido ou expirado");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível confirmar o acesso agora");
     expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
     expect(sessionCalls.updateProfile).not.toHaveBeenCalled();
     expect(navigation).not.toHaveBeenCalled();
+  });
+});
+
+describe("email OTP error guidance", () => {
+  it.each([
+    [{ response: { status: 400 } }, "Confira o endereço de e-mail"],
+    [{ response: { status: 503 } }, "envio de e-mail está indisponível"],
+    [{ response: { status: 500 } }, "serviço está indisponível"],
+    [{ response: { status: 429 } }, "Muitas tentativas"],
+    [{ code: "ERR_NETWORK" }, "Verifique sua conexão"],
+    [{ request: {} }, "Verifique sua conexão"],
+    [{ code: "ERR_AUTH_RESPONSE" }, "Não foi possível enviar"],
+  ])("keeps the email and ends loading after request failure %#", async (failure, message) => {
+    requestAccessCode.mockRejectedValueOnce(failure);
+    await renderLogin("", "https://api.example.test");
+    const input = screen.getByRole("textbox", { name: "Seu e-mail" });
+    fireEvent.change(input, { target: { value: "ana@example.com" } });
+    fireEvent.submit(input.closest("form"));
+    expect(await screen.findByRole("alert")).toHaveTextContent(message);
+    expect(input).toHaveValue("ana@example.com");
+    expect(screen.getByRole("button", { name: "Receber código" })).toBeEnabled();
+    expect(screen.queryByRole("textbox", { name: "Chave de acesso" })).not.toBeInTheDocument();
+    expect(sessionCalls.establish).not.toHaveBeenCalled();
+    expect(navigation).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [{ response: { status: 400 } }, "Confira o e-mail e o código"],
+    [{ response: { status: 401 } }, "Código inválido ou expirado"],
+    [{ response: { status: 404 } }, "Nenhuma conta encontrada"],
+    [{ code: "ERR_NETWORK" }, "Verifique sua conexão"],
+    [{ code: "ECONNABORTED" }, "Verifique sua conexão"],
+    [{ response: { status: 503 } }, "serviço está indisponível"],
+    [{ response: { status: 500 } }, "serviço está indisponível"],
+    [{ response: { status: 429 } }, "Muitas tentativas"],
+    [{ request: {} }, "Verifique sua conexão"],
+    [{ code: "ERR_AUTH_RESPONSE" }, "Não foi possível confirmar"],
+  ])("preserves input and prevents authentication on failure %#", async (failure, message) => {
+    verifyAccessCode.mockRejectedValue(failure);
+    await renderLogin("", "https://api.example.test");
+    const input = await requestCode();
+    fireEvent.change(input, { target: { value: "654321" } });
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar chave" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(message);
+    expect(input).toHaveValue("654321");
+    expect(screen.getByRole("button", { name: "Confirmar chave" })).toBeEnabled();
+    expect(sessionCalls.establish).not.toHaveBeenCalled();
+    expect(navigation).not.toHaveBeenCalled();
+    if (failure.response?.status === 404) {
+      expect(screen.getByRole("link", { name: "Criar conta" })).toHaveAttribute("href", "/cadastro");
+      fireEvent.change(input, { target: { value: "654322" } });
+      expect(screen.queryByRole("link", { name: "Criar conta" })).not.toBeInTheDocument();
+    } else {
+      expect(screen.queryByRole("link", { name: "Criar conta" })).not.toBeInTheDocument();
+    }
   });
 });
 
