@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "@/services/api";
@@ -9,6 +9,7 @@ import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
 import { isValidEmail } from "@/services/auth/auth.mock";
 import { useUser } from "@/contexts/useUser";
+import { getEmailAuthError } from "@/services/auth/auth.errors";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const RESEND_COOLDOWN = 30;
@@ -16,11 +17,13 @@ const RESEND_COOLDOWN = 30;
 export default function LoginForm() {
   const navigate = useNavigate();
   const { updateProfile, establishSession, endSession } = useUser();
+  const pendingEmailAuth = useRef(false);
 
   const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [accountMissing, setAccountMissing] = useState(false);
   const [status, setStatus] = useState("");
   const [loadingAction, setLoadingAction] = useState(null);
   const [cooldown, setCooldown] = useState(0);
@@ -37,12 +40,13 @@ export default function LoginForm() {
 
   function clearMessages() {
     setError("");
+    setAccountMissing(false);
     setStatus("");
   }
 
   async function handleEmailSubmit(event) {
     event.preventDefault();
-    if (loadingAction) return;
+    if (pendingEmailAuth.current || loadingAction) return;
 
     const normalizedEmail = email.trim();
 
@@ -53,6 +57,7 @@ export default function LoginForm() {
       return;
     }
 
+    pendingEmailAuth.current = true;
     setLoadingAction("email");
 
     try {
@@ -61,16 +66,17 @@ export default function LoginForm() {
       setStatus("Enviamos uma chave de acesso para o seu e-mail.");
       setStep("code");
       setCooldown(RESEND_COOLDOWN);
-    } catch {
-      setError("Não foi possível enviar o código agora. Tente novamente em instantes.");
+    } catch (error) {
+      setError(getEmailAuthError(error).message);
     } finally {
+      pendingEmailAuth.current = false;
       setLoadingAction(null);
     }
   }
 
   async function handleCodeSubmit(event) {
     event.preventDefault();
-    if (loadingAction) return;
+    if (pendingEmailAuth.current || loadingAction) return;
 
     clearMessages();
 
@@ -79,6 +85,7 @@ export default function LoginForm() {
       return;
     }
 
+    pendingEmailAuth.current = true;
     setLoadingAction("code");
 
     try {
@@ -86,32 +93,37 @@ export default function LoginForm() {
       establishSession(tokens);
       updateProfile({ email });
       navigate("/assistente");
-    } catch {
-      setError("Código inválido ou expirado. Solicite um novo.");
+    } catch (error) {
+      const failure = getEmailAuthError(error, { verifying: true });
+      setError(failure.message);
+      setAccountMissing(!!failure.accountMissing);
     } finally {
+      pendingEmailAuth.current = false;
       setLoadingAction(null);
     }
   }
 
   async function handleResend() {
-    if (cooldown > 0 || loadingAction) return;
+    if (cooldown > 0 || pendingEmailAuth.current || loadingAction) return;
 
     clearMessages();
+    pendingEmailAuth.current = true;
     setLoadingAction("resend");
 
     try {
       await requestAccessCode(email);
       setStatus("Uma nova chave de acesso foi enviada para o seu e-mail.");
       setCooldown(RESEND_COOLDOWN);
-    } catch {
-      setError("Não foi possível enviar o código agora. Tente novamente em instantes.");
+    } catch (error) {
+      setError(getEmailAuthError(error).message);
     } finally {
+      pendingEmailAuth.current = false;
       setLoadingAction(null);
     }
   }
 
   async function handleGoogleSuccess(response) {
-    if (loadingAction) return;
+    if (pendingEmailAuth.current || loadingAction) return;
     clearMessages();
     setLoadingAction("google");
 
@@ -201,6 +213,7 @@ export default function LoginForm() {
   }
 
   function handleEditEmail() {
+    if (pendingEmailAuth.current || loadingAction) return;
     setStep("email");
     setCode("");
     clearMessages();
@@ -367,7 +380,7 @@ export default function LoginForm() {
         </div>
       </form>
 
-      <Message error={error} status={status} />
+      <Message error={error} status={status} accountMissing={accountMissing} />
     </>
   );
 }
@@ -482,7 +495,7 @@ function GoogleIcon() {
   );
 }
 
-function Message({ error, status }) {
+function Message({ error, status, accountMissing = false }) {
   return (
     <div
       className={`login-form__message ${
@@ -492,6 +505,7 @@ function Message({ error, status }) {
       role={error ? "alert" : "status"}
     >
       {error || status}
+      {accountMissing && <> <Link to="/cadastro">Criar conta</Link></>}
     </div>
   );
 }
