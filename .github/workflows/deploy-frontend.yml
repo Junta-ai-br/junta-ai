@@ -19,7 +19,7 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/juntai-nginx-react-frontend
+  IMAGE_NAME: junta-ai-br/juntai-nginx-react-frontend
   CONTAINER_APP_NAME: juntai-nginx-react-frontend
   RESOURCE_GROUP: JuntaI-BackEnd
 
