@@ -1,21 +1,22 @@
 import { api } from "./api";
+import { FinancialContractError, isDate, isUuid } from "./financial-contracts";
 
 export function invalidResponse() {
-  return Object.assign(new Error("Resposta inesperada do servidor; operação não confirmada."), { code: "ERR_API_RESPONSE" });
+  return new FinancialContractError("Resposta inesperada do servidor; operação não confirmada.");
 }
 
-export const isResource = (value) => value !== null && typeof value === "object"
-  && !Array.isArray(value) && typeof value.id === "string";
-
 export function resourcePath(base, id) {
-  if (typeof id !== "string" || !id.trim()) throw new Error("Resource ID is required.");
+  if (!isUuid(id)) throw new FinancialContractError("A valid UUID is required.", "ERR_API_REQUEST");
   return `${base}/${encodeURIComponent(id)}`;
 }
 
-export async function resourceRequest(method, url, { data, params, validate = isResource } = {}) {
-  const response = await api.request({ method, url, data, params, requiresAuth: true });
+export async function resourceRequest(method, url, { data, params, validate, transformRequest, transformResponse } = {}) {
+  const response = await api.request({ method, url, data, params, requiresAuth: true,
+    ...(transformRequest ? { transformRequest } : {}),
+    ...(transformResponse ? { transformResponse: [transformResponse, ...api.defaults.transformResponse] } : {}),
+  });
   if (method === "delete") {
-    if (response.status !== 204) throw invalidResponse();
+    if (response.status !== 204 || !(response.data == null || response.data === "")) throw invalidResponse();
     return;
   }
   if (response.status !== 200 || !validate(response.data)) throw invalidResponse();
@@ -24,10 +25,8 @@ export async function resourceRequest(method, url, { data, params, validate = is
 
 // Validate the wire format only. Financial and ownership rules belong to the backend.
 export function requireDate(value) {
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)
-    || !Number.isFinite(Date.parse(`${value}T00:00:00Z`))
-    || new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) !== value) {
-    throw new Error("Date must be a valid YYYY-MM-DD string.");
+  if (!isDate(value)) {
+    throw new FinancialContractError("Date must be a valid YYYY-MM-DD string.", "ERR_API_REQUEST");
   }
   return value;
 }

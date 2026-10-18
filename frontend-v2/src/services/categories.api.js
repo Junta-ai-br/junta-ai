@@ -1,19 +1,27 @@
-import { isResource, resourcePath, resourceRequest } from "./resource-http";
+import { resourcePath, resourceRequest } from "./resource-http";
+import { CATEGORY_TYPES, FinancialContractError, isCategory, isCategoryName, isObject } from "./financial-contracts";
 
-export const CATEGORY_TYPES = Object.freeze(["INCOME", "EXPENSE", "BOTH"]);
+export { CATEGORY_TYPES } from "./financial-contracts";
 const base = "/categories";
-const payload = ({ name, type }) => ({ name, type });
+function payload(body) {
+  if (!isObject(body)) throw new FinancialContractError("Invalid category request.", "ERR_API_REQUEST");
+  const { name, type } = body;
+  if (!isCategoryName(name) || !CATEGORY_TYPES.includes(type)) {
+    throw new FinancialContractError("Invalid category request.", "ERR_API_REQUEST");
+  }
+  return { name, type };
+}
 
 export function listCategories() {
-  return resourceRequest("get", base, { validate: (data) => Array.isArray(data) && data.every(isResource) });
+  return resourceRequest("get", base, { validate: (data) => Array.isArray(data) && data.every(isCategory) });
 }
 
-export function createCategory(body) {
-  return resourceRequest("post", base, { data: payload(body) });
+export async function createCategory(body) {
+  return resourceRequest("post", base, { validate: isCategory, data: payload(body) });
 }
 
-export function updateCategory(id, body) {
-  return resourceRequest("put", resourcePath(base, id), { data: payload(body) });
+export async function updateCategory(id, body) {
+  return resourceRequest("put", resourcePath(base, id), { validate: isCategory, data: payload(body) });
 }
 
 export function deleteCategory(id) {

@@ -1,10 +1,18 @@
-import { isResource, requireDate, resourcePath, resourceRequest } from "./resource-http";
+import { requireDate, resourcePath, resourceRequest } from "./resource-http";
+import { TRANSACTION_TYPES, FinancialContractError, decodeTransactions, encodeTransaction, isObject, isTransaction, isTransactionPage, isUuid, normalizeMoney } from "./financial-contracts";
 
-export const TRANSACTION_TYPES = Object.freeze(["INCOME", "EXPENSE"]);
+export { TRANSACTION_TYPES } from "./financial-contracts";
 const base = "/transactions";
+const responseContract = { validate: isTransaction, transformResponse: decodeTransactions };
 
-function payload({ categoryId, type, description, amount, transactionDate }) {
-  return { categoryId, type, description, amount, transactionDate: requireDate(transactionDate) };
+function payload(body) {
+  if (!isObject(body)) throw new FinancialContractError("Invalid transaction request.", "ERR_API_REQUEST");
+  const { categoryId, type, description, amount, transactionDate } = body;
+  if (!isUuid(categoryId) || !TRANSACTION_TYPES.includes(type)
+    || !(description == null || typeof description === "string") || (description?.length ?? 0) > 500) {
+    throw new FinancialContractError("Invalid transaction request.", "ERR_API_REQUEST");
+  }
+  return { categoryId, type, description: description ?? null, amount: normalizeMoney(amount), transactionDate: requireDate(transactionDate) };
 }
 
 /** Returns the original Spring Page, with content and pagination metadata.
@@ -14,25 +22,24 @@ function payload({ categoryId, type, description, amount, transactionDate }) {
 export async function listTransactions({ from, to, page = 0, size = 20, sort } = {}) {
   requireDate(from);
   requireDate(to);
-  if (from > to) throw new Error("from must be on or before to.");
-  if (!Number.isInteger(page) || page < 0 || !Number.isInteger(size) || size < 1) {
-    throw new Error("Invalid pagination parameters.");
+  if (from > to) throw new FinancialContractError("from must be on or before to.", "ERR_API_REQUEST");
+  if (!Number.isSafeInteger(page) || page < 0 || !Number.isSafeInteger(size) || size < 1
+    || (sort !== undefined && (typeof sort !== "string" || !sort.trim()))) {
+    throw new FinancialContractError("Invalid pagination parameters.", "ERR_API_REQUEST");
   }
   return resourceRequest("get", base, {
     params: { from, to, page, size, ...(sort ? { sort } : {}) },
-    validate: (data) => data && Array.isArray(data.content) && data.content.every(isResource)
-      && Number.isInteger(data.number) && Number.isInteger(data.size)
-      && Number.isInteger(data.totalElements) && Number.isInteger(data.totalPages)
-      && typeof data.last === "boolean",
+    transformResponse: decodeTransactions,
+    validate: isTransactionPage,
   });
 }
 
-export function createTransaction(body) {
-  return resourceRequest("post", base, { data: payload(body) });
+export async function createTransaction(body) {
+  return resourceRequest("post", base, { ...responseContract, data: payload(body), transformRequest: encodeTransaction });
 }
 
-export function updateTransaction(id, body) {
-  return resourceRequest("put", resourcePath(base, id), { data: payload(body) });
+export async function updateTransaction(id, body) {
+  return resourceRequest("put", resourcePath(base, id), { ...responseContract, data: payload(body), transformRequest: encodeTransaction });
 }
 
 export function deleteTransaction(id) {

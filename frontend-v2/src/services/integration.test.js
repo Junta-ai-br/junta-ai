@@ -3,10 +3,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 let api, session, transactions, categories, requests;
 const tokens = { accessToken: "access", refreshToken: "refresh", expiresInSeconds: 900 };
-const transaction = { categoryId: "category-id", type: "EXPENSE", description: "Mercado", amount: 12.34, transactionDate: "2026-10-18" };
+const resourceId = "76870c4b-f8df-4eab-b3c2-de1738a07a4e";
+const transaction = { categoryId: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", type: "EXPENSE", description: "Mercado", amount: 12.34, transactionDate: "2026-10-18" };
 const category = { name: "Mercado", type: "BOTH" };
+const createdAt = "2026-10-18T12:00:00.123456Z";
+const transactionResponse = { id: resourceId, ...transaction, amount: "12.34", categoryName: "Mercado", createdAt };
+const categoryResponse = { id: resourceId, ...category, createdAt };
 const period = { from: "2020-01-01", to: "2026-10-18" };
-const page = { content: [{ id: "transaction-id", ...transaction }], number: 2, size: 10, totalElements: 21, totalPages: 3, last: true };
+const page = { content: [transactionResponse], number: 2, size: 10, totalElements: 21, totalPages: 3, numberOfElements: 1, first: false, last: true, empty: false };
+const wireJson = (data) => JSON.stringify(data).replace('"amount":"12.34"', '"amount":12.34');
 
 beforeEach(async () => {
   vi.resetModules();
@@ -20,8 +25,9 @@ beforeEach(async () => {
   requests = [];
   api.defaults.adapter = vi.fn(async (config) => {
     requests.push(config);
-    const data = config.method === "get" ? (config.url === "/transactions" ? page : [{ id: "category-id", ...category }])
-      : { id: "resource-id", ...JSON.parse(config.data || "{}") };
+    const data = config.method === "delete" ? "" : config.method === "get"
+      ? (config.url === "/transactions" ? wireJson(page) : [categoryResponse])
+      : config.url.startsWith("/transactions") ? wireJson(transactionResponse) : categoryResponse;
     return { config, status: config.method === "delete" ? 204 : 200, data, headers: {} };
   });
 });
@@ -95,7 +101,7 @@ describe("resource contracts", () => {
   });
 
   it("lists categories with the real enums", async () => {
-    await expect(categories.listCategories()).resolves.toEqual([{ id: "category-id", ...category }]);
+    await expect(categories.listCategories()).resolves.toEqual([categoryResponse]);
     expect(categories.CATEGORY_TYPES).toEqual(["INCOME", "EXPENSE", "BOTH"]);
     expect(transactions.TRANSACTION_TYPES).toEqual(["INCOME", "EXPENSE"]);
   });
@@ -104,10 +110,10 @@ describe("resource contracts", () => {
     const service = kind === "Transaction" ? transactions : categories;
     const body = kind === "Transaction" ? transaction : category;
     const base = kind === "Transaction" ? "/transactions" : "/categories";
-    await expect(service[`create${kind}`]({ ...body, userId: "ignored" })).resolves.toEqual({ id: "resource-id", ...body });
-    await service[`update${kind}`]("resource-id", body);
-    await expect(service[`delete${kind}`]("resource-id")).resolves.toBeUndefined();
-    expect(requests.map(({ method, url }) => [method, url])).toEqual([["post", base], ["put", `${base}/resource-id`], ["delete", `${base}/resource-id`]]);
+    await expect(service[`create${kind}`]({ ...body, userId: "ignored" })).resolves.toEqual(kind === "Transaction" ? transactionResponse : categoryResponse);
+    await service[`update${kind}`](resourceId, body);
+    await expect(service[`delete${kind}`](resourceId)).resolves.toBeUndefined();
+    expect(requests.map(({ method, url }) => [method, url])).toEqual([["post", base], ["put", `${base}/${resourceId}`], ["delete", `${base}/${resourceId}`]]);
     expect(JSON.parse(requests[0].data)).toEqual(body);
     expect(JSON.parse(requests[1].data)).toEqual(body);
   });
@@ -131,7 +137,7 @@ describe("resource contracts", () => {
     api.defaults.adapter = async (config) => ({ config, status, data, headers: {} });
     const operations = {
       transactions: () => transactions.listTransactions(period), categories: () => categories.listCategories(),
-      create: () => transactions.createTransaction(transaction), delete: () => categories.deleteCategory("id"),
+      create: () => transactions.createTransaction(transaction), delete: () => categories.deleteCategory(resourceId),
     };
     await expect(operations[kind]()).rejects.toMatchObject({ code: "ERR_API_RESPONSE" });
   });
