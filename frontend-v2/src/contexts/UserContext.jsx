@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { UserContext } from "@/contexts/user-context";
-import { getSessionState, saveSession, clearSession } from "@/services/auth/session";
+import { getSessionState, saveSession, clearSession, subscribeSession } from "@/services/auth/session";
 
 import {
   DEFAULT_PROFILE,
@@ -13,6 +13,8 @@ import {
 export function UserProvider({ children }) {
   const [profile, setProfile] = useState(getStoredProfile);
   const [sessionState, setSessionState] = useState(getSessionState);
+
+  useEffect(() => subscribeSession(() => setSessionState(getSessionState())), []);
 
   useEffect(() => {
     if (sessionState.expiresAt === null) return undefined;

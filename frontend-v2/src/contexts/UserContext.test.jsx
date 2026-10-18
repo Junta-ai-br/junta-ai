@@ -2,7 +2,7 @@ import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UserProvider } from "./UserContext";
 import { useUser } from "./useUser";
-import { getStoredSession, saveSession } from "@/services/auth/session";
+import { clearSession, getStoredSession, saveSession } from "@/services/auth/session";
 
 const tokens = { accessToken: "access-A", refreshToken: "refresh-A", expiresInSeconds: 900 };
 
@@ -22,6 +22,14 @@ function renderUser() {
 }
 
 describe("UserContext session lifecycle", () => {
+  it("observes session invalidation outside the provider, preserving the profile", () => {
+    saveSession(tokens);
+    const { result } = renderUser();
+    act(() => result.current.updateProfile({ email: "a@example.com" }));
+    act(() => clearSession());
+    expect(result.current.isAuthenticated).toBe(false);
+    expect(result.current.profile.email).toBe("a@example.com");
+  });
   it("restores valid state on remount without exposing either token", () => {
     const session = saveSession(tokens);
     const first = renderUser();
