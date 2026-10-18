@@ -60,6 +60,12 @@ export function getAuthenticatedSession() {
   return session ? { ...session, generation } : null;
 }
 
+// Consumers can bind work to this session without receiving either token.
+export function getSessionSnapshot() {
+  const session = getStoredSession();
+  return session ? Object.freeze({ generation, expiresAt: session.expiresAt }) : null;
+}
+
 export function getSessionState() {
   const session = getStoredSession();
   return { isAuthenticated: !!session, expiresAt: session?.expiresAt ?? null };

@@ -10,9 +10,10 @@ export function resourcePath(base, id) {
   return `${base}/${encodeURIComponent(id)}`;
 }
 
-export async function resourceRequest(method, url, { data, params, validate, transformRequest, transformResponse } = {}) {
+export async function resourceRequest(method, url, { data, params, validate, transformRequest, transformResponse, signal } = {}) {
   const response = await api.request({ method, url, data, params, requiresAuth: true,
     ...(transformRequest ? { transformRequest } : {}),
+    ...(signal ? { signal } : {}),
     ...(transformResponse ? { transformResponse: [transformResponse, ...api.defaults.transformResponse] } : {}),
   });
   if (method === "delete") {

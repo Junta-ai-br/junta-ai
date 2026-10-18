@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { clearSession, getAuthenticatedSession, getSessionState, getStoredSession, saveSession, subscribeSession } from "./session";
+import { clearSession, getAuthenticatedSession, getSessionSnapshot, getSessionState, getStoredSession, saveSession, subscribeSession } from "./session";
 
 const tokens = { accessToken: "access", refreshToken: "refresh", expiresInSeconds: 900 };
 
@@ -7,6 +7,17 @@ beforeEach(() => { sessionStorage.clear(); clearSession(); });
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); });
 
 describe("Application session", () => {
+  it("provides an opaque snapshot tied to every establishment, without tokens", () => {
+    expect(getSessionSnapshot()).toBeNull();
+    saveSession(tokens);
+    const first = getSessionSnapshot();
+    expect(Object.keys(first).sort()).toEqual(["expiresAt", "generation"]);
+    expect(first.generation).toBe(getAuthenticatedSession().generation);
+    saveSession(tokens);
+    expect(getSessionSnapshot().generation).not.toBe(first.generation);
+    clearSession();
+    expect(getSessionSnapshot()).toBeNull();
+  });
   it.each(["logout", "401"])("does not restore old tokens after %s removal fails and the module reloads", async (reason) => {
     vi.stubEnv("VITE_API_URL", "https://backend.example.test");
     vi.resetModules();

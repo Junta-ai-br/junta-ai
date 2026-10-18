@@ -12,8 +12,8 @@ function payload(body) {
   return { name, type };
 }
 
-export function listCategories() {
-  return resourceRequest("get", base, { validate: (data) => Array.isArray(data) && data.every(isCategory) });
+export function listCategories({ signal } = {}) {
+  return resourceRequest("get", base, { signal, validate: (data) => Array.isArray(data) && data.every(isCategory) });
 }
 
 export async function createCategory(body) {

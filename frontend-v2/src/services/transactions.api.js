@@ -19,7 +19,7 @@ function payload(body) {
  * Both bounds are required: omitting them on the backend selects only one month.
  * page is zero-based; sort accepts Spring's "transactionDate,desc" syntax.
  */
-export async function listTransactions({ from, to, page = 0, size = 20, sort } = {}) {
+export async function listTransactions({ from, to, page = 0, size = 20, sort, signal } = {}) {
   requireDate(from);
   requireDate(to);
   if (from > to) throw new FinancialContractError("from must be on or before to.", "ERR_API_REQUEST");
@@ -28,6 +28,7 @@ export async function listTransactions({ from, to, page = 0, size = 20, sort } =
     throw new FinancialContractError("Invalid pagination parameters.", "ERR_API_REQUEST");
   }
   return resourceRequest("get", base, {
+    signal,
     params: { from, to, page, size, ...(sort ? { sort } : {}) },
     transformResponse: decodeTransactions,
     validate: isTransactionPage,
