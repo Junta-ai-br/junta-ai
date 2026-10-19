@@ -16,14 +16,14 @@ export function listCategories({ signal } = {}) {
   return resourceRequest("get", base, { signal, validate: (data) => Array.isArray(data) && data.every(isCategory) });
 }
 
-export async function createCategory(body) {
-  return resourceRequest("post", base, { validate: isCategory, data: payload(body) });
+export async function createCategory(body, { signal, sessionGeneration } = {}) {
+  return resourceRequest("post", base, { validate: isCategory, data: payload(body), signal, sessionGeneration });
 }
 
-export async function updateCategory(id, body) {
-  return resourceRequest("put", resourcePath(base, id), { validate: isCategory, data: payload(body) });
+export async function updateCategory(id, body, { signal, sessionGeneration } = {}) {
+  return resourceRequest("put", resourcePath(base, id), { validate: isCategory, data: payload(body), signal, sessionGeneration });
 }
 
-export function deleteCategory(id) {
-  return resourceRequest("delete", resourcePath(base, id));
+export function deleteCategory(id, { signal, sessionGeneration } = {}) {
+  return resourceRequest("delete", resourcePath(base, id), { signal, sessionGeneration });
 }

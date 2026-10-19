@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { getSessionSnapshot } from "./auth/session";
 import { FinancialContractError, isDate, isUuid } from "./financial-contracts";
 
 export function invalidResponse() {
@@ -10,9 +11,18 @@ export function resourcePath(base, id) {
   return `${base}/${encodeURIComponent(id)}`;
 }
 
-export async function resourceRequest(method, url, { data, params, validate, transformRequest, transformResponse, signal } = {}) {
+export async function resourceRequest(method, url, { data, params, validate, transformRequest, transformResponse, signal, sessionGeneration } = {}) {
+  // Axios request interceptors run asynchronously. Check again at dispatch time,
+  // before serialization/adapter, so an old command cannot be sent as a new user.
+  const generationGuard = (body) => {
+    if (getSessionSnapshot()?.generation !== sessionGeneration) {
+      throw Object.assign(new Error("Command session changed before dispatch."), { code: "SESSION_CHANGED" });
+    }
+    return body;
+  };
   const response = await api.request({ method, url, data, params, requiresAuth: true,
-    ...(transformRequest ? { transformRequest } : {}),
+    ...(sessionGeneration ? { transformRequest: [generationGuard, ...(transformRequest ? [transformRequest] : api.defaults.transformRequest)] }
+      : transformRequest ? { transformRequest } : {}),
     ...(signal ? { signal } : {}),
     ...(transformResponse ? { transformResponse: [transformResponse, ...api.defaults.transformResponse] } : {}),
   });

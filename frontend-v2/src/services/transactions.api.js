@@ -35,14 +35,14 @@ export async function listTransactions({ from, to, page = 0, size = 20, sort, si
   });
 }
 
-export async function createTransaction(body) {
-  return resourceRequest("post", base, { ...responseContract, data: payload(body), transformRequest: encodeTransaction });
+export async function createTransaction(body, { signal, sessionGeneration } = {}) {
+  return resourceRequest("post", base, { ...responseContract, data: payload(body), transformRequest: encodeTransaction, signal, sessionGeneration });
 }
 
-export async function updateTransaction(id, body) {
-  return resourceRequest("put", resourcePath(base, id), { ...responseContract, data: payload(body), transformRequest: encodeTransaction });
+export async function updateTransaction(id, body, { signal, sessionGeneration } = {}) {
+  return resourceRequest("put", resourcePath(base, id), { ...responseContract, data: payload(body), transformRequest: encodeTransaction, signal, sessionGeneration });
 }
 
-export function deleteTransaction(id) {
-  return resourceRequest("delete", resourcePath(base, id));
+export function deleteTransaction(id, { signal, sessionGeneration } = {}) {
+  return resourceRequest("delete", resourcePath(base, id), { signal, sessionGeneration });
 }
