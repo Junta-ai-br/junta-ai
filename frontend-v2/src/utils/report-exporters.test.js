@@ -60,7 +60,7 @@ describe("report exports", () => {
     const [blob] = createObjectURL.mock.calls[0];
     const html = await blob.text();
     expect(blob.type).toBe("application/vnd.ms-excel;charset=utf-8");
-    expect(html).toContain("Relatório financeiro - Agosto \"2026\"");
+    expect(html).toContain("Relatório financeiro - Agosto &quot;2026&quot;");
     expect(html).toContain("<td>Semana 1</td><td>2000</td><td>350</td>");
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:test-report");
   });
@@ -86,5 +86,31 @@ describe("report exports", () => {
     expect(document.close).toHaveBeenCalledOnce();
     expect(printWindow.focus).toHaveBeenCalledOnce();
     expect(printWindow.print).toHaveBeenCalledOnce();
+  });
+  it("escapes every interpolated Excel HTML field while preserving its text", async () => {
+    const text = `<img src=x onerror="alert('x')">&<script>alert(1)</script>`;
+    const data = { period: text, summary: Object.fromEntries(Object.keys(report.summary).map((key) => [key, text])),
+      chart: [{ label: text, income: text, expenses: text }] };
+    exportToExcel(data);
+    const html = await createObjectURL.mock.calls[0][0].text();
+    const document = new DOMParser().parseFromString(html, "text/html");
+    expect(document.querySelector("script,img,[onerror]")).toBeNull();
+    expect(document.querySelector("th").textContent).toBe(`Relatório financeiro - ${text}`);
+    expect(document.querySelectorAll("td")[1].textContent).toBe(text);
+    expect(html).toContain("&lt;img");
+    expect(html).toContain("&#39;x&#39;");
+    expect(html).toContain("&amp;");
+  });
+  it("escapes PDF content and filename without interpreting user HTML", () => {
+    const text = `</title><script>alert('x')</script><img src=x onerror="alert(1)">&`;
+    const document = { write: vi.fn(), close: vi.fn() };
+    vi.spyOn(window, "open").mockReturnValue({ document, focus: vi.fn(), print: vi.fn() });
+    exportToPDF({ period: text, summary: { income: text, expenses: text, balance: text },
+      chart: [{ label: text, income: text, expenses: text }] }, text);
+    const parsed = new DOMParser().parseFromString(document.write.mock.calls[0][0], "text/html");
+    expect(parsed.querySelector("script,img,[onerror]")).toBeNull();
+    expect(parsed.title).toBe(text);
+    expect(parsed.querySelector("p").textContent).toBe(text);
+    expect(parsed.querySelector("td").textContent).toBe(text);
   });
 });
