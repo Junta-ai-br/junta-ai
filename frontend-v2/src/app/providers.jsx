@@ -8,11 +8,11 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function AppProviders({ children }) {
   const content = (
-    <FinanceProvider>
-      <ThemeProvider>
-        <UserProvider>{children}</UserProvider>
-      </ThemeProvider>
-    </FinanceProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <FinanceProvider>{children}</FinanceProvider>
+      </UserProvider>
+    </ThemeProvider>
   );
 
   if (!GOOGLE_CLIENT_ID) {

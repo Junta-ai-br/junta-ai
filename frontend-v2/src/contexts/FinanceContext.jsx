@@ -1,6 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { FinanceContext } from "@/contexts/finance-context";
+import { FinanceOwnerContext } from "@/contexts/finance-owner-context";
+import { UserContext } from "@/contexts/user-context";
+import { claimFinanceOwner } from "@/contexts/finance-owner-lease";
 
 import {
   loadCategories,
@@ -15,6 +18,15 @@ import {
 } from "@/services/finance/store";
 
 export function FinanceProvider({ children }) {
+  const owner = useContext(FinanceOwnerContext);
+  if (owner) throw new Error("Financial providers cannot be nested: choose one financial source.");
+  return <FinanceOwnerContext.Provider value="legacy"><LegacyFinanceOwner>{children}</LegacyFinanceOwner></FinanceOwnerContext.Provider>;
+}
+
+function LegacyFinanceOwner({ children }) {
+  const ownerScope = useContext(UserContext)?.endSession;
+  const [owner] = useState(() => ({}));
+  useEffect(() => ownerScope ? claimFinanceOwner(ownerScope, owner) : undefined, [ownerScope, owner]);
   const [transactions, setTransactions] = useState(loadTransactions);
   const [categories, setCategories] = useState(loadCategories);
   const [categoryColors, setCategoryColors] = useState(loadCategoryColors);
