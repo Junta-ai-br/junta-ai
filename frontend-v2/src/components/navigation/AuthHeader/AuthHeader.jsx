@@ -17,6 +17,7 @@ export default function AuthHeader({
   dateRange = null,
   onDateRangeChange = null,
   onAddCategory = null,
+  allowAllPeriod = true,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -92,7 +93,7 @@ export default function AuthHeader({
               )}
 
               {onDateRangeChange && (
-                <DateRangeFilter value={dateRange} onChange={onDateRangeChange} tokens={financeTokens} />
+                <DateRangeFilter value={dateRange} onChange={onDateRangeChange} tokens={financeTokens} allowAllPeriod={allowAllPeriod} />
               )}
             </div>
           )}
