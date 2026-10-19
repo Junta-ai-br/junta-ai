@@ -12,10 +12,11 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 function FinancialScope({ children }) {
   const { pathname } = useLocation();
   const { isAuthenticated } = useUser();
+  if (matchPath("/planejador/*", pathname)) return children;
   if (matchPath("/dashboard", pathname) || matchPath("/visao-mes", pathname)) {
     return isAuthenticated ? <CanonicalFinanceProvider>{children}</CanonicalFinanceProvider> : children;
   }
-  const legacyArea = matchPath("/assistente", pathname) || matchPath("/planejador/*", pathname) || matchPath("/relatorios", pathname);
+  const legacyArea = matchPath("/assistente", pathname) || matchPath("/relatorios", pathname);
   return <FinanceProvider>
     {isAuthenticated && legacyArea && <aside role="status" style={{ padding: "12px 5vw", background: "var(--surface)", color: "var(--text-primary)", borderBottom: "1px solid var(--border)" }}>
       {matchPath("/assistente", pathname) ? "Os cartões financeiros desta área ainda usam dados locais de demonstração. A conversa usa o servidor real; confira operações na Visão do mês."

@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { assertPlannerSession, plannerErrorMessage, requirePlannerSession, usePlannerSessionKey } from "@/services/planner/session";
 import {
   ArrowLeft,
   ChevronDown,
@@ -54,25 +55,31 @@ function getPeriodLabel(simulation) {
   );
 }
 
-function getInitialHistoryState() {
-  try {
-    return {
-      simulations: loadPlannerSimulations(),
-      error: "",
-    };
-  } catch {
-    return {
-      simulations: [],
-      error:
-        "Não foi possível carregar seu histórico de simulações.",
-    };
-  }
+export default function Historico() {
+  const sessionKey = usePlannerSessionKey();
+  return <HistoryContent key={sessionKey} />;
 }
 
-export default function Historico() {
-  const [historyState, setHistoryState] = useState(
-    getInitialHistoryState,
-  );
+function HistoryContent() {
+  const [historyState, setHistoryState] = useState({ simulations: [], error: "", loading: true });
+  const [reload, setReload] = useState(0);
+  const [deleting, setDeleting] = useState([]);
+  const pending = useRef(new Set());
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    loadPlannerSimulations({ signal: controller.signal }).then((simulations) => {
+      if (active) setHistoryState({ simulations, error: "", loading: false });
+    }).catch((error) => {
+      if (active) setHistoryState({ simulations: [], error: plannerErrorMessage(error, "carregar seu histórico de simulações"), loading: false });
+    });
+    return () => { active = false; controller.abort(); };
+  }, [reload]);
 
   const [expandedId, setExpandedId] = useState(null);
 
@@ -95,7 +102,8 @@ export default function Historico() {
     );
   };
 
-  const handleDelete = (simulation) => {
+  const handleDelete = async (simulation) => {
+    if (pending.current.has(simulation.id)) return;
     const confirmed = window.confirm(
       `Deseja excluir a simulação "${simulation.goal?.name}"?`,
     );
@@ -104,26 +112,33 @@ export default function Historico() {
       return;
     }
 
+    pending.current.add(simulation.id);
+    setDeleting([...pending.current]);
     try {
-      const nextSimulations =
-        removePlannerSimulation(simulation.id);
-
-      setHistoryState({
-        simulations: nextSimulations,
+      const generation = requirePlannerSession();
+      await removePlannerSimulation(simulation.id);
+      assertPlannerSession(generation);
+      if (!mounted.current) return;
+      setHistoryState((current) => ({
+        ...current,
+        simulations: current.simulations.filter((item) => item.id !== simulation.id),
         error: "",
-      });
+      }));
 
       setExpandedId((current) =>
         current === simulation.id
           ? null
           : current,
       );
-    } catch {
+    } catch (error) {
+      if (!mounted.current) return;
       setHistoryState((current) => ({
         ...current,
-        error:
-          "Não foi possível excluir esta simulação. Tente novamente.",
+        error: plannerErrorMessage(error, "excluir esta simulação"),
       }));
+    } finally {
+      pending.current.delete(simulation.id);
+      if (mounted.current) setDeleting([...pending.current]);
     }
   };
 
@@ -174,10 +189,14 @@ export default function Historico() {
             role="alert"
           >
             {error}
+            {simulations.length === 0 && <button type="button" onClick={() => {
+              setHistoryState({ simulations: [], error: "", loading: true });
+              setReload((value) => value + 1);
+            }}>Tentar novamente</button>}
           </div>
         )}
 
-        {orderedSimulations.length > 0 ? (
+        {historyState.loading ? <p role="status">Carregando simulações…</p> : orderedSimulations.length > 0 ? (
           <section
             className="planner-history-list"
             aria-label="Simulações salvas"
@@ -292,6 +311,7 @@ export default function Historico() {
                       <button
                         type="button"
                         className="planner-history-card__delete"
+                        disabled={deleting.includes(simulation.id)}
                         onClick={() =>
                           handleDelete(simulation)
                         }
@@ -391,7 +411,7 @@ export default function Historico() {
               );
             })}
           </section>
-        ) : (
+        ) : !error && (
           <section className="planner-history-empty">
             <div className="planner-history-empty__icon">
               <Target

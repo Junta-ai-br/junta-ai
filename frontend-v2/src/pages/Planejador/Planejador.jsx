@@ -19,8 +19,9 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
-import useFinanceData from "@/contexts/useFinanceData";
-import { savePlannerSimulation } from "@/services/planner/store";
+import { MAX_PLANNER_AMOUNT, savePlannerSimulation } from "@/services/planner/store";
+import { loadPlannerTransactions } from "@/services/planner/transactions";
+import { assertPlannerSession, plannerErrorMessage, requirePlannerSession, usePlannerSessionKey } from "@/services/planner/session";
 
 import "./Planejador.css";
 
@@ -59,6 +60,7 @@ const INITIAL_FORM = {
 };
 
 const FIXED_EXPENSE_CATEGORIES = new Set(["Moradia", "Transporte", "Saúde"]);
+const EMPTY_TRANSACTIONS = [];
 
 function formatDateKey(date) {
   const year = date.getFullYear();
@@ -168,12 +170,8 @@ function formatCurrencyInput(value) {
     return "";
   }
 
-  const numericValue = Number(digits) / 100;
-
-  return numericValue.toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const cents = BigInt(digits);
+  return `${(cents / 100n).toLocaleString("pt-BR")},${String(cents % 100n).padStart(2, "0")}`;
 }
 
 function parseCurrency(value) {
@@ -196,6 +194,11 @@ function roundUpToCents(value) {
 }
 
 export default function Planejador() {
+  const sessionKey = usePlannerSessionKey();
+  return <PlannerContent key={sessionKey} />;
+}
+
+function PlannerContent() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -204,22 +207,36 @@ export default function Planejador() {
   const [isSaved, setIsSaved] = useState(false);
   const [saveError, setSaveError] = useState("");
   const savedRef = useRef(false);
+  const savingRef = useRef(false);
+  const uncertainRef = useRef(false);
+  const [writeUncertain, setWriteUncertain] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const mounted = useRef(true);
   const submissionTimer = useRef(null);
   const navigate = useNavigate();
 
-  useEffect(() => () => window.clearTimeout(submissionTimer.current), []);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; window.clearTimeout(submissionTimer.current); };
+  }, []);
 
   const invalidateSave = () => {
     savedRef.current = false;
     setIsSaved(false);
-    setSaveError("");
+    if (!uncertainRef.current) setSaveError("");
   };
 
   const handleNewSimulation = () => {
-    if (showResult && !savedRef.current &&
-      !window.confirm("Descartar a simulação não salva e iniciar uma nova?")) return;
+    if (savingRef.current) return;
+    if ((showResult || uncertainRef.current) && !savedRef.current &&
+      !window.confirm(uncertainRef.current
+        ? "A gravação anterior pode ter sido concluída. Consulte o Histórico para verificá-la. Iniciar uma nova simulação independente?"
+        : "Descartar a simulação não salva e iniciar uma nova?")) return;
+    uncertainRef.current = false;
+    setWriteUncertain(false);
     window.clearTimeout(submissionTimer.current);
     setIsSubmitting(false);
+    if (form.period !== INITIAL_FORM.period) setHistory({ period: null, status: "loading", transactions: [], error: "" });
     setForm(INITIAL_FORM);
     setErrors({});
     setShowResult(false);
@@ -228,7 +245,22 @@ export default function Planejador() {
     window.scrollTo({ top: 0, behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
 
-  const { transactions } = useFinanceData();
+  const [history, setHistory] = useState({ period: null, status: "loading", transactions: [], error: "" });
+  const [reload, setReload] = useState(0);
+  useEffect(() => {
+    if (form.period === "no_history") return;
+    const controller = new AbortController();
+    let active = true;
+    const range = getHistoryRange(form.period);
+    loadPlannerTransactions({ from: range.start, to: range.end, signal: controller.signal }).then((transactions) => {
+      if (active) setHistory({ period: form.period, status: "ready", transactions, error: "" });
+    }).catch((error) => {
+      if (active) setHistory({ period: form.period, status: "error", transactions: [], error: plannerErrorMessage(error, "carregar seu histórico financeiro") });
+    });
+    return () => { active = false; controller.abort(); };
+  }, [form.period, reload]);
+  const historyReady = form.period === "no_history" || (history.period === form.period && history.status === "ready");
+  const transactions = history.period === form.period && history.status === "ready" ? history.transactions : EMPTY_TRANSACTIONS;
 
   const selectedPeriod = useMemo(
     () => PERIOD_OPTIONS.find((option) => option.id === form.period),
@@ -269,17 +301,7 @@ export default function Planejador() {
     ? historyAnalysis.available
     : 0;
 
-  /*
-   * Enquanto a integração definitiva com backend/MCP/AI Service
-   * não está disponível, o histórico local funciona como fonte
-   * transitória para contextualizar o planejamento.
-   *
-   * Quando existe margem financeira positiva identificada,
-   * ela passa a ser a referência inicial do simulador.
-   *
-   * Se não existe histórico suficiente ou margem disponível,
-   * preservamos a referência matemática básica da meta.
-   */
+  // Preserve the deterministic reference after the complete real period loads.
   const usesHistoryReference =
     !isWithoutHistory && hasHistoryIncome && historyMonthlyCapacity > 0;
 
@@ -320,6 +342,8 @@ export default function Planejador() {
     estimatedMonths > 0 ? estimatedMonths - numericGoalDeadline : 0;
 
   const updateField = (field, value) => {
+    if (savingRef.current) return;
+    if (field === "period" && value !== form.period) setHistory({ period: null, status: "loading", transactions: [], error: "" });
     window.clearTimeout(submissionTimer.current);
     setIsSubmitting(false);
     setShowResult(false);
@@ -342,24 +366,24 @@ export default function Planejador() {
       nextErrors.period = "Escolha uma base para o planejamento.";
     }
 
-    if (!form.goalName.trim()) {
-      nextErrors.goalName = "Informe o nome da sua meta.";
+    if (!form.goalName.trim() || form.goalName.length > 150) {
+      nextErrors.goalName = "Informe um nome de até 150 caracteres.";
     }
 
     if (
       !form.goalAmount ||
       !Number.isFinite(numericGoalAmount) ||
-      numericGoalAmount <= 0
+      numericGoalAmount <= 0 || numericGoalAmount > MAX_PLANNER_AMOUNT
     ) {
-      nextErrors.goalAmount = "Informe um valor maior que zero.";
+      nextErrors.goalAmount = "Informe um valor entre R$ 0,01 e R$ 9.999.999.999,99.";
     }
 
     if (
       !form.goalDeadline ||
       !Number.isInteger(numericGoalDeadline) ||
-      numericGoalDeadline <= 0
+      numericGoalDeadline <= 0 || numericGoalDeadline > 1200
     ) {
-      nextErrors.goalDeadline = "Informe um prazo maior que zero.";
+      nextErrors.goalDeadline = "Informe um prazo de 1 a 1200 meses.";
     }
 
     setErrors(nextErrors);
@@ -370,47 +394,12 @@ export default function Planejador() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!validateForm()) {
+    if (savingRef.current || !historyReady || !validateForm()) {
       return;
     }
 
     setIsSubmitting(true);
     invalidateSave();
-
-    const planningData = {
-      period: {
-        type: form.period,
-        label: selectedPeriod?.label || "",
-        usesHistory: !isWithoutHistory,
-      },
-
-      goal: {
-        name: form.goalName.trim(),
-        amount: numericGoalAmount,
-        deadlineMonths: numericGoalDeadline,
-      },
-
-      /*
-       * Snapshot transitório utilizado apenas pelo frontend.
-       * Futuramente estes dados deverão vir das integrações
-       * responsáveis pelo contexto financeiro.
-       */
-      historyContext:
-        !isWithoutHistory && historyAnalysis
-          ? {
-              hasData: historyAnalysis.hasData,
-              income: historyAnalysis.income,
-              fixedExpenses: historyAnalysis.fixedExpenses,
-              totalExpenses: historyAnalysis.totalExpenses,
-              available: historyAnalysis.available,
-              commitmentRate: historyAnalysis.commitmentRate,
-            }
-          : null,
-
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log("Junta.ai — planejamento:", planningData);
 
     const initialSimulation = Math.min(
       Math.max(roundUpToCents(planningMonthlyReference), simulationMin),
@@ -426,19 +415,20 @@ export default function Planejador() {
   };
 
   const handleSimulationChange = (event) => {
+    if (savingRef.current) return;
     invalidateSave();
     setSimulationAmount(Number(event.target.value));
   };
 
-  const handleSaveSimulation = () => {
-    if (!showResult || isSubmitting || savedRef.current ||
+  const handleSaveSimulation = async () => {
+    if (!showResult || !historyReady || isSubmitting || savedRef.current || savingRef.current || uncertainRef.current ||
       simulationAmount <= 0 || estimatedMonths <= 0) return;
-    savedRef.current = true;
+    savingRef.current = true;
+    setIsSaving(true);
     try {
-      savePlannerSimulation({
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        period: { type: form.period, label: selectedPeriod.label, usesHistory: !isWithoutHistory },
+      const generation = requirePlannerSession();
+      await savePlannerSimulation({
+        period: { type: hasUsableHistory ? form.period : "no_history" },
         goal: { name: form.goalName.trim(), amount: numericGoalAmount, deadlineMonths: numericGoalDeadline },
         simulation: { monthlyAmount: simulationAmount, estimatedMonths },
         historyContext: hasUsableHistory ? {
@@ -449,14 +439,22 @@ export default function Planejador() {
           commitmentRate: historyAnalysis.commitmentRate,
         } : null,
       });
+      assertPlannerSession(generation);
+      if (!mounted.current) return;
+      savedRef.current = true;
       setIsSaved(true);
       setSaveError("");
-    } catch {
-      savedRef.current = false;
-      setSaveError("Não foi possível salvar a simulação. Tente novamente.");
-      return;
+      navigate("/planejador/historico");
+    } catch (error) {
+      if (!mounted.current) return;
+      const uncertain = (!error?.response && error?.request) || ["ECONNABORTED", "ETIMEDOUT", "ERR_NETWORK", "ERR_API_RESPONSE"].includes(error?.code) || error?.response?.status >= 500;
+      uncertainRef.current = Boolean(uncertain);
+      setWriteUncertain(Boolean(uncertain));
+      setSaveError(uncertain ? "Resultado da gravação incerto. Consulte o Histórico antes de tentar salvar novamente." : plannerErrorMessage(error, "salvar a simulação"));
+    } finally {
+      savingRef.current = false;
+      if (mounted.current) setIsSaving(false);
     }
-    navigate("/planejador/historico");
   };
 
   const simulationDescription = useMemo(() => {
@@ -609,6 +607,15 @@ export default function Planejador() {
           </div>
         </header>
 
+        {!isWithoutHistory && !historyReady && (history.status === "error" ?
+          <div role="alert">{history.error} <button type="button" onClick={() => {
+            setHistory({ period: null, status: "loading", transactions: [], error: "" });
+            setReload((value) => value + 1);
+          }}>Tentar novamente</button></div>
+          : <p role="status">Carregando histórico financeiro real…</p>)}
+        {!isWithoutHistory && historyReady && transactions.length === 0 && <p role="status">Nenhuma movimentação real neste período. A simulação será salva sem histórico.</p>}
+
+        {writeUncertain && <p role="alert">{saveError}</p>}
         <form className="planner-form" onSubmit={handleSubmit} noValidate>
           {/* Base do planejamento */}
 
@@ -706,7 +713,7 @@ export default function Planejador() {
                   }`}
                   placeholder="Ex.: Viagem para Portugal"
                   value={form.goalName}
-                  maxLength={80}
+                  maxLength={150}
                   onChange={(event) =>
                     updateField("goalName", event.target.value)
                   }
@@ -771,7 +778,7 @@ export default function Planejador() {
                     id="goal-deadline"
                     type="number"
                     min="1"
-                    max="120"
+                    max="1200"
                     placeholder="12"
                     value={form.goalDeadline}
                     onChange={(event) =>
@@ -865,6 +872,7 @@ export default function Planejador() {
               variant="primary"
               size="lg"
               loading={isSubmitting}
+              disabled={!historyReady || isSaving}
               loadingText="Preparando..."
               className="planner-form__submit"
             >
@@ -1191,10 +1199,10 @@ export default function Planejador() {
                 <p aria-live="polite">{simulationDescription}</p>
               </article>
               <div className="planner-result__actions">
-                {saveError && <p role="alert">{saveError}</p>}
-                <Button onClick={handleSaveSimulation} disabled={isSaved || isSubmitting}>
+                {saveError && !writeUncertain && <p role="alert">{saveError}</p>}
+                <Button onClick={handleSaveSimulation} disabled={isSaved || isSubmitting || isSaving || writeUncertain || !historyReady}>
                   <Save size={17} aria-hidden="true" />
-                  {isSaved ? "Simulação salva" : "Salvar simulação"}
+                  {isSaving ? "Salvando…" : isSaved ? "Simulação salva" : "Salvar simulação"}
                 </Button>
               </div>
             </div>

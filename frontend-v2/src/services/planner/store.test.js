@@ -1,56 +1,46 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { loadPlannerSimulations, removePlannerSimulation, savePlannerSimulation } from "./store";
+import { describe, expect, it } from "vitest";
+import { MAX_PLANNER_AMOUNT, plannerDecimal, simulationPayload } from "./store";
 
-describe("planner store", () => {
-  beforeEach(() => localStorage.clear());
-  it("loads an empty collection and preserves previous snapshots", () => {
-    expect(loadPlannerSimulations()).toEqual([]);
-    savePlannerSimulation({ id: "a", goal: { name: "Reserva" } });
-    savePlannerSimulation({ id: "b" });
-    expect(loadPlannerSimulations().map((item) => item.id)).toEqual(["a", "b"]);
+const snapshot = () => ({ period: { type: "current_month" }, goal: { name: " Reserva ", amount: 12000, deadlineMonths: 12 },
+  simulation: { monthlyAmount: 1000.01, estimatedMonths: 12 },
+  historyContext: { income: 1000 / 3, fixedExpenses: 10 / 3, totalExpenses: 100 / 3, available: 300, commitmentRate: 100 / 3 } });
+
+describe("Planner contract and precision", () => {
+  it("normalizes derived aggregates without changing calculations or user input", () => {
+    const input = snapshot();
+    expect(simulationPayload(input)).toEqual({ goalName: "Reserva", goalAmount: 12000, deadlineMonths: 12,
+      analysisBase: "current_month", monthlyAmount: 1000.01, estimatedMonths: 12,
+      historyContext: { income: 333.33, fixedExpenses: 3.33, totalExpenses: 33.33, available: 300, commitmentRate: 33.3333 } });
+    expect(input.historyContext.income).toBe(1000 / 3);
   });
-  it("does not duplicate an id", () => {
-    savePlannerSimulation({ id: "a" });
-    savePlannerSimulation({ id: "a" });
-    expect(loadPlannerSimulations()).toHaveLength(1);
+  it("supports zero, negative available and commitment above 100 percent", () => {
+    const input = snapshot(); input.historyContext = { income: 0, fixedExpenses: 0, totalExpenses: 10, available: -10, commitmentRate: 150.123456 };
+    expect(simulationPayload(input).historyContext).toMatchObject({ income: 0, available: -10, commitmentRate: 150.1235 });
   });
-  it("preserves malformed data instead of overwriting it", () => {
-    localStorage.setItem("junta_planner_simulations", "invalid");
-    expect(() => savePlannerSimulation({ id: "a" })).toThrow();
-    expect(localStorage.getItem("junta_planner_simulations")).toBe("invalid");
+  it("accepts minimum cents, maximum safe amount and documented month limits", () => {
+    const input = snapshot(); input.goal.amount = MAX_PLANNER_AMOUNT; input.goal.deadlineMonths = 1200;
+    input.simulation = { monthlyAmount: 0.01, estimatedMonths: 12000 };
+    expect(simulationPayload(input).monthlyAmount).toBe(0.01);
+    input.goal.amount = 0.01; expect(simulationPayload(input).goalAmount).toBe(0.01);
   });
-  it("propagates storage failures", () => {
-    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("quota"); });
-    try { expect(() => savePlannerSimulation({ id: "a" })).toThrow("quota"); }
-    finally { spy.mockRestore(); }
+  it.each([0, -1, NaN, Infinity, 1.001, MAX_PLANNER_AMOUNT + 1, "1.00"])("rejects invalid input amounts without rounding %s", (value) => {
+    const input = snapshot(); input.goal.amount = value; expect(() => simulationPayload(input)).toThrow();
   });
-  it("removes only the requested simulation and returns the remaining snapshots", () => {
-    savePlannerSimulation({ id: "a", goal: { name: "Reserva" } });
-    savePlannerSimulation({ id: "b" });
-    expect(removePlannerSimulation("b")).toEqual([{ id: "a", goal: { name: "Reserva" } }]);
-    expect(loadPlannerSimulations()).toEqual([{ id: "a", goal: { name: "Reserva" } }]);
-    expect(removePlannerSimulation("missing")).toEqual(loadPlannerSimulations());
+  it.each([0, 1201, 1.5])("rejects invalid deadlines %s", (value) => {
+    const input = snapshot(); input.goal.deadlineMonths = value; expect(() => simulationPayload(input)).toThrow();
   });
-  it("rejects non-array storage without overwriting it on save or removal", () => {
-    localStorage.setItem("junta_planner_simulations", '{"id":"a"}');
-    expect(() => loadPlannerSimulations()).toThrow(/inválido/);
-    expect(() => savePlannerSimulation({ id: "b" })).toThrow(/inválido/);
-    expect(() => removePlannerSimulation("a")).toThrow(/inválido/);
-    expect(localStorage.getItem("junta_planner_simulations")).toBe('{"id":"a"}');
+  it.each([0, 12001, 1.5])("rejects invalid estimated months %s", (value) => {
+    const input = snapshot(); input.simulation.estimatedMonths = value; expect(() => simulationPayload(input)).toThrow();
   });
-  it("propagates read failures for all store operations", () => {
-    const spy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new Error("read failed"); });
-    try {
-      expect(() => loadPlannerSimulations()).toThrow("read failed");
-      expect(() => savePlannerSimulation({ id: "a" })).toThrow("read failed");
-      expect(() => removePlannerSimulation("a")).toThrow("read failed");
-    } finally { spy.mockRestore(); }
+  it.each(["", " ", "x".repeat(151)])("rejects invalid names", (value) => {
+    const input = snapshot(); input.goal.name = value; expect(() => simulationPayload(input)).toThrow();
   });
-  it("preserves snapshots when removal cannot be persisted", () => {
-    savePlannerSimulation({ id: "a" });
-    const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("quota"); });
-    try { expect(() => removePlannerSimulation("a")).toThrow("quota"); }
-    finally { spy.mockRestore(); }
-    expect(loadPlannerSimulations()).toEqual([{ id: "a" }]);
+  it("rejects incomplete contexts and unknown bases, accepting no_history only without context", () => {
+    const input = snapshot(); input.historyContext = { income: 10 }; expect(() => simulationPayload(input)).toThrow();
+    input.historyContext = { ...snapshot().historyContext, income: -1 }; expect(() => simulationPayload(input)).toThrow();
+    input.historyContext = null; input.period.type = "unknown"; expect(() => simulationPayload(input)).toThrow();
+    input.period.type = "no_history"; expect(simulationPayload(input).historyContext).toBeNull();
+    input.historyContext = snapshot().historyContext; expect(() => simulationPayload(input)).toThrow();
+    expect(() => plannerDecimal(1.12345, 4)).toThrow();
   });
 });
