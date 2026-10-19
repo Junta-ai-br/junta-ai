@@ -1,23 +1,40 @@
 import { motion } from "motion/react";
 import { SendHorizontal } from "lucide-react";
 
-import { CATEGORY_META } from "@/services/finance/store";
-
 export default function AssistantConversation({
   messages = [],
   inputValue = "",
   setInputValue,
   isTyping = false,
-  pendingExpense = null,
-  categories = [],
   handleSubmit,
-  registerExpense,
+  loading = false,
+  error = null,
+  recovery = null,
+  conversations = [],
+  conversationId = null,
+  selectConversation,
+  newConversation,
+  refreshHistory,
+  retryMessage,
+  canSend,
 }) {
   return (
     <section
       className="assistant__conversation"
       aria-label="Conversa com o Junta.ai"
     >
+      {selectConversation && <div className="assistant__conversation-tools">
+        <label>Conversa<select aria-label="Conversa" value={conversationId ?? ""} disabled={loading || isTyping || !!recovery}
+          onChange={(event) => selectConversation(event.target.value || null)}>
+          <option value="">Nova conversa</option>
+          {conversations.map((item) => <option key={item.id} value={item.id}>{item.title || "Conversa sem título"} · {item.updatedAt}</option>)}
+        </select></label>
+        <button type="button" disabled={loading || isTyping || !!recovery} onClick={newConversation}>Nova conversa</button>
+        <button type="button" disabled={loading || isTyping} onClick={refreshHistory}>Atualizar histórico</button>
+      </div>}
+      {loading && <p role="status">Carregando histórico persistido…</p>}
+      {error && <div role="alert"><p>{error}</p>{recovery && !recovery.creationUnknown && <button type="button" disabled={isTyping} onClick={retryMessage}>Retomar envio anterior</button>}
+        {recovery?.creationUnknown && <p>Atualize o histórico antes de iniciar outra conversa; a criação pode ter sido processada.</p>}</div>}
       <div className="assistant__conversation-content">
         <div className="assistant__messages">
           {messages.length === 0 && !isTyping && (
@@ -46,22 +63,12 @@ export default function AssistantConversation({
                     <img src="/src/assets/logos/logo-icon.svg" alt="" />
                   </span>
                 )}
-                <p>{message.text}</p>
+                <p style={{ whiteSpace: "pre-wrap" }}>{message.text}</p>
+                {message.executionConfirmed === true && <p role="status">O backend confirmou a execução desta operação. Consulte os lançamentos reais na Visão do mês.</p>}
+                {message.executionConfirmed === false && <p>Esta resposta não confirma uma nova execução financeira.</p>}
               </div>
             </motion.div>
           ))}
-
-          {pendingExpense && (
-            <div className="assistant__message assistant__message--assistant">
-              <div className="assistant__message-bubble assistant__category-picker">
-                {categories.filter((category) => category !== "Renda").map((category) => (
-                  <button type="button" key={category} onClick={() => registerExpense(category)}>
-                    {CATEGORY_META[category]?.icon || "💰"} {category}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
 
           {isTyping && (
             <motion.div
@@ -85,6 +92,8 @@ export default function AssistantConversation({
         </div>
       </div>
 
+      {selectConversation && <p>Conversa conectada ao servidor. Os cartões de demonstração não são atualizados por este chat. O histórico textual, sozinho, não comprova execução financeira.</p>}
+
       <form className="assistant__composer" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -92,13 +101,15 @@ export default function AssistantConversation({
           placeholder="Digite uma mensagem..."
           aria-label="Mensagem"
           value={inputValue}
+          maxLength={2000}
+          disabled={loading || isTyping || !!recovery}
           onChange={(event) => setInputValue(event.target.value)}
         />
         <button
           type="submit"
           className="assistant__composer-button"
           aria-label="Enviar mensagem"
-          disabled={!inputValue.trim() || isTyping}
+          disabled={canSend === undefined ? !inputValue.trim() || isTyping : !canSend}
         >
           <SendHorizontal size={18} strokeWidth={2} aria-hidden="true" />
         </button>

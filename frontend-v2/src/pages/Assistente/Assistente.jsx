@@ -38,20 +38,10 @@ export default function Assistente({
     categories,
     categoryColors,
     goals,
-    addTransaction,
     updateGoals,
   } = useFinanceData();
 
-  const conversation = useAssistantConversation({ addTransaction });
-  const {
-    inputValue,
-    setInputValue,
-    messages,
-    pendingExpense,
-    isTyping,
-    handleSubmit,
-    registerExpense,
-  } = conversation;
+  const conversation = useAssistantConversation();
 
   const { profile } = useUser();
 
@@ -266,14 +256,7 @@ export default function Assistente({
             ================================================================= */}
 
         <AssistantConversation
-          messages={messages}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          isTyping={isTyping}
-          pendingExpense={pendingExpense}
-          categories={categories}
-          handleSubmit={handleSubmit}
-          registerExpense={registerExpense}
+          {...conversation}
         />
 
         {/* =================================================================

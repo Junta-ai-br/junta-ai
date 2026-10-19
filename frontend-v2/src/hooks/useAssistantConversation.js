@@ -1,116 +1,136 @@
-import { useCallback, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { getSessionSnapshot, subscribeSession } from "@/services/auth/session";
+import * as conversations from "@/services/conversations.api";
 
-import { CATEGORY_META, loadTransactions, saveTransactions } from "@/services/finance/store";
+const generation = () => getSessionSnapshot()?.generation ?? null;
+const empty = (owner) => ({ owner, inputValue: "", messages: [], conversations: [], conversationId: null, loading: true, isTyping: false, error: null, recovery: null });
+const bubble = (message) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content });
+const history = (messages) => messages.filter((message) => message.role !== "SYSTEM").map(bubble);
+const errorMessage = (error, sending) => {
+  if (["ECONNABORTED", "ETIMEDOUT"].includes(error?.code)) return "O tempo de espera terminou. O servidor pode ter processado a mensagem. Retome o envio anterior com a mesma identidade.";
+  if (error?.response?.data?.code === "message_processing_in_progress") return "O envio anterior ainda está em processamento. Aguarde e retome-o manualmente.";
+  if (error?.response?.data?.code === "message_processing_failed") return "A IA não conseguiu processar esta mensagem. Nenhuma execução foi confirmada nesta resposta.";
+  if (error?.response?.status === 403) return "Você não tem permissão para acessar esta conversa.";
+  if (error?.response?.status === 404) return "Conversa não encontrada. Atualize o histórico.";
+  return sending ? "Não foi possível confirmar a resposta do assistente. Nenhuma resposta ou execução financeira será simulada." : "Não foi possível carregar o histórico. Verifique a conexão com o servidor.";
+};
 
-export function createChatTransactionId() {
-  return `chat-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
+export default function useAssistantConversation() {
+  const owner = useSyncExternalStore(subscribeSession, generation);
+  const [state, setState] = useState(() => empty(owner));
+  const active = useRef(null);
+  const lock = useRef(false);
+  const recovery = useRef(null);
+  const current = (lease) => active.current === lease && generation() === lease?.owner && !lease.controller.signal.aborted;
+  const options = (lease) => ({ signal: lease.controller.signal, generation: lease.owner });
 
-export default function useAssistantConversation({ addTransaction } = {}) {
-  const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [pendingExpense, setPendingExpense] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const appendAssistantMessage = useCallback((text) => {
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      { id: Date.now() + 1, type: "assistant", text },
-    ]);
-  }, []);
-
-  const persistChatTransaction = useCallback((transaction, successMessage) => {
-    try {
-      if (addTransaction) {
-        addTransaction(transaction);
-      } else {
-        saveTransactions([...loadTransactions(), transaction]);
-      }
-      appendAssistantMessage(successMessage);
-    } catch {
-      appendAssistantMessage("Não consegui salvar esse lançamento. Tente novamente.");
-    } finally {
-      setPendingExpense(null);
-      setIsTyping(false);
+  useEffect(() => {
+    const lease = { owner, controller: new AbortController(), conversationId: null };
+    active.current = lease; lock.current = true; recovery.current = null;
+    setState(empty(owner));
+    if (!owner) { lock.current = false; setState({ ...empty(owner), loading: false }); }
+    else {
+      (async () => {
+        try {
+          const list = await conversations.listConversations(options(lease));
+          if (!current(lease)) return;
+          const id = list[0]?.id ?? null;
+          const messages = id ? await conversations.listMessages(id, options(lease)) : [];
+          if (current(lease)) {
+            lease.conversationId = id;
+            setState({ ...empty(owner), loading: false, conversations: list, conversationId: id, messages: history(messages) });
+          }
+        } catch (error) {
+          if (current(lease)) setState({ ...empty(owner), loading: false, error: errorMessage(error, false) });
+        } finally { if (current(lease)) lock.current = false; }
+      })();
     }
-  }, [addTransaction, appendAssistantMessage]);
-
-  const handleSubmit = useCallback((eventOrMessage) => {
-    if (typeof eventOrMessage === "object" && eventOrMessage && typeof eventOrMessage.preventDefault === "function") {
-      eventOrMessage.preventDefault();
-    }
-
-    const message = typeof eventOrMessage === "string"
-      ? eventOrMessage.trim()
-      : inputValue.trim();
-
-    if (!message || isTyping) {
-      return;
-    }
-
-    const userMessage = {
-      id: Date.now(),
-      type: "user",
-      text: message,
+    return () => {
+      if (active.current === lease) { active.current = null; recovery.current = null; }
+      lease.controller.abort();
     };
+  }, [owner]);
 
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      userMessage,
-    ]);
-    setInputValue("");
-    setIsTyping(true);
+  const selectConversation = async (id, refreshing = false) => {
+    const lease = active.current;
+    if (!lease || lease.owner !== owner || !current(lease) || lock.current || (recovery.current && !refreshing)) return;
+    lock.current = true;
+    setState((value) => ({ ...value, loading: true, error: null }));
+    try {
+      const list = await conversations.listConversations(options(lease));
+      if (!current(lease)) return;
+      const selected = id === undefined ? lease.conversationId ?? list[0]?.id ?? null : id;
+      const messages = selected ? await conversations.listMessages(selected, options(lease)) : [];
+      if (current(lease)) {
+        lease.conversationId = selected;
+        if (recovery.current?.creationUnknown) recovery.current = null;
+        setState((value) => ({ ...value, loading: false, inputValue: recovery.current ? value.inputValue : "", recovery: recovery.current, conversations: list, conversationId: selected, messages: history(messages) }));
+      }
+    } catch (error) { if (current(lease)) setState((value) => ({ ...value, loading: false, error: errorMessage(error, false) })); }
+    finally { if (current(lease)) lock.current = false; }
+  };
 
-    const entryMatch = message.match(/\bentrada\s*:?\s*([\d]+(?:[.,]\d{1,2})?)/i);
-    const exitMatch = message.match(/\b(sa[ií]da|gastei)\s*:?\s*([\d]+(?:[.,]\d{1,2})?)/i);
-    const amount = Number((entryMatch?.[1] || exitMatch?.[2] || "0").replace(",", "."));
-    const today = new Date().toISOString().split("T")[0];
-
-    if (amount > 0 && entryMatch) {
-      persistChatTransaction(
-        { id: createChatTransactionId(), date: today, category: "Renda", desc: "Entrada via chat", amount, icon: CATEGORY_META.Renda.icon },
-        "Entrada registrada. Seus gráficos já foram atualizados.",
-      );
-      return;
+  const send = async (message, retry = false) => {
+    const lease = active.current;
+    if (!lease || lease.owner !== owner || !current(lease) || lock.current || (!retry && recovery.current) || (retry && !recovery.current?.key)) return;
+    if (!retry && !conversations.validChatInput(message)) {
+      setState((value) => ({ ...value, error: "Informe uma mensagem não vazia de até 2000 caracteres." })); return;
     }
-
-    if (amount > 0 && exitMatch) {
-      setPendingExpense({ amount, date: today, desc: "Saída via chat" });
-      appendAssistantMessage("Qual categoria devo usar para essa saída?");
-      setIsTyping(false);
-      return;
+    lock.current = true;
+    setState((value) => ({ ...value, isTyping: true, error: null }));
+    let operation = retry ? recovery.current : null;
+    try {
+      if (!operation) {
+        let id = lease.conversationId;
+        if (!id) {
+          const created = await conversations.createConversation(options(lease));
+          if (!current(lease)) return;
+          id = created.id;
+          lease.conversationId = id;
+          setState((value) => ({ ...value, conversationId: id, conversations: [created, ...value.conversations] }));
+        }
+        operation = { id, message, key: crypto.randomUUID() };
+      }
+      if (!current(lease)) return;
+      recovery.current = operation;
+      const reply = await conversations.sendMessage(operation.id, operation.message, operation.key, options(lease));
+      if (!current(lease)) return;
+      recovery.current = null;
+      setState((value) => ({ ...value, inputValue: "", recovery: null,
+        messages: [...value.messages.filter((item) => ![reply.userMessage.id, reply.assistantMessage.id].includes(item.id)),
+          bubble(reply.userMessage), { ...bubble(reply.assistantMessage), executionConfirmed: reply.actionExecuted }] }));
+    } catch (error) {
+      if (!current(lease)) return;
+      const code = error?.response?.data?.code;
+      const terminal = code === "message_processing_failed" || [400, 403, 404].includes(error?.response?.status);
+      // Unknown outcomes retain the exact key/body. Failed creation must be
+      // reconciled with the conversation list before another POST /conversations.
+      recovery.current = terminal ? null : operation ?? { creationUnknown: true };
+      setState((value) => ({ ...value, recovery: recovery.current, error: errorMessage(error, true) }));
+    } finally {
+      if (current(lease)) { lock.current = false; setState((value) => ({ ...value, isTyping: false })); }
     }
+  };
 
-    window.setTimeout(() => {
-      appendAssistantMessage("Entendi! 💜 Vou considerar essa informação no seu planejamento financeiro.");
-      setIsTyping(false);
-    }, 1000);
-  }, [appendAssistantMessage, inputValue, isTyping, persistChatTransaction]);
-
-  const registerExpense = useCallback((category) => {
-    if (!pendingExpense) {
-      return;
-    }
-
-    persistChatTransaction(
-      {
-        id: createChatTransactionId(),
-        ...pendingExpense,
-        category,
-        amount: -pendingExpense.amount,
-        icon: CATEGORY_META[category]?.icon || "💰",
-      },
-      `Saída registrada em ${category}. Seus gráficos já foram atualizados.`,
-    );
-  }, [pendingExpense, persistChatTransaction]);
-
-  return {
-    inputValue,
-    setInputValue,
-    messages,
-    pendingExpense,
-    isTyping,
-    handleSubmit,
-    registerExpense,
+  const view = state.owner === owner ? state : empty(owner);
+  const publicView = { ...view };
+  delete publicView.owner;
+  return { ...publicView, recovery: view.recovery ? { creationUnknown: !!view.recovery.creationUnknown } : null,
+    inputValue: owner ? view.inputValue : "", messages: owner ? view.messages : [],
+    setInputValue: (inputValue) => { if (owner && generation() === owner && active.current?.owner === owner) setState((value) => ({ ...value, inputValue })); },
+    handleSubmit: (event) => { event?.preventDefault?.(); return send(typeof event === "string" ? event : view.inputValue); },
+    retryMessage: () => send(null, true),
+    selectConversation,
+    refreshHistory: () => {
+      if (generation() !== owner) return;
+      return selectConversation(undefined, true);
+    },
+    newConversation: () => {
+      if (generation() === owner && active.current?.owner === owner && !lock.current && !recovery.current) {
+        active.current.conversationId = null;
+        setState((value) => ({ ...value, conversationId: null, messages: [], inputValue: "", error: null }));
+      }
+    },
+    canSend: !!owner && !view.loading && !view.isTyping && !view.recovery && conversations.validChatInput(view.inputValue),
   };
 }

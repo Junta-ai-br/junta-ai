@@ -18,7 +18,8 @@ function FinancialScope({ children }) {
   const legacyArea = matchPath("/assistente", pathname) || matchPath("/planejador/*", pathname) || matchPath("/relatorios", pathname);
   return <FinanceProvider>
     {isAuthenticated && legacyArea && <aside role="status" style={{ padding: "12px 5vw", background: "var(--surface)", color: "var(--text-primary)", borderBottom: "1px solid var(--border)" }}>
-      Esta área ainda usa dados locais de demonstração, separados dos lançamentos reais do Dashboard e da Visão do mês.
+      {matchPath("/assistente", pathname) ? "Os cartões financeiros desta área ainda usam dados locais de demonstração. A conversa usa o servidor real; confira operações na Visão do mês."
+        : "Esta área ainda usa dados locais de demonstração, separados dos lançamentos reais do Dashboard e da Visão do mês."}
     </aside>}
     {children}
   </FinanceProvider>;
