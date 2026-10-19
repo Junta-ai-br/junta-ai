@@ -1,0 +1,9 @@
+.canonical-financial-form { width: min(100%, 380px); box-sizing: border-box; padding: 22px; border: 1px solid var(--border, #777); border-radius: 12px; background: var(--surface, Canvas); color: var(--text-primary, CanvasText); }
+.canonical-financial-form h2 { margin-top: 0; font-size: 1.2rem; }
+.canonical-financial-form fieldset { display: grid; gap: 12px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.canonical-financial-form label { display: grid; gap: 5px; }
+.canonical-financial-form textarea { box-sizing: border-box; resize: vertical; min-height: 5rem; }
+.canonical-financial-form select { width: 100%; padding: 10px; border: 1px solid var(--border-strong, #777); border-radius: 7px; background: var(--surface, Canvas); color: inherit; }
+.canonical-financial-form p { overflow-wrap: anywhere; }
+.canonical-financial-form__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.canonical-financial-form [role="alert"] { border-inline-start: 3px solid var(--error, #d45c5c); padding-inline-start: 10px; }
