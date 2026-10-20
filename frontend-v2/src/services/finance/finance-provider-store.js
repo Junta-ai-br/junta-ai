@@ -1,12 +1,14 @@
 import { getSessionSnapshot, subscribeSession } from "../auth/session";
 import { createFinancialCommands } from "./financial-commands";
 import { requirePeriod } from "./financial-load";
+import { localCivilToday } from "./civil-date";
 
 const EMPTY = Object.freeze([]);
 const readResult = (status) => Object.freeze({ status, period: null, data: null, error: null });
 
 // Calendar policy: UTC civil month. Transport always receives date-only strings.
-export function currentCivilMonth(date = new Date()) {
+// Calendar policy: civil month in the user's local day. Transport always receives date-only strings.
+export function currentCivilMonth(date = localCivilToday()) {
   const from = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-01`;
   const to = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
   return requirePeriod({ from, to });
