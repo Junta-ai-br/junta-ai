@@ -79,6 +79,7 @@ describe('real email registration', () => {
 
   it('requires complete onboarding or an explicit skip', () => {
     setup(); fillBasics();
+    expect(screen.getByRole('heading', { name: 'Agora, conta pra gente um pouquinho sobre você.' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
     expect(screen.getByRole('alert')).toHaveTextContent('responda todas');
     expect(api.requestRegistrationCode).not.toHaveBeenCalled();
@@ -106,6 +107,7 @@ describe('real email registration', () => {
     api.verifyRegistration.mockReturnValue(new Promise((done) => { resolve = done; }));
     setup();
     const input = await requestCode(skip);
+    expect(screen.getByRole('heading', { name: 'Confirme seu e-mail' })).toBeInTheDocument();
     confirmCode(input);
     fireEvent.submit(input.closest('form'));
     expect(api.verifyRegistration).toHaveBeenCalledExactlyOnceWith({

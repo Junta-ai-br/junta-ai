@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight, Camera, Trash2 } from "lucide-react";
 
-import Header from "@/components/navigation/Header";
+import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
 import Footer from "@/components/navigation/Footer";
 import Card from "@/components/common/Card";
 import Button from "@/components/common/Button";
@@ -161,9 +161,9 @@ export default function Perfil() {
 
   return (
     <div className="settings-page">
-      <Header />
+      <AuthHeader activePath="/perfil" />
 
-      <main className="settings-page__main">
+      <div className="settings-page__main">
         <div className="settings-page__container">
           <nav className="settings-page__breadcrumb" aria-label="Breadcrumb">
             <Link to="/">Início</Link>
@@ -339,7 +339,7 @@ export default function Perfil() {
             </div>
           </form>
         </div>
-      </main>
+      </div>
 
       <Footer />
     </div>
