@@ -1,9 +1,21 @@
+import { motion, useReducedMotion } from "motion/react";
+
 import "./Banner.css";
 
 function Banner() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="planos-banner">
       <div className="planos-banner__container">
+        <motion.div
+          className="planos-banner__animated-border"
+          animate={{ rotate: reduceMotion ? 0 : 360 }}
+          transition={reduceMotion
+            ? { duration: 0 }
+            : { duration: 12, repeat: Infinity, ease: "linear" }}
+          aria-hidden="true"
+        />
         <div className="planos-banner__brand">
           <div>
             <h2 className="planos-banner__title">
