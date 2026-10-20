@@ -1,0 +1,101 @@
+.updates-page {
+  padding: clamp(2rem, 6vw, 6rem) var(--spacing-24) clamp(4rem, 8vw, 6rem);
+  color: var(--text-primary);
+}
+
+.updates-page__container {
+  width: min(100%, 960px);
+  margin-inline: auto;
+}
+
+.updates-page__header {
+  position: relative;
+  padding-top: var(--spacing-32);
+  margin-bottom: var(--spacing-48);
+}
+
+.updates-page__header::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 5rem;
+  height: var(--spacing-4);
+  border-radius: var(--radius-full);
+  background: var(--gradient-brand);
+}
+
+.updates-page__eyebrow {
+  margin-bottom: var(--spacing-20);
+  color: var(--brand-accent);
+  font-size: var(--font-small);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.updates-page__title {
+  max-width: 20ch;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: var(--line-height-tight);
+  text-wrap: balance;
+}
+
+.updates-page__brand {
+  color: var(--brand-primary);
+  font-family: inherit;
+}
+
+.updates-page__body {
+  max-width: 65ch;
+}
+
+.updates-page__intro {
+  margin-bottom: var(--spacing-24);
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-medium);
+}
+
+.updates-page__paragraph {
+  margin-bottom: var(--spacing-24);
+}
+
+.updates-page__closing-tail {
+  white-space: nowrap;
+}
+
+.updates-page__highlight {
+  margin-block: var(--spacing-48);
+  padding-left: var(--spacing-24);
+  border-left: var(--spacing-4) solid var(--brand-primary);
+  font-family: var(--heading-family);
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  font-weight: var(--font-semibold);
+  line-height: var(--line-height-normal);
+}
+
+.updates-page__cta {
+  max-width: 100%;
+  margin-top: var(--spacing-8);
+  line-height: var(--line-height-normal);
+  text-align: center;
+}
+
+@media (min-width: 1101px) {
+  .updates-page {
+    padding-top: clamp(2rem, 5vw, 5rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .updates-page {
+    padding-inline: var(--spacing-20);
+  }
+
+  .updates-page__header {
+    margin-bottom: var(--spacing-32);
+  }
+
+  .updates-page__highlight {
+    margin-block: var(--spacing-32);
+    padding-left: var(--spacing-16);
+  }
+}

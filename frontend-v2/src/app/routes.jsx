@@ -7,6 +7,7 @@ import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const Landing = lazy(() => import("@/pages/Landing"));
+const Atualizacoes = lazy(() => import("@/pages/Atualizacoes"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Assistente = lazy(() => import("@/pages/Assistente"));
 const Planejador = lazy(() => import("@/pages/Planejador"));
@@ -32,6 +33,7 @@ function AppRoutes() {
         {/* Área pública */}
         <Route element={<LandingLayout />}>
           <Route path="/" element={<Landing />} />
+          <Route path="/atualizacoes" element={<Atualizacoes />} />
           <Route path="/planos" element={<Planos />} />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/contato" element={<Contato />} />
