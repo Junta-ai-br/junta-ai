@@ -92,6 +92,26 @@ export function saveSession(tokens) {
   return session;
 }
 
+// Mesmo login, tokens novos: a generation é mantida para que nada trate isto como outra conta.
+export function renewSession(tokens, expectedGeneration) {
+  if (!isValidSession(tokens)) throw new Error("Invalid authentication response.");
+  if (!getStoredSession() || generation !== expectedGeneration) return false;
+  const session = {
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    expiresInSeconds: tokens.expiresInSeconds,
+    expiresAt: Date.now() + tokens.expiresInSeconds * 1000,
+  };
+  if (!Number.isFinite(session.expiresAt) || session.expiresAt <= Date.now()) {
+    throw new Error("Invalid authentication expiration.");
+  }
+  const raw = JSON.stringify(session);
+  sessionStorage.setItem(STORAGE_KEY, raw);
+  observedStorage = raw;
+  notifySession();
+  return true;
+}
+
 function removeStoredSession() {
   observedStorage = null;
   generation = Symbol();
