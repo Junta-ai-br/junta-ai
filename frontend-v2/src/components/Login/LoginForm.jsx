@@ -63,7 +63,7 @@ export default function LoginForm() {
     try {
       await requestAccessCode(normalizedEmail);
       setEmail(normalizedEmail);
-      setStatus("Enviamos uma chave de acesso para o seu e-mail.");
+      setStatus("Se este e-mail tiver uma conta, enviamos uma chave de acesso.");
       setStep("code");
       setCooldown(RESEND_COOLDOWN);
     } catch (error) {
@@ -112,7 +112,7 @@ export default function LoginForm() {
 
     try {
       await requestAccessCode(email);
-      setStatus("Uma nova chave de acesso foi enviada para o seu e-mail.");
+      setStatus("Se este e-mail tiver uma conta, enviamos uma nova chave de acesso.");
       setCooldown(RESEND_COOLDOWN);
     } catch (error) {
       setError(getEmailAuthError(error).message);
@@ -317,7 +317,7 @@ export default function LoginForm() {
         <h2 id="login-title">Confirme seu acesso</h2>
 
         <p>
-          Enviamos uma chave de 6 dígitos para {email}.
+          Se este e-mail tiver uma conta, enviamos uma chave de 6 dígitos para {email}.
         </p>
       </div>
 
