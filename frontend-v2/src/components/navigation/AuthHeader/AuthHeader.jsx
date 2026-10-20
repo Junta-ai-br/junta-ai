@@ -1,3 +1,4 @@
+import { revokeRefreshToken } from "@/services/auth/logout";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogOut, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -56,6 +57,7 @@ export default function AuthHeader({
 
   const closeMenu = () => setIsMenuOpen(false);
   const handleLogout = () => {
+    revokeRefreshToken();
     endSession();
     setIsUserMenuOpen(false);
     setIsMenuOpen(false);
