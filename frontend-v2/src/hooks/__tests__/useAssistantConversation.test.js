@@ -1,85 +1,77 @@
-import { act, renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import * as financeStore from "@/services/finance/store";
+import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AxiosError } from "axios";
+vi.hoisted(() => vi.stubEnv("VITE_API_URL", "https://backend.example.test"));
+import { api } from "@/services/api";
+import { clearSession, saveSession } from "@/services/auth/session";
 import useAssistantConversation from "@/hooks/useAssistantConversation";
-
-describe("useAssistantConversation", () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.restoreAllMocks();
-    vi.useRealTimers();
+const conversation = { id: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", title: "Servidor", updatedAt: "2026-10-18T12:00:00Z" };
+const userMessage = { id: "76870c4b-f8df-4eab-b3c2-de1738a07a4e", role: "USER", content: "gastei 0,01", createdAt: conversation.updatedAt };
+const assistantMessage = { ...userMessage, id: "ec17e3c2-b24a-4e17-9ff5-58d370cc9862", role: "ASSISTANT", content: "Resposta real do contrato" };
+const tokens = { accessToken: "same", refreshToken: "R", expiresInSeconds: 900 };
+const reply = (actionExecuted = false) => ({ conversationId: conversation.id, userMessage, assistantMessage, actionExecuted });
+const response = (config, data) => ({ config, data: JSON.stringify(data), status: 200, headers: {} });
+let calls, transport;
+beforeEach(() => {
+  sessionStorage.clear(); localStorage.clear(); clearSession(); saveSession(tokens); calls = [];
+  transport = async (config) => response(config, config.method === "post" ? config.url === "/conversations" ? conversation : reply() : config.url === "/conversations" ? [conversation] : []);
+  api.defaults.adapter = (config) => { calls.push(config); return transport(config); };
+});
+afterEach(() => { cleanup(); clearSession(); vi.restoreAllMocks(); });
+const mount = async () => { const hook = renderHook(() => useAssistantConversation()); await waitFor(() => expect(hook.result.current.loading).toBe(false)); return hook; };
+const posts = () => calls.filter((call) => call.method === "post");
+describe("real conversation lifecycle", () => {
+  it.each([true, false])("uses persisted history and backend execution evidence=%s without financial writes", async (executed) => {
+    transport = async (config) => response(config, config.method === "post" ? reply(executed) : config.url === "/conversations" ? [conversation] : [userMessage]);
+    const hook = await mount(); expect(hook.result.current.messages[0].text).toBe(userMessage.content);
+    const storage = vi.spyOn(Storage.prototype, "setItem");
+    await act(async () => { await hook.result.current.handleSubmit("gastei 0,01"); });
+    expect(hook.result.current.messages.at(-1)).toMatchObject({ type: "assistant", text: assistantMessage.content, executionConfirmed: executed });
+    expect(posts()).toHaveLength(1); expect(posts()[0].url).toBe(`/conversations/${conversation.id}/messages`);
+    expect(posts()[0].headers.get("Authorization")).toBe("Bearer same");
+    expect(posts()[0].headers.get("Idempotency-Key")).toMatch(/^[0-9a-f-]{36}$/);
+    expect(posts()[0].timeout).toBe(65000); expect(storage).not.toHaveBeenCalled();
   });
-
-  it("adds the user message and a mocked assistant response when the message is generic", () => {
-    vi.useFakeTimers();
-    const { result } = renderHook(() => useAssistantConversation());
-
-    act(() => {
-      result.current.setInputValue("Quero revisar meus gastos");
-      result.current.handleSubmit("Quero revisar meus gastos");
-    });
-
-    expect(result.current.messages).toEqual([
-      expect.objectContaining({ type: "user", text: "Quero revisar meus gastos" }),
-    ]);
-    expect(result.current.isTyping).toBe(true);
-
-    act(() => {
-      vi.runAllTimers();
-    });
-
-    expect(result.current.messages).toEqual([
-      expect.objectContaining({ type: "user", text: "Quero revisar meus gastos" }),
-      expect.objectContaining({ type: "assistant", text: expect.stringContaining("Vou considerar essa informação") }),
-    ]);
-    expect(result.current.isTyping).toBe(false);
+  it("creates a conversation lazily and blocks concurrent Enter/click submissions", async () => {
+    transport = async (config) => response(config, config.method === "post" ? config.url === "/conversations" ? conversation : reply() : []);
+    const hook = await mount(); let first, second;
+    act(() => { first = hook.result.current.handleSubmit("exato  💜 "); second = hook.result.current.handleSubmit("exato  💜 "); });
+    await act(async () => { await Promise.all([first, second]); });
+    expect(posts().map((item) => item.url)).toEqual(["/conversations", `/conversations/${conversation.id}/messages`]);
+    expect(JSON.parse(posts()[1].data)).toEqual({ message: "exato  💜 " });
   });
-
-  it("persists a new expense transaction and calls the finance service when a category is chosen", () => {
-    const saveTransactionsSpy = vi.spyOn(financeStore, "saveTransactions");
-    const addTransaction = vi.fn((transaction) => {
-      const nextTransactions = [...financeStore.loadTransactions(), transaction];
-      financeStore.saveTransactions(nextTransactions);
-      return nextTransactions;
-    });
-    const { result } = renderHook(() => useAssistantConversation({ addTransaction }));
-
-    act(() => {
-      result.current.setInputValue("gastei 25");
-      result.current.handleSubmit("gastei 25");
-    });
-
-    expect(result.current.pendingExpense).toEqual(
-      expect.objectContaining({ amount: 25, desc: "Saída via chat" }),
-    );
-    expect(result.current.messages).toEqual([
-      expect.objectContaining({ type: "user", text: "gastei 25" }),
-      expect.objectContaining({ type: "assistant", text: "Qual categoria devo usar para essa saída?" }),
-    ]);
-
-    act(() => {
-      result.current.registerExpense("Alimentação");
-    });
-
-    expect(addTransaction).toHaveBeenCalledOnce();
-    expect(saveTransactionsSpy).toHaveBeenCalledTimes(1);
-    const savedTransactions = saveTransactionsSpy.mock.calls[0][0];
-
-    expect(savedTransactions).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        category: "Alimentação",
-        desc: "Saída via chat",
-        amount: -25,
-      }),
-    ]));
-
-    expect(result.current.messages).toEqual([
-      expect.objectContaining({ type: "user", text: "gastei 25" }),
-      expect.objectContaining({ type: "assistant", text: "Qual categoria devo usar para essa saída?" }),
-      expect.objectContaining({ type: "assistant", text: "Saída registrada em Alimentação. Seus gráficos já foram atualizados." }),
-    ]);
-    expect(result.current.pendingExpense).toBeNull();
-    expect(result.current.isTyping).toBe(false);
+  it("retains the key and exact body after timeout and only resumes on explicit action", async () => {
+    const hook = await mount();
+    const base = transport; let failed = false;
+    transport = async (config) => { if (config.method === "post" && !failed) { failed = true; throw Object.assign(new Error("Timeout"), { code: "ECONNABORTED" }); } return base(config); };
+    await act(async () => { await hook.result.current.handleSubmit("  gastei 0,01  "); });
+    expect(hook.result.current.messages).toEqual([]); expect(hook.result.current.recovery).not.toBeNull();
+    await act(async () => { await hook.result.current.handleSubmit("new intent forbidden"); }); expect(posts()).toHaveLength(1);
+    await act(async () => { await hook.result.current.retryMessage(); });
+    expect(posts()).toHaveLength(2);
+    expect(posts()[1].data).toBe(posts()[0].data);
+    expect(posts()[1].headers.get("Idempotency-Key")).toBe(posts()[0].headers.get("Idempotency-Key"));
+    expect(hook.result.current.recovery).toBeNull();
+  });
+  it("reports AI unavailability without a fictitious response or automatic retry", async () => {
+    const hook = await mount();
+    transport = async (config) => { throw new AxiosError("Unavailable", "ERR_BAD_RESPONSE", config, {}, { status: 503, config, data: '{"code":"message_processing_failed"}' }); };
+    await act(async () => { await hook.result.current.handleSubmit("Olá"); });
+    expect(hook.result.current.error).toMatch(/IA não conseguiu/); expect(hook.result.current.messages).toEqual([]); expect(posts()).toHaveLength(1);
+  });
+  it.each(["new generation", "logout", "unmount"])("discards delayed response after %s", async (change) => {
+    const hook = await mount(); const staleHandlers = hook.result.current;
+    let resolve, config; const base = transport;
+    transport = (request) => { if (request.method === "post") { config = request; return new Promise((yes) => { resolve = yes; }); } return base(request); };
+    let pending; act(() => { pending = hook.result.current.handleSubmit("Sessão A"); }); await waitFor(() => expect(config).toBeDefined());
+    act(() => { if (change === "new generation") saveSession(tokens); else if (change === "logout") clearSession(); else hook.unmount(); });
+    if (change === "new generation") await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => { resolve(response(config, reply(true))); await pending; });
+    expect(config.signal.aborted).toBe(true);
+    if (change !== "unmount") {
+      expect(hook.result.current.messages).toEqual([]);
+      await act(async () => { staleHandlers.setInputValue("stale draft"); await staleHandlers.handleSubmit("stale send"); });
+      expect(hook.result.current.inputValue).toBe(""); expect(posts()).toHaveLength(1);
+    }
   });
 });

@@ -1,101 +1,25 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+vi.hoisted(() => vi.stubEnv("VITE_API_URL", "https://backend.example.test"));
+import { api } from "@/services/api";
+import { saveSession, clearSession } from "@/services/auth/session";
+import { isOfficialHealthScore, loadOfficialHealthScore } from "./financeHealth";
 
-import { calculateFinancialHealth } from "./financeHealth";
+const period = { from: "2026-10-01", to: "2026-10-31" };
+const official = { methodology: "mvp-monthly-v1", status: "CALCULATED", score: 65, classification: "No caminho certo", ...period };
+beforeEach(() => { clearSession(); saveSession({ accessToken: "test", refreshToken: "R", expiresInSeconds: 900 }); });
+afterEach(() => { clearSession(); vi.restoreAllMocks(); });
 
-describe("calculateFinancialHealth", () => {
-  it("returns a neutral empty state when there is no transaction history", () => {
-    expect(calculateFinancialHealth([])).toEqual({
-      score: 0,
-      savingsRate: 0,
-      fixedCommitment: 0,
-      consistency: 0,
-      status: "Sem dados",
-      action: "Registre suas entradas e saídas para acompanhar sua saúde financeira.",
-    });
+describe("official Health Score contract (no local formula)", () => {
+  it.each([{ score: 101 }, { score: -1 }, { score: true }, { score: "65" }, { methodology: "old" }, { to: "2026-10-20" }, { classification: "unknown" }])("rejects malformed or incompatible indicators %j", (changes) => {
+    expect(isOfficialHealthScore({ ...official, ...changes }, period)).toBe(false);
   });
-
-  it("scores a month with income and no expenses as excellent", () => {
-    expect(calculateFinancialHealth([
-      { date: "2026-08-01", category: "Renda", amount: 1000 },
-    ])).toEqual({
-      score: 100,
-      savingsRate: 100,
-      fixedCommitment: 0,
-      consistency: 100,
-      status: "Excelente",
-      action: "Continue mantendo suas entradas acima das saídas.",
-    });
+  it("requires a null numeric score and classification for insufficient data", () => {
+    expect(isOfficialHealthScore({ ...official, status: "INSUFFICIENT_DATA", score: null, classification: null }, period)).toBe(true);
+    expect(isOfficialHealthScore({ ...official, status: "INSUFFICIENT_DATA", score: 50 }, period)).toBe(false);
   });
-
-  it("averages savings by month and calculates fixed costs and consistency", () => {
-    expect(calculateFinancialHealth([
-      { date: "2026-08-01", category: "Renda", amount: 1000 },
-      { date: "2026-08-02", category: "Moradia", amount: -300 },
-      { date: "2026-08-03", category: "Lazer", amount: -100 },
-      { date: "2026-09-01", category: "Renda", amount: 500 },
-      { date: "2026-09-02", category: "Saúde", amount: -250 },
-      { date: "2026-09-03", category: "Lazer", amount: -350 },
-    ])).toEqual({
-      score: 64,
-      savingsRate: 30,
-      fixedCommitment: 37,
-      consistency: 50,
-      status: "Estável",
-      action: "Mantenha o saldo mensal positivo ou igual a zero.",
-    });
-  });
-
-  it("clamps savings when expenses exceed income and prioritizes the savings action", () => {
-    const result = calculateFinancialHealth([
-      { date: "2026-08-01", category: "Renda", amount: 100 },
-      { date: "2026-08-02", category: "Moradia", amount: -200 },
-    ]);
-
-    expect(result).toMatchObject({
-      savingsRate: 0,
-      score: 0,
-      status: "Crítico",
-      action: "Aumente sua margem mensal de economia.",
-    });
-  });
-
-  it("treats expenses without income as fully committed fixed costs", () => {
-    const result = calculateFinancialHealth([
-      { date: "2026-08-01", category: "Transporte", amount: -50 },
-    ]);
-
-    expect(result).toMatchObject({
-      savingsRate: 0,
-      fixedCommitment: 100,
-      consistency: 0,
-      status: "Crítico",
-    });
-  });
-
-  it("recommends reducing fixed costs when they exceed half of income", () => {
-    expect(calculateFinancialHealth([
-      { date: "2026-08-01", category: "Renda", amount: 1000 },
-      { date: "2026-08-02", category: "Moradia", amount: -600 },
-    ])).toMatchObject({
-      fixedCommitment: 60,
-      status: "Estável",
-      action: "Reduza seus custos fixos para diminuir o risco financeiro.",
-    });
-  });
-
-  it("reports the attention status for inconsistent months", () => {
-    expect(calculateFinancialHealth([
-      { date: "2026-08-01", category: "Renda", amount: 1000 },
-      { date: "2026-09-01", category: "Renda", amount: 1000 },
-      { date: "2026-09-02", category: "Moradia", amount: -1100 },
-    ])).toMatchObject({
-      score: 55,
-      status: "Atenção",
-    });
-  });
-
-  it("rejects malformed transactions instead of silently scoring them", () => {
-    expect(() => calculateFinancialHealth([{ amount: 10 }])).toThrow(TypeError);
-    expect(() => calculateFinancialHealth(null)).toThrow(TypeError);
+  it("preserves large exact totals and returns the backend result without recomputing", async () => {
+    api.defaults.adapter = async (config) => ({ config, status: 200, headers: {}, data: `{"from":"${period.from}","to":"${period.to}","totalIncome":99999999999999999.99,"totalExpense":0.01,"balance":99999999999999999.98,"healthScore":${JSON.stringify(official)}}` });
+    const value = await loadOfficialHealthScore(period, { income: "99999999999999999.99", expenses: "0.01", balance: "99999999999999999.98" });
+    expect(value).toEqual(official);
   });
 });

@@ -1,68 +1,29 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, screen, waitFor, within } from "@testing-library/react";
+vi.hoisted(() => { vi.stubEnv("VITE_API_URL", "https://backend.example.test"); });
 import AppRoutes from "@/app/routes";
 import { renderWithFinanceProvider } from "@/test-utils";
-import { saveSession } from "@/services/auth/session";
-
-beforeEach(() => {
-  sessionStorage.clear();
-  saveSession({ accessToken: "test-access", refreshToken: "test-refresh", expiresInSeconds: 900 });
-});
-
+import { api } from "@/services/api";
+import { clearSession, saveSession } from "@/services/auth/session";
+import { currentCivilMonth } from "@/services/finance/finance-provider-store";
 vi.mock("recharts", async () => import("@/test/rechartsMock"));
-
-describe("Dashboard", () => {
-  it("renders financial KPIs with the lightweight chat, without full assistant widgets", async () => {
-    localStorage.clear();
-    renderWithFinanceProvider(<AppRoutes />, {
-      route: "/dashboard",
-      initialFinanceData: {
-        transactions: [
-          { id: "income", date: "2026-08-01", category: "Renda", desc: "Salário", amount: 1000 },
-          { id: "expense", date: "2026-08-02", category: "Moradia", desc: "Aluguel", amount: -100 },
-        ],
-      },
+beforeEach(() => {
+  localStorage.clear(); sessionStorage.clear(); clearSession(); saveSession({ accessToken: "A", refreshToken: "R", expiresInSeconds: 900 });
+  const category = { id: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", name: "Real", type: "BOTH", createdAt: "2026-10-18T12:00:00Z" };
+  api.defaults.adapter = async (config) => ({ config, status: 200, headers: {}, data: config.url === "/categories" ? JSON.stringify([category])
+    : JSON.stringify({ content: [{ id: "76870c4b-f8df-4eab-b3c2-de1738a07a4e", categoryId: category.id, categoryName: category.name, type: "EXPENSE", description: "Real", transactionDate: currentCivilMonth().from, createdAt: category.createdAt, amount: "99999999999999999.99" }], number: 0, size: 100, totalElements: 1, totalPages: 1, numberOfElements: 1, first: true, last: true, empty: false }).replace('"amount":"99999999999999999.99"', '"amount":99999999999999999.99') });
+});
+afterEach(() => { cleanup(); clearSession(); vi.restoreAllMocks(); });
+describe("real Dashboard", () => {
+  it("shows exact API balance, never reads financial seeds and does not simulate chat writes", async () => {
+    const original = Storage.prototype.getItem;
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(function (key) {
+      if (this === localStorage && ["junta_transactions", "junta_categories"].includes(key)) throw new Error("Legacy financial read");
+      return original.call(this, key);
     });
-
-    expect(await screen.findByRole("heading", { name: "Converse com o Assistente" })).toBeInTheDocument();
-    expect(await screen.findByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: "Mensagem" })).toBeInTheDocument();
-    expect(screen.getByText("Vamos conversar sobre seu dinheiro?")).toBeInTheDocument();
-    expect(within(screen.getByText("Receitas").closest("article")).getByText("R$ 1.000,00")).toBeInTheDocument();
-    expect(within(screen.getByText("Despesas").closest("article")).getByText("R$ 100,00")).toBeInTheDocument();
-    expect(within(screen.getByText("Saldo").closest("article")).getByText("R$ 900,00")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Saúde financeira" })).not.toBeInTheDocument();
-  });
-
-  it("shows a simulated reply and updates the dashboard balance after a chat expense", async () => {
-    localStorage.clear();
-    const user = userEvent.setup();
-    renderWithFinanceProvider(<AppRoutes />, {
-      route: "/dashboard",
-      initialFinanceData: {
-        transactions: [
-          { id: "income", date: "2026-08-01", category: "Renda", desc: "Salário", amount: 1000 },
-          { id: "expense", date: "2026-08-02", category: "Moradia", desc: "Aluguel", amount: -100 },
-        ],
-      },
-    });
-
-    const input = await screen.findByRole("textbox", { name: "Mensagem" });
-    await user.type(input, "Oi, quero organizar meu orçamento");
-    await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
-
-    expect(await screen.findByText("Oi, quero organizar meu orçamento")).toBeInTheDocument();
-    expect(await screen.findByText(/Vou considerar essa informação no seu planejamento financeiro/)).toBeInTheDocument();
-
-    await user.type(input, "gastei 25");
-    await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
-    expect(await screen.findByText("Qual categoria devo usar para essa saída?")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Lazer/ }));
-
-    expect(await screen.findByText("Saída registrada em Lazer. Seus gráficos já foram atualizados.")).toBeInTheDocument();
-    expect(within(screen.getByText("Saldo").closest("article")).getByText("R$ 875,00")).toBeInTheDocument();
-
+    renderWithFinanceProvider(<AppRoutes />, { route: "/Dashboard/" });
+    await waitFor(() => expect(within(screen.getByText("Saldo").closest("article")).getByText("-R$ 99.999.999.999.999.999,99")).toBeInTheDocument());
+    expect(screen.queryByRole("textbox", { name: "Mensagem" })).not.toBeInTheDocument();
+    expect(screen.getByText(/chat deste painel ainda não está conectado/)).toBeInTheDocument();
   });
 });

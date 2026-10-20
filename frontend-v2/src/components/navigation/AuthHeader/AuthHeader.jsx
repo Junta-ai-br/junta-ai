@@ -17,12 +17,13 @@ export default function AuthHeader({
   dateRange = null,
   onDateRangeChange = null,
   onAddCategory = null,
+  allowAllPeriod = true,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
   const { theme } = useTheme();
-  const { profile } = useUser();
+  const { profile, endSession } = useUser();
   const user = {
     name: profile?.nome || profile?.email?.split("@")[0] || "Usuário",
     avatar: profile?.avatarUrl || null,
@@ -55,6 +56,7 @@ export default function AuthHeader({
 
   const closeMenu = () => setIsMenuOpen(false);
   const handleLogout = () => {
+    endSession();
     setIsUserMenuOpen(false);
     setIsMenuOpen(false);
   };
@@ -91,7 +93,7 @@ export default function AuthHeader({
               )}
 
               {onDateRangeChange && (
-                <DateRangeFilter value={dateRange} onChange={onDateRangeChange} tokens={financeTokens} />
+                <DateRangeFilter value={dateRange} onChange={onDateRangeChange} tokens={financeTokens} allowAllPeriod={allowAllPeriod} />
               )}
             </div>
           )}

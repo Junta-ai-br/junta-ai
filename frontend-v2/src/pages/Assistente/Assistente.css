@@ -1917,3 +1917,9 @@
   height: var(--assistant-height, 360px);
   min-height: 0;
 }
+
+.assistant__conversation-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; padding: 12px; }
+.assistant__conversation-tools label { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.assistant__conversation-tools select { max-width: 100%; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); padding: 7px; border-radius: 6px; }
+.assistant__conversation-tools button { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text-primary); }
+.assistant__conversation > [role="alert"], .assistant__conversation > [role="status"], .assistant__conversation > p { margin: 8px 12px; }

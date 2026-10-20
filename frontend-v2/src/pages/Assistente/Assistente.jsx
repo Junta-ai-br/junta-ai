@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   TrendingDown,
@@ -7,13 +6,15 @@ import {
 } from "lucide-react";
 
 import { useUser } from "@/contexts/useUser";
-import useFinanceData from "@/contexts/useFinanceData";
+import useCanonicalFinance from "@/contexts/useCanonicalFinance";
 
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
 import AssistantConversation from "@/components/chat/AssistantConversation";
-import { aggregateByCategory, summarizeTransactions } from "@/services/finance/store";
-import { calculateFinancialHealth } from "@/services/finance/financeHealth";
+import { groupByCategoryId } from "@/services/finance/exact-aggregates";
+import { formatMoneyBRL } from "@/services/finance/signed-money";
 import useAssistantConversation from "@/hooks/useAssistantConversation";
+import useHealthScore from "@/hooks/useHealthScore";
+import FinancialHealthCard from "@/components/finance/FinancialHealthCard";
 
 import "./Assistente.css";
 
@@ -28,30 +29,15 @@ export default function Assistente({
      State
      ========================================================================== */
 
-  const [goalFormOpen, setGoalFormOpen] = useState(false);
-  const [editingGoalId, setEditingGoalId] = useState(null);
-  const [goalName, setGoalName] = useState("");
-  const [goalTarget, setGoalTarget] = useState("");
-  const [goalDueDate, setGoalDueDate] = useState("");
-  const {
-    transactions,
-    categories,
-    categoryColors,
-    goals,
-    addTransaction,
-    updateGoals,
-  } = useFinanceData();
-
-  const conversation = useAssistantConversation({ addTransaction });
-  const {
-    inputValue,
-    setInputValue,
-    messages,
-    pendingExpense,
-    isTyping,
-    handleSubmit,
-    registerExpense,
-  } = conversation;
+  const finance = useCanonicalFinance();
+  const conversation = useAssistantConversation({ refreshFinancialData: finance.reload });
+  const waitingForChat = conversation.isTyping || !!conversation.recovery;
+  const covered = !waitingForChat && !finance.refreshRequired
+    && ["success", "empty"].includes(finance.status) && finance.coverage?.complete === true;
+  const transactions = covered ? finance.transactions : [];
+  const summary = covered ? finance.summary : null;
+  const health = useHealthScore(finance, waitingForChat);
+  const money = (value) => value == null ? "Indisponível" : formatMoneyBRL(value);
 
   const { profile } = useUser();
 
@@ -65,92 +51,32 @@ export default function Assistente({
     name: profile.nome || profile.email?.split("@")[0] || "Usuário",
   };
 
-  const goalBalance = transactions.reduce((sum, item) => sum + item.amount, 0);
-  const goal = goals[0] || null;
-  const goalAllocations = goals.map((item, index) => {
-    const allocatedBefore = goals.slice(0, index).reduce((sum, previousGoal) => sum + previousGoal.target, 0);
-    const current = Math.min(item.target, Math.max(0, goalBalance - allocatedBefore));
-    return {
-      ...item,
-      current,
-      percentage: item.target > 0 ? Math.round((current / item.target) * 100) : 0,
-      remaining: Math.max(0, item.target - current),
-    };
-  });
-
-  const openGoalForm = (currentGoal = null) => {
-    setEditingGoalId(currentGoal?.id || null);
-    setGoalName(currentGoal?.name || "");
-    setGoalTarget(currentGoal ? String(currentGoal.target).replace(".", ",") : "");
-    setGoalDueDate(currentGoal?.dueDate || "");
-    setGoalFormOpen(true);
-  };
-
-  const closeGoalForm = () => {
-    setGoalFormOpen(false);
-    setEditingGoalId(null);
-    setGoalName("");
-    setGoalTarget("");
-    setGoalDueDate("");
-  };
-
-  const submitGoal = (event) => {
-    event.preventDefault();
-    const name = goalName.trim();
-    const target = Number(goalTarget.replace(",", "."));
-    if (!name || !Number.isFinite(target) || target <= 0 || !goalDueDate) return;
-    const nextGoals = editingGoalId
-      ? goals.map((item) => item.id === editingGoalId ? { ...item, name, target: Math.max(target, goalBalance), dueDate: goalDueDate } : item)
-      : [...goals, { id: `goal-${Date.now()}`, name, current: 0, target, dueDate: goalDueDate }];
-    updateGoals(nextGoals);
-    closeGoalForm();
-  };
-
-  const deleteGoal = (id) => {
-    const nextGoals = goals.filter((item) => item.id !== id);
-    updateGoals(nextGoals);
-  };
-
-  const moveGoal = (id, direction) => {
-    const index = goals.findIndex((item) => item.id === id);
-    const nextIndex = index + direction;
-    if (index < 0 || nextIndex < 0 || nextIndex >= goals.length) return;
-    const nextGoals = [...goals];
-    [nextGoals[index], nextGoals[nextIndex]] = [nextGoals[nextIndex], nextGoals[index]];
-    updateGoals(nextGoals);
-  };
-
-  const financialHealth = calculateFinancialHealth(transactions);
-
-  const { income: monthlyIncome, expenses: monthlyExpenses, balance } = summarizeTransactions(transactions);
-  const balanceClass =
-    balance > 0
-      ? "assistant__summary-value--positive"
-      : balance < 0
-        ? "assistant__summary-value--negative"
-        : "assistant__summary-value--neutral";
-  const categoryData = aggregateByCategory(transactions, categories, categoryColors);
-  const monthlyBalanceClass = balance >= 0
-    ? "assistant__widget-month-value--positive"
-    : "assistant__widget-month-value--negative";
-  const monthlyBalanceFormatted = `R$ ${balance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+  const balance = summary?.balanceCents;
+  const balanceClass = balance > 0n ? "assistant__summary-value--positive"
+    : balance < 0n ? "assistant__summary-value--negative" : "assistant__summary-value--neutral";
+  const colors = ["#7c3aed", "#00a873", "#e07a15", "#cd537a", "#3589cb"];
+  const categoryData = groupByCategoryId(transactions).filter((item) => item.expensesCents > 0n)
+    .sort((a, b) => a.expensesCents > b.expensesCents ? -1 : a.expensesCents < b.expensesCents ? 1 : a.categoryId.localeCompare(b.categoryId))
+    .map((item, index) => ({ ...item, name: finance.categories.find((category) => category.id.toLowerCase() === item.categoryId.toLowerCase())?.name,
+      color: colors[index % colors.length], emoji: "↘",
+      percentage: Number(item.expensesCents * 1000n / summary.expensesCents) / 10 }));
+  const monthlyBalanceClass = balance < 0n ? "assistant__widget-month-value--negative" : "assistant__widget-month-value--positive";
+  const monthlyBalanceFormatted = money(summary?.balance);
   const monthlyOverview = {
-    categories: categoryData.map((category) => ({ ...category, percentage: category.pct, emoji: category.icon })),
-    transactions: transactions.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4).map((transaction) => ({
-      description: transaction.desc,
-      category: transaction.category,
-      emoji: transaction.icon,
-      value: `R$ ${Math.abs(transaction.amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
-      type: transaction.amount > 0 ? "income" : "expense",
+    categories: categoryData,
+    transactions: [...transactions].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate)
+      || b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id)).slice(0, 4).map((transaction) => ({
+      id: transaction.id, description: transaction.description || "Sem descrição", category: transaction.categoryName,
+      emoji: transaction.type === "INCOME" ? "↗" : "↘", value: formatMoneyBRL(transaction.amount),
+      type: transaction.type === "INCOME" ? "income" : "expense",
     })),
   };
-  const donutTotal = categoryData.reduce((sum, category) => sum + category.value, 0);
-  const donutGradient = categoryData.length && donutTotal
-    ? `conic-gradient(${categoryData.map((category, index) => {
-      const start = categoryData.slice(0, index).reduce((sum, item) => sum + (item.value / donutTotal) * 100, 0);
-      return `${category.color} ${start}% ${start + (category.value / donutTotal) * 100}%`;
-    }).join(", ")})`
-    : "transparent";
+  let angle = 0;
+  const donutGradient = categoryData.length ? `conic-gradient(${categoryData.map((category) => {
+    const start = angle;
+    angle += category.percentage;
+    return `${category.color} ${start}% ${angle}%`;
+  }).join(", ")})` : "transparent";
 
   /* ==========================================================================
      Chat
@@ -186,6 +112,12 @@ export default function Assistente({
           Financial Summary
           ================================================================== */}
 
+      <div className="assistant__intro" aria-live="polite">
+        <p>Mês corrente: {finance.period.from.split("-").reverse().join("/")} a {finance.period.to.split("-").reverse().join("/")}</p>
+        {waitingForChat ? <p role="status">Aguardando confirmação e atualização dos dados financeiros. Retome o envio pendente no chat quando necessário.</p>
+          : !covered && ["idle", "loading"].includes(finance.status) ? <p role="status">Carregando dados financeiros…</p>
+          : !covered && <div role="alert"><p>Não foi possível confirmar os dados financeiros atuais.</p><button type="button" onClick={() => finance.reload()}>Atualizar dados</button></div>}
+      </div>
       <section
         className="assistant__summary"
         aria-label="Resumo financeiro"
@@ -206,7 +138,7 @@ export default function Assistente({
           </span>
 
           <strong className="assistant__summary-value">
-            R$ {monthlyIncome.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            {money(summary?.income)}
           </strong>
 
         </article>
@@ -226,7 +158,7 @@ export default function Assistente({
           </span>
 
           <strong className="assistant__summary-value">
-            R$ {monthlyExpenses.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            {money(summary?.expenses)}
           </strong>
 
         </article>
@@ -248,7 +180,7 @@ export default function Assistente({
           <strong
             className={`assistant__summary-value ${balanceClass}`}
           >
-            R$ {balance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            {money(summary?.balance)}
           </strong>
 
         </article>
@@ -266,14 +198,7 @@ export default function Assistente({
             ================================================================= */}
 
         <AssistantConversation
-          messages={messages}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          isTyping={isTyping}
-          pendingExpense={pendingExpense}
-          categories={categories}
-          handleSubmit={handleSubmit}
-          registerExpense={registerExpense}
+          {...conversation}
         />
 
         {/* =================================================================
@@ -288,85 +213,16 @@ export default function Assistente({
           {/* Metas */}
 
           <section className="assistant__widget assistant__widget--goals">
-            <div className="assistant__widget-header">
-              <div>
-                <span className="assistant__widget-label">Metas</span>
-                <h2 className="assistant__widget-title">{goal ? goal.name : "Nenhuma meta criada"}</h2>
-              </div>
-              <button type="button" className="assistant__goal-add" onClick={() => openGoalForm()}>
-                + Nova meta
-              </button>
-            </div>
-
-            {goalFormOpen && <form className="assistant__goal-form" onSubmit={submitGoal}>
-              <input autoFocus aria-label="Nome da meta" value={goalName} onChange={(event) => setGoalName(event.target.value)} placeholder="Nome da meta" required />
-              <input aria-label="Valor alvo" value={goalTarget} onChange={(event) => setGoalTarget(event.target.value.replace(/[^\d.,]/g, ""))} placeholder="Valor alvo" inputMode="decimal" required />
-              <input aria-label="Prazo" type="date" value={goalDueDate} onChange={(event) => setGoalDueDate(event.target.value)} required />
-              <div><button type="button" onClick={closeGoalForm}>Cancelar</button><button type="submit">{editingGoalId ? "Salvar" : "Criar"}</button></div>
-            </form>}
-
-            {goalAllocations.map((item, index) => {
-              const { current, percentage, remaining } = item;
-              return <div className="assistant__goal-item" key={item.id}>
-                <div className="assistant__goal-item-header">
-                  <strong>{item.name}</strong>
-                  <span>
-                    <button type="button" onClick={() => moveGoal(item.id, -1)} disabled={index === 0} aria-label={`Priorizar ${item.name}`}>↑</button>
-                    <button type="button" onClick={() => moveGoal(item.id, 1)} disabled={index === goalAllocations.length - 1} aria-label={`Adiar ${item.name}`}>↓</button>
-                    <button type="button" onClick={() => openGoalForm(item)} aria-label={`Editar ${item.name}`}>Editar</button>
-                    <button type="button" onClick={() => deleteGoal(item.id)} aria-label={`Excluir ${item.name}`}>Excluir</button>
-                  </span>
-                </div>
-                <strong className="assistant__widget-value">{percentage}%</strong>
-                <div className="assistant__goal-progress"><span style={{ width: `${percentage}%` }} /></div>
-                <div className="assistant__widget-footer"><span>R$ {current.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span><span>de R$ {item.target.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></div>
-                <p className="assistant__widget-caption">Prazo: {item.dueDate ? item.dueDate.split("-").reverse().join("/") : "Não definido"}</p>
-                <p className="assistant__widget-caption">R$ {remaining.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} restantes</p>
-              </div>;
-            })}
+            <div className="assistant__widget-header"><div>
+              <span className="assistant__widget-label">Metas</span>
+              <h2 className="assistant__widget-title">Indisponível</h2>
+            </div></div>
+            <p className="assistant__widget-caption">As metas ainda não estão integradas neste painel.</p>
           </section>
 
           {/* Saúde Financeira */}
 
-          <section className="assistant__widget assistant__widget--health">
-
-            <span className="assistant__widget-label">
-              Saúde financeira
-            </span>
-
-            <h2 className="assistant__widget-title">
-              Como você está indo
-            </h2>
-
-            <div className="assistant__health-content">
-
-              <strong className="assistant__health-score">
-                {financialHealth.score}%
-              </strong>
-
-              <span className="assistant__health-status">
-                {financialHealth.status}
-              </span>
-
-            </div>
-
-            <div className="assistant__health-progress">
-              <span
-                style={{
-                  width: `${financialHealth.score}%`,
-                }}
-              />
-            </div>
-
-            <p className="assistant__health-context">
-              Poupança: {financialHealth.savingsRate}% · Custos fixos: {financialHealth.fixedCommitment}% · Consistência: {financialHealth.consistency}%
-            </p>
-
-            <p className="assistant__widget-caption">
-              {financialHealth.action}
-            </p>
-
-          </section>
+          <FinancialHealthCard health={health} onRetry={finance.reload} />
 
           {/* Visão do Mês */}
 
@@ -409,7 +265,7 @@ export default function Assistente({
                 aria-label="Distribuição dos gastos por categoria"
               >
                 <span>
-                  {monthlyOverview.categories.length}
+                  {covered ? monthlyOverview.categories.length : "—"}
                 </span>
               </div>
 
@@ -419,7 +275,7 @@ export default function Assistente({
                   (category) => (
                     <div
                       className="assistant__category"
-                      key={category.name}
+                      key={category.categoryId}
                     >
 
                       <span
@@ -461,11 +317,13 @@ export default function Assistente({
 
               <div className="assistant__transactions-list">
 
+                {covered && !transactions.length && <p role="status">Nenhuma movimentação neste mês.</p>}
+                {!covered && <p>Lançamentos indisponíveis.</p>}
                 {monthlyOverview.transactions.map(
-                  (transaction, index) => (
+                  (transaction) => (
                     <div
                       className="assistant__transaction"
-                      key={`${transaction.description}-${index}`}
+                      key={transaction.id}
                     >
 
                       <div className="assistant__transaction-icon">

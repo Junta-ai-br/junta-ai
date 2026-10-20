@@ -277,7 +277,7 @@ export default function Features() {
             <div className="feature-widget feature-widget--health">
               <div className="health__top">
                 <div>
-                  <span className="health__caption">Seu score</span>
+                  <span className="health__caption">Exemplo de score</span>
 
                   <div className="health__score">
                     <strong>78</strong>
@@ -286,8 +286,8 @@ export default function Features() {
                 </div>
 
                 <div className="health__status">
-                  <strong>Boa evolução</strong>
-                  <span>+8 pts este mês</span>
+                  <strong>No caminho certo</strong>
+                  <span>Exemplo ilustrativo</span>
                 </div>
               </div>
 

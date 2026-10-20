@@ -1,4 +1,5 @@
-import { filterByRange, summarizeTransactions } from "@/services/finance/store";
+import { filterByRange } from "@/services/finance/store";
+import { decimalToCents } from "@/services/finance/signed-money";
 import { formatCurrency, formatPeriod } from "@/utils/formatters";
 
 const toUtcDate = (value) => {
@@ -53,16 +54,29 @@ export function getChange(current, previous) {
 export function buildReport(transactions, range, previousRange) {
   const current = filterByRange(transactions, range);
   const previous = filterByRange(transactions, previousRange);
-  const summary = summarizeTransactions(current);
-  const previousSummary = summarizeTransactions(previous);
-  const weeks = Array.from({ length: 5 }, (_, index) => ({ label: `Semana ${index + 1}`, income: 0, expenses: 0 }));
+  // Accumulate exact cents; keep the existing Number model for charts and exports.
+  const summarize = (items) => {
+    let income = 0n;
+    let expenses = 0n;
+    for (const item of items) {
+      const cents = decimalToCents(String(item.amount));
+      if (cents > 0n) income += cents;
+      else expenses -= cents;
+    }
+    return { income: Number(income) / 100, expenses: Number(expenses) / 100, balance: Number(income - expenses) / 100 };
+  };
+  const summary = summarize(current);
+  const previousSummary = summarize(previous);
+  const weeks = Array.from({ length: 5 }, (_, index) => ({ label: `Semana ${index + 1}`, income: 0n, expenses: 0n }));
   current.forEach((item) => {
     const day = Number(item.date.slice(8, 10));
     const week = Math.min(4, Math.floor((day - 1) / 7));
-    if (item.amount > 0) weeks[week].income += item.amount;
-    else weeks[week].expenses += Math.abs(item.amount);
+    const cents = decimalToCents(String(item.amount));
+    if (cents > 0n) weeks[week].income += cents;
+    else weeks[week].expenses -= cents;
   });
-  const activeWeeks = weeks.filter((week) => week.income || week.expenses);
+  const activeWeeks = weeks.filter((week) => week.income || week.expenses)
+    .map((week) => ({ ...week, income: Number(week.income) / 100, expenses: Number(week.expenses) / 100 }));
   const biggestIncome = current.filter((item) => item.amount > 0).sort((a, b) => b.amount - a.amount)[0];
   const biggestExpense = current.filter((item) => item.amount < 0).sort((a, b) => a.amount - b.amount)[0];
   const startPeriod = range.start.slice(0, 7);

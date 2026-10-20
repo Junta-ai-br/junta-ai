@@ -14,8 +14,8 @@ function getPresets() {
   ];
 }
 
-export default function DateRangeFilter({ value, onChange, tokens }) {
-  const presets = getPresets();
+export default function DateRangeFilter({ value, onChange, tokens, allowAllPeriod = true }) {
+  const presets = getPresets().filter(([, start]) => allowAllPeriod || start);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(value);
   const ref = useRef(null);

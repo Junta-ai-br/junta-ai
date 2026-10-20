@@ -8,6 +8,12 @@ function downloadBlob(content, filename, type) {
   URL.revokeObjectURL(url);
 }
 
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[character]);
+}
+
 export function exportToCSV(data, filename = "relatorio-financeiro.csv") {
   const rows = [
     ["Período", data.period],
@@ -27,13 +33,13 @@ export function exportToCSV(data, filename = "relatorio-financeiro.csv") {
 export function exportToExcel(data, filename = "relatorio-financeiro.xls") {
   const table = `
     <table border="1">
-      <tr><th colspan="3">Relatório financeiro - ${data.period}</th></tr>
+      <tr><th colspan="3">Relatório financeiro - ${escapeHTML(data.period)}</th></tr>
       <tr><th>Resumo</th><th>Valor</th><th>Variação</th></tr>
-      <tr><td>Receitas</td><td>${data.summary.income}</td><td>${data.summary.incomeChange}</td></tr>
-      <tr><td>Despesas</td><td>${data.summary.expenses}</td><td>${data.summary.expensesChange}</td></tr>
-      <tr><td>Saldo</td><td>${data.summary.balance}</td><td>${data.summary.balanceChange}</td></tr>
+      <tr><td>Receitas</td><td>${escapeHTML(data.summary.income)}</td><td>${escapeHTML(data.summary.incomeChange)}</td></tr>
+      <tr><td>Despesas</td><td>${escapeHTML(data.summary.expenses)}</td><td>${escapeHTML(data.summary.expensesChange)}</td></tr>
+      <tr><td>Saldo</td><td>${escapeHTML(data.summary.balance)}</td><td>${escapeHTML(data.summary.balanceChange)}</td></tr>
       <tr><th>Período</th><th>Receitas</th><th>Despesas</th></tr>
-      ${data.chart.map((item) => `<tr><td>${item.label}</td><td>${item.income}</td><td>${item.expenses}</td></tr>`).join("")}
+      ${data.chart.map((item) => `<tr><td>${escapeHTML(item.label)}</td><td>${escapeHTML(item.income)}</td><td>${escapeHTML(item.expenses)}</td></tr>`).join("")}
     </table>`;
   downloadBlob(`<!doctype html><html><meta charset="utf-8"><body>${table}</body></html>`, filename, "application/vnd.ms-excel;charset=utf-8");
 }
@@ -42,11 +48,11 @@ export function exportToPDF(data, filename = "relatorio-financeiro.pdf") {
   const printWindow = window.open("", "_blank", "width=900,height=700");
   if (!printWindow) return;
   printWindow.document.write(`
-    <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${filename}</title>
+    <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${escapeHTML(filename)}</title>
     <style>body{font:14px Arial;color:#17201f;padding:40px}h1{font-size:26px}p{color:#66736f}.summary{display:flex;gap:16px;margin:28px 0}.metric{border:1px solid #d9e3df;border-radius:10px;padding:16px;min-width:150px}.metric strong{display:block;font-size:20px;margin-top:8px}table{border-collapse:collapse;width:100%;margin-top:24px}th,td{text-align:left;padding:10px;border-bottom:1px solid #d9e3df}th{background:#f1f7f4}</style></head>
-    <body><h1>Relatório financeiro</h1><p>${data.period}</p><div class="summary">
-    <div class="metric">Receitas<strong>${data.summary.income}</strong></div><div class="metric">Despesas<strong>${data.summary.expenses}</strong></div><div class="metric">Saldo<strong>${data.summary.balance}</strong></div>
-    </div><table><thead><tr><th>Período</th><th>Receitas</th><th>Despesas</th></tr></thead><tbody>${data.chart.map((item) => `<tr><td>${item.label}</td><td>${item.income}</td><td>${item.expenses}</td></tr>`).join("")}</tbody></table></body></html>`);
+    <body><h1>Relatório financeiro</h1><p>${escapeHTML(data.period)}</p><div class="summary">
+    <div class="metric">Receitas<strong>${escapeHTML(data.summary.income)}</strong></div><div class="metric">Despesas<strong>${escapeHTML(data.summary.expenses)}</strong></div><div class="metric">Saldo<strong>${escapeHTML(data.summary.balance)}</strong></div>
+    </div><table><thead><tr><th>Período</th><th>Receitas</th><th>Despesas</th></tr></thead><tbody>${data.chart.map((item) => `<tr><td>${escapeHTML(item.label)}</td><td>${escapeHTML(item.income)}</td><td>${escapeHTML(item.expenses)}</td></tr>`).join("")}</tbody></table></body></html>`);
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();

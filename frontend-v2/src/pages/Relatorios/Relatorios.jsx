@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -26,11 +26,10 @@ import {
 } from "recharts";
 
 import AuthHeader from "@/components/navigation/AuthHeader/AuthHeader";
-import useFinanceData from "@/contexts/useFinanceData";
-import { loadDateRange } from "@/services/finance/store";
+import { assertPlannerSession as assertSession, usePlannerSessionKey as useSessionKey } from "@/services/planner/session";
 import { formatCurrency } from "@/utils/formatters";
 import { exportToCSV, exportToExcel, exportToPDF } from "@/utils/report-exporters";
-import { buildReport, getPeriodRange, getPreviousRange } from "./report-utils";
+import { isReportSelection, loadReportData, reportErrorMessage } from "./report-data";
 import "./Relatorios.css";
 
 const PERIOD_OPTIONS = [
@@ -42,23 +41,50 @@ const PERIOD_OPTIONS = [
 
 function useReportQuery() {
   const [period, setPeriod] = useState("monthly");
-  const [date, setDate] = useState(() => loadDateRange().start.slice(0, 7));
-  const [status, setStatus] = useState("success");
-  const { transactions } = useFinanceData();
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  });
+  const [revision, setRevision] = useState(0);
+  const intent = useRef(0);
+  const [result, setResult] = useState(null);
+  const selection = `${period}|${date}|${revision}`;
+  const valid = isReportSelection(date, period);
+  useEffect(() => {
+    if (!valid) return;
+    const controller = new AbortController();
+    let active = true;
+    const requestIntent = intent.current;
+    loadReportData({ date, period, signal: controller.signal }).then(({ report, generation }) => {
+      if (active && requestIntent === intent.current) setResult({ selection, report, generation, intent: requestIntent,
+        status: report.hasTransactions ? "success" : "empty", error: "" });
+    }).catch((error) => {
+      if (active && requestIntent === intent.current) setResult({ selection, report: null, status: "error", error: reportErrorMessage(error) });
+    });
+    return () => { active = false; controller.abort(); };
+  }, [date, period, revision, selection, valid]);
 
-  const range = useMemo(() => getPeriodRange(date, period), [date, period]);
-  const previousRange = useMemo(() => getPreviousRange(range), [range]);
-  const report = useMemo(() => buildReport(transactions, range, previousRange), [transactions, range, previousRange]);
-
-  function generateReport() {
-    setStatus("loading");
-    window.setTimeout(() => setStatus(report.hasTransactions ? "success" : "empty"), 650);
+  const current = result?.selection === selection && valid ? result : null;
+  function exportReport(exporter) {
+    if (current?.status !== "success" || current.intent !== intent.current) return;
+    try { assertSession(current.generation); }
+    catch (error) { setResult({ selection, report: null, status: "error", error: reportErrorMessage(error) }); return; }
+    exporter(current.report);
   }
-
-  return { period, setPeriod, date, setDate, status, report, generateReport };
+  return { period, date, status: current?.status ?? (valid ? "loading" : "initial"), report: current?.report,
+    error: current?.error, exportReport,
+    setPeriod(value) { if (value !== period) { intent.current += 1; setPeriod(value); setRevision((current) => current + 1); } },
+    setDate(value) { if (value !== date) { intent.current += 1; setDate(value); setRevision((current) => current + 1); } },
+    generateReport() { intent.current += 1; setRevision((value) => value + 1); },
+  };
 }
 
 export default function Relatorios() {
+  const sessionKey = useSessionKey();
+  return <ReportsContent key={sessionKey} />;
+}
+
+function ReportsContent() {
   const query = useReportQuery();
 
   return (
@@ -68,9 +94,9 @@ export default function Relatorios() {
         <PageHeaderBanner />
         <ReportFilterSection query={query} />
         {query.status === "success" ? (
-          query.report.hasTransactions ? <ReportDashboardView report={query.report} onChangeFilters={() => window.scrollTo({ top: 330, behavior: "smooth" })} /> : <ReportFeedbackStates state="empty" onRetry={query.generateReport} />
+          <ReportDashboardView report={query.report} onExport={query.exportReport} onChangeFilters={() => window.scrollTo({ top: 330, behavior: "smooth" })} />
         ) : (
-          <ReportFeedbackStates state={query.status} onRetry={query.generateReport} />
+          <ReportFeedbackStates state={query.status} error={query.error} onRetry={query.generateReport} />
         )}
       </main>
     </div>
@@ -107,8 +133,7 @@ function ReportFilterSection({ query }) {
   );
 }
 
-function ReportDashboardView({ report, onChangeFilters }) {
-  const exportData = { ...report, period: report.period };
+function ReportDashboardView({ report, onChangeFilters, onExport }) {
   return (
     <section className="report-dashboard">
       <ReportSummaryHeader period={report.period} />
@@ -119,9 +144,9 @@ function ReportDashboardView({ report, onChangeFilters }) {
       </div>
       <div className="report-content-grid">
         <FinancialChart data={report.chart} />
-        <PeriodInsightsCard insights={report.insights} />
+        <PeriodInsightsCard insights={report.insights} balance={report.summary.balance} />
       </div>
-      <ReportActions onChangeFilters={onChangeFilters} report={exportData} />
+      <ReportActions onChangeFilters={onChangeFilters} onExport={onExport} />
     </section>
   );
 }
@@ -139,19 +164,24 @@ function FinancialChart({ data }) {
   return <article className="report-panel chart-panel"><div className="panel-heading"><div><span className="reports-eyebrow">Movimentação</span><h3>Receitas e despesas</h3></div><span className="chart-legend"><i className="legend-income" /> Receitas <i className="legend-expenses" /> Despesas</span></div><div className="chart-wrap"><ResponsiveContainer width="100%" height="100%"><BarChart data={data} barGap={8} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}><CartesianGrid vertical={false} stroke="var(--border-subtle)" /><XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 12 }} /><YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 12 }} tickFormatter={(value) => `R$${value / 1000}k`} /><Tooltip formatter={(value) => formatCurrency(value)} contentStyle={{ background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: 10 }} /><Bar dataKey="income" name="Receitas" fill="var(--green-500)" radius={[5, 5, 0, 0]} /><Bar dataKey="expenses" name="Despesas" fill="var(--red-400)" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></div></article>;
 }
 
-function PeriodInsightsCard({ insights }) {
-  return <article className="report-panel insights-panel"><div className="panel-heading"><div><span className="reports-eyebrow">Leitura rápida</span><h3>O que o período revela</h3></div><CircleDollarSign size={22} className="panel-heading-icon" /></div><div className="insights-list">{insights.map((insight) => <div className="insight-row" key={insight.label}><span className={`insight-dot insight-dot--${insight.tone}`} /><div><span>{insight.label}</span><strong>{insight.value}</strong><small>{insight.detail}</small></div></div>)}</div><div className="positive-callout"><TrendingUp size={18} /><span>Seu saldo fechou positivo. Continue priorizando o que traz tranquilidade.</span></div></article>;
+function PeriodInsightsCard({ insights, balance }) {
+  const message = balance > 0
+    ? "Seu saldo fechou positivo. Continue priorizando o que traz tranquilidade."
+    : balance < 0
+      ? "As despesas superaram as receitas neste período."
+      : "Receitas e despesas ficaram equilibradas neste período.";
+  return <article className="report-panel insights-panel"><div className="panel-heading"><div><span className="reports-eyebrow">Leitura rápida</span><h3>O que o período revela</h3></div><CircleDollarSign size={22} className="panel-heading-icon" /></div><div className="insights-list">{insights.map((insight) => <div className="insight-row" key={insight.label}><span className={`insight-dot insight-dot--${insight.tone}`} /><div><span>{insight.label}</span><strong>{insight.value}</strong><small>{insight.detail}</small></div></div>)}</div><div className="positive-callout"><TrendingUp size={18} /><span>{message}</span></div></article>;
 }
 
-function ReportActions({ onChangeFilters, report }) {
-  return <div className="report-actions"><button type="button" className="text-button" onClick={onChangeFilters}><ChevronDown size={16} /> Alterar filtros</button><ExportActionsMenu report={report} /></div>;
+function ReportActions({ onChangeFilters, onExport }) {
+  return <div className="report-actions"><button type="button" className="text-button" onClick={onChangeFilters}><ChevronDown size={16} /> Alterar filtros</button><ExportActionsMenu onExport={onExport} /></div>;
 }
 
-function ExportActionsMenu({ report }) {
-  return <div className="export-actions"><span>Exportar como</span><button type="button" title="Exportar CSV" onClick={() => exportToCSV(report)}><Download size={16} /> CSV</button><button type="button" title="Exportar PDF" onClick={() => exportToPDF(report)}><FileText size={16} /> PDF</button><button type="button" title="Exportar Excel" onClick={() => exportToExcel(report)}><FileSpreadsheet size={16} /> Excel</button></div>;
+function ExportActionsMenu({ onExport }) {
+  return <div className="export-actions"><span>Exportar como</span><button type="button" title="Exportar CSV" onClick={() => onExport(exportToCSV)}><Download size={16} /> CSV</button><button type="button" title="Exportar PDF" onClick={() => onExport(exportToPDF)}><FileText size={16} /> PDF</button><button type="button" title="Exportar Excel" onClick={() => onExport(exportToExcel)}><FileSpreadsheet size={16} /> Excel</button></div>;
 }
 
-function ReportFeedbackStates({ state, onRetry }) {
+function ReportFeedbackStates({ state, error, onRetry }) {
   const content = {
     initial: { icon: BarChart3, title: "Seu resumo começa aqui", message: "Escolha um período para visualizar a sua leitura financeira." },
     loading: { icon: RefreshCw, title: "Estamos preparando seu relatório", message: "Organizando suas movimentações e encontrando os principais sinais." },
@@ -159,5 +189,5 @@ function ReportFeedbackStates({ state, onRetry }) {
     error: { icon: FileText, title: "Não foi possível gerar seu relatório", message: "Algo saiu do esperado. Tente novamente em alguns instantes." },
   }[state];
   const Icon = content.icon;
-  return <section className={`report-feedback report-feedback--${state}`}><span className="feedback-icon"><Icon size={28} /></span><h2>{content.title}</h2><p>{content.message}</p>{state === "error" && <button type="button" className="button button--primary" onClick={onRetry}><RefreshCw size={16} /> Tentar novamente</button>}</section>;
+  return <section className={`report-feedback report-feedback--${state}`} role={state === "error" ? "alert" : "status"}><span className="feedback-icon"><Icon size={28} /></span><h2>{content.title}</h2><p>{error || content.message}</p>{state === "error" && <button type="button" className="button button--primary" onClick={onRetry}><RefreshCw size={16} /> Tentar novamente</button>}</section>;
 }
