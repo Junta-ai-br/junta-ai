@@ -1,0 +1,20 @@
+/* Approved landing composition, scoped to the functional monthly indicator. */
+.assistant__widget.financial-health {
+  background: var(--gray-900);
+  color: var(--gray-50);
+  border-color: var(--gray-700);
+  gap: 0.75rem;
+}
+.financial-health__heading { display: flex; align-items: center; gap: 0.65rem; color: var(--purple-300); }
+.financial-health__heading h2 { margin: 0; font-size: var(--font-small); font-weight: var(--font-semibold); }
+.financial-health__top { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.financial-health__caption { color: var(--gray-300); font-size: 0.7rem; margin: 0; }
+.financial-health__score { display: flex; align-items: baseline; gap: 0.2rem; margin-top: 0.15rem; }
+.financial-health__score strong { font-size: 2.5rem; font-weight: var(--font-bold); line-height: 1; }
+.financial-health__score span { font-size: 0.7rem; color: var(--gray-300); }
+.financial-health__status { color: var(--health-color); font-size: 0.82rem; text-align: right; max-width: 60%; }
+.financial-health__bar { width: 100%; height: 0.65rem; border-radius: 999px; background: var(--gray-700); overflow: hidden; }
+.financial-health__bar span { display: block; height: 100%; border-radius: inherit; background: var(--health-color); transition: width 300ms ease; }
+.financial-health__scale { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--gray-300); font-size: 0.62rem; }
+.financial-health__message { color: var(--gray-300); font-size: var(--font-small); margin: 0; }
+@media (prefers-reduced-motion: reduce) { .financial-health__bar span { transition: none; } }

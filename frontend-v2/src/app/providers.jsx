@@ -13,17 +13,10 @@ function FinancialScope({ children }) {
   const { pathname } = useLocation();
   const { isAuthenticated } = useUser();
   if (matchPath("/planejador/*", pathname) || matchPath("/relatorios", pathname)) return children;
-  if (matchPath("/dashboard", pathname) || matchPath("/visao-mes", pathname)) {
-    return isAuthenticated ? <CanonicalFinanceProvider>{children}</CanonicalFinanceProvider> : children;
+  if (matchPath("/dashboard", pathname) || matchPath("/visao-mes", pathname) || matchPath("/assistente", pathname)) {
+    return isAuthenticated ? <CanonicalFinanceProvider key={matchPath("/assistente", pathname) ? "assistant" : "finance"}>{children}</CanonicalFinanceProvider> : children;
   }
-  const legacyArea = matchPath("/assistente", pathname);
-  return <FinanceProvider>
-    {isAuthenticated && legacyArea && <aside role="status" style={{ padding: "12px 5vw", background: "var(--surface)", color: "var(--text-primary)", borderBottom: "1px solid var(--border)" }}>
-      {matchPath("/assistente", pathname) ? "Os cartões financeiros desta área ainda usam dados locais de demonstração. A conversa usa o servidor real; confira operações na Visão do mês."
-        : "Esta área ainda usa dados locais de demonstração, separados dos lançamentos reais do Dashboard e da Visão do mês."}
-    </aside>}
-    {children}
-  </FinanceProvider>;
+  return <FinanceProvider>{children}</FinanceProvider>;
 }
 
 export default function AppProviders({ children }) {

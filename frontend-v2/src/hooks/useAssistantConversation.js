@@ -15,7 +15,7 @@ const errorMessage = (error, sending) => {
   return sending ? "Não foi possível confirmar a resposta do assistente. Nenhuma resposta ou execução financeira será simulada." : "Não foi possível carregar o histórico. Verifique a conexão com o servidor.";
 };
 
-export default function useAssistantConversation() {
+export default function useAssistantConversation({ refreshFinancialData } = {}) {
   const owner = useSyncExternalStore(subscribeSession, generation);
   const [state, setState] = useState(() => empty(owner));
   const active = useRef(null);
@@ -95,6 +95,10 @@ export default function useAssistantConversation() {
       recovery.current = operation;
       const reply = await conversations.sendMessage(operation.id, operation.message, operation.key, options(lease));
       if (!current(lease)) return;
+      // Replays can report actionExecuted=false even when the original request committed.
+      // Reconcile every successful message response before exposing current finances.
+      await refreshFinancialData?.();
+      if (!current(lease)) return;
       recovery.current = null;
       setState((value) => ({ ...value, inputValue: "", recovery: null,
         messages: [...value.messages.filter((item) => ![reply.userMessage.id, reply.assistantMessage.id].includes(item.id)),
@@ -105,6 +109,10 @@ export default function useAssistantConversation() {
       const terminal = code === "message_processing_failed" || [400, 403, 404].includes(error?.response?.status);
       // Unknown outcomes retain the exact key/body. Failed creation must be
       // reconciled with the conversation list before another POST /conversations.
+      if (terminal && operation) {
+        await refreshFinancialData?.();
+        if (!current(lease)) return;
+      }
       recovery.current = terminal ? null : operation ?? { creationUnknown: true };
       setState((value) => ({ ...value, recovery: recovery.current, error: errorMessage(error, true) }));
     } finally {

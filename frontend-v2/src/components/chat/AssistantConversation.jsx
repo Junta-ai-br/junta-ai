@@ -33,7 +33,7 @@ export default function AssistantConversation({
         <button type="button" disabled={loading || isTyping} onClick={refreshHistory}>Atualizar histórico</button>
       </div>}
       {loading && <p role="status">Carregando histórico persistido…</p>}
-      {error && <div role="alert"><p>{error}</p>{recovery && !recovery.creationUnknown && <button type="button" disabled={isTyping} onClick={retryMessage}>Retomar envio anterior</button>}
+      {(error || recovery) && <div role="alert">{error && <p>{error}</p>}{recovery && !recovery.creationUnknown && <button type="button" disabled={isTyping} onClick={retryMessage}>Retomar envio anterior</button>}
         {recovery?.creationUnknown && <p>Atualize o histórico antes de iniciar outra conversa; a criação pode ter sido processada.</p>}</div>}
       <div className="assistant__conversation-content">
         <div className="assistant__messages">
@@ -92,7 +92,7 @@ export default function AssistantConversation({
         </div>
       </div>
 
-      {selectConversation && <p>Conversa conectada ao servidor. Os cartões de demonstração não são atualizados por este chat. O histórico textual, sozinho, não comprova execução financeira.</p>}
+      {selectConversation && <p>Conversa conectada ao servidor. O histórico textual, sozinho, não comprova execução financeira.</p>}
 
       <form className="assistant__composer" onSubmit={handleSubmit}>
         <input
