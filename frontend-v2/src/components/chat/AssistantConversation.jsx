@@ -57,15 +57,16 @@ export default function AssistantConversation({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="assistant__message-bubble">
+              <div
+                className="assistant__message-bubble"
+                data-execution={message.executionConfirmed === true ? "confirmed" : message.executionConfirmed === false ? "unconfirmed" : undefined}
+              >
                 {message.type === "assistant" && (
                   <span className="assistant__message-brand" aria-hidden="true">
                     <img src="/src/assets/logos/logo-icon.svg" alt="" />
                   </span>
                 )}
                 <p style={{ whiteSpace: "pre-wrap" }}>{message.text}</p>
-                {message.executionConfirmed === true && <p role="status">O backend confirmou a execução desta operação. Consulte os lançamentos reais na Visão do mês.</p>}
-                {message.executionConfirmed === false && <p>Esta resposta não confirma uma nova execução financeira.</p>}
               </div>
             </motion.div>
           ))}
@@ -91,8 +92,6 @@ export default function AssistantConversation({
           )}
         </div>
       </div>
-
-      {selectConversation && <p>Conversa conectada ao servidor. O histórico textual, sozinho, não comprova execução financeira.</p>}
 
       <form className="assistant__composer" onSubmit={handleSubmit}>
         <input

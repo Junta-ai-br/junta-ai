@@ -57,18 +57,19 @@ describe("Assistente real chat", () => {
     await user.type(screen.getByRole("textbox", { name: "Mensagem" }), "gastei 25");
     await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
     expect(await screen.findByText("Resposta recebida da API")).toBeInTheDocument();
-    expect(screen.getByText(/backend confirmou a execução/)).toBeInTheDocument();
+    expect(container.querySelector('[data-execution="confirmed"]')).not.toBeNull();
+    expect(screen.queryByText(/backend confirmou a execução/)).not.toBeInTheDocument();
     expect(loadTransactions()).toEqual(before);
     expect(requests.filter((request) => request.method === "post").map((request) => request.url)).toEqual(["/conversations", `/conversations/${conversation.id}/messages`]);
   });
   it("loads persisted messages and keeps the existing navigation", async () => {
     api.defaults.adapter = async (config) => financialResponse(config) ?? response(config, config.url === "/conversations" ? [conversation] : [userMessage, assistantMessage]);
-    renderWithFinanceProvider(<AppRoutes />, { route: "/assistente" });
+    const { container } = renderWithFinanceProvider(<AppRoutes />, { route: "/assistente" });
     expect(await screen.findByText("Mensagem persistida")).toBeInTheDocument();
     expect(screen.getByText("Resposta recebida da API")).toBeInTheDocument();
     expect(screen.getAllByRole("navigation", { name: "Navegação principal" })).toHaveLength(1);
     expect(screen.getByRole("button", { name: "Enviar mensagem" })).toBeDisabled();
-    expect(screen.queryByText(/backend confirmou a execução/)).not.toBeInTheDocument();
+    expect(container.querySelector('[data-execution="confirmed"]')).toBeNull();
   });
   it("shows AI unavailability without a simulated reply or category picker", async () => {
     const user = userEvent.setup(); renderWithFinanceProvider(<AppRoutes />, { route: "/assistente" });
