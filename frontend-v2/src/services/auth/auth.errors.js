@@ -7,6 +7,9 @@ export function getEmailAuthError(error, { registration = false, verifying = fal
   if (status === 404 && verifying && !registration) {
     return { message: "Nenhuma conta encontrada para este e-mail. Crie uma conta para continuar.", accountMissing: true };
   }
+  if (status === 429 && verifying) {
+    return { message: "Muitas tentativas com este código. Solicite um novo código." };
+  }
   if (status === 409 && registration) {
     return { message: "Este e-mail já está cadastrado. Entre pela página de login." };
   }

@@ -161,10 +161,10 @@ describe("real email OTP", () => {
     expect(requestAccessCode).toHaveBeenCalledExactlyOnceWith("ana@example.com");
     expect(screen.getByRole("button", { name: "Enviando código..." })).toBeDisabled();
     expect(screen.queryByRole("textbox", { name: "Chave de acesso" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Enviamos uma chave de acesso para o seu e-mail.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Se este e-mail tiver uma conta, enviamos uma chave de acesso.")).not.toBeInTheDocument();
     await act(async () => { confirm(); });
     expect(screen.getByRole("textbox", { name: "Chave de acesso" })).toBeInTheDocument();
-    expect(screen.getByText("Enviamos uma chave de acesso para o seu e-mail.")).toBeInTheDocument();
+    expect(screen.getByText("Se este e-mail tiver uma conta, enviamos uma chave de acesso.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Reenviar em 30s" })).toBeDisabled();
   });
 
@@ -200,7 +200,7 @@ describe("real email OTP", () => {
     expect(requestAccessCode).toHaveBeenCalledTimes(2);
     expect(screen.getByRole("button", { name: "Enviando..." })).toBeDisabled();
     await act(async () => { confirm(); });
-    expect(screen.getByText("Uma nova chave de acesso foi enviada para o seu e-mail.")).toBeInTheDocument();
+    expect(screen.getByText("Se este e-mail tiver uma conta, enviamos uma nova chave de acesso.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Reenviar em 30s" })).toBeDisabled();
   });
 
