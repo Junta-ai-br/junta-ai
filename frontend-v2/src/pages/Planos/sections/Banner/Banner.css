@@ -7,19 +7,54 @@
 }
 
 .planos-banner__container {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  contain: paint;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-32);
   flex-wrap: wrap;
 
-  width: min(1120px, calc(100% - 3rem));
+  width: min(1230px, calc(100% - 3rem));
   margin: 0 auto;
   padding: var(--spacing-48);
 
+  border: 2px solid transparent;
   border-radius: var(--radius-24);
 
-  background: var(--gradient-primary);
+  background: var(--gray-900);
+}
+
+.planos-banner__animated-border {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  transform-origin: center;
+  background: conic-gradient(
+    from 0deg,
+    var(--brand-primary),
+    var(--brand-accent),
+    var(--brand-primary),
+    var(--brand-accent),
+    var(--brand-primary)
+  );
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.planos-banner__container::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: calc(var(--radius-24) - 2px);
+  background: var(--gray-900);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -27,6 +62,8 @@
    -------------------------------------------------------------------------- */
 
 .planos-banner__brand {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
 }
@@ -53,6 +90,8 @@
    -------------------------------------------------------------------------- */
 
 .planos-banner__button {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-8);
@@ -93,15 +132,31 @@
    Responsive
    -------------------------------------------------------------------------- */
 
+@media (min-width: 1001px) {
+  .planos-banner__container {
+    /* Match Sobre's two-line desktop title envelope (2 × 2rem × 1.25),
+       plus the shared padding and border. The rotating rectangle's aspect
+       ratio determines the length of the visible light bands. */
+    min-height: calc(var(--spacing-48) + var(--spacing-48) + 5rem + 4px);
+  }
+}
+
 @media (max-width: 700px) {
   .planos-banner__container {
     flex-direction: column;
     align-items: flex-start;
+    width: min(calc(100% - 2rem), 520px);
     padding: var(--spacing-32);
   }
 
   .planos-banner__button {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .planos-banner__container {
+    padding: var(--spacing-24);
   }
 }

@@ -5,7 +5,7 @@ const footerColumns = [
       { label: "Recursos", href: "/#recursos" },
       { label: "Como funciona", href: "/#como-funciona" },
       { label: "Planos", href: "/planos" },
-      { label: "Atualizações", href: "/#atualizacoes" },
+      { label: "Atualizações", href: "/atualizacoes" },
     ],
   },
   {

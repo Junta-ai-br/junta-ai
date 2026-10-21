@@ -207,19 +207,6 @@ export default function Cadastro() {
       {/* ================= ETAPA 1: DADOS BÁSICOS ================= */}
       {etapa === 1 && (
         <div className="form-etapa-1">
-          <div
-            className="cadastro-header"
-            style={{ marginBottom: '24px' }}
-          >
-            <h2 style={{ margin: '0 0 8px 0' }}>
-              Vamos começar?
-            </h2>
-
-            <p style={{ margin: 0, color: '#666' }}>
-              Crie sua conta e conheça o Junta.ai.
-            </p>
-          </div>
-
           <Input
             id="cadastro-nome"
             name="nome"

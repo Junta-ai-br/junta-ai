@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, screen } from "@testing-library/react";
+import { cleanup, fireEvent, screen, within } from "@testing-library/react";
 import { useLocation } from "react-router-dom";
 
 import AppRoutes from "@/app/routes";
@@ -40,6 +40,40 @@ function Location() {
 }
 
 describe("route protection", () => {
+  it("shows one registration introduction with all initial fields", async () => {
+    renderWithFinanceProvider(<AppRoutes />, { route: "/cadastro" });
+    await screen.findByRole("heading", { level: 1, name: "Vamos começar?" });
+    expect(screen.getAllByText("Vamos começar?", { exact: true })).toHaveLength(1);
+    expect(screen.getByText("BEM-VINDO(A) AO JUNTA.AI")).toBeInTheDocument();
+    expect(screen.getByText("Crie sua conta e comece a organizar suas finanças do seu jeito.")).toBeInTheDocument();
+    expect(screen.queryByText("Crie sua conta e conheça o Junta.ai.")).not.toBeInTheDocument();
+    for (const label of [/^Nome/, /^E-mail/, /^WhatsApp/]) expect(screen.getByLabelText(label)).toBeInTheDocument();
+  });
+
+  it("uses authenticated navigation in settings and logs out through the existing session", async () => {
+    saveSession(tokens);
+    renderWithFinanceProvider(<><Location /><AppRoutes /></>, { route: "/perfil" });
+    await screen.findByRole("heading", { level: 1, name: "Configurações" });
+    expect(screen.getAllByRole("main")).toHaveLength(1);
+    expect(screen.queryByText("Login", { exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByText("Começar agora", { exact: true })).not.toBeInTheDocument();
+    const navigation = screen.getByRole("navigation", { name: "Navegação principal" });
+    for (const [name, path] of [["Assistente", "/assistente"], ["Dashboard", "/dashboard"], ["Planejador", "/planejador"], ["Relatórios", "/relatorios"]]) {
+      expect(within(navigation).getByRole("link", { name })).toHaveAttribute("href", path);
+    }
+    // The mobile toggle is hidden by the desktop CSS in jsdom.
+    const mobileToggle = navigation.closest("header").querySelector('button[aria-label="Abrir menu"]');
+    fireEvent.click(mobileToggle);
+    expect(mobileToggle).toHaveAttribute("aria-label", "Fechar menu");
+    expect(mobileToggle).toHaveAttribute("aria-expanded", "true");
+    fireEvent.click(screen.getByRole("button", { name: /Menu de/ }));
+    expect(screen.getByRole("menuitem", { name: "Perfil" })).toHaveAttribute("href", "/perfil");
+    fireEvent.click(screen.getByRole("menuitem", { name: "Sair" }));
+    await screen.findByRole("heading", { name: /Vamos continuar de onde paramos/ });
+    expect(screen.getByTestId("location")).toHaveTextContent(/^\/login$/);
+    expect(sessionStorage.getItem("junta_auth_session")).toBeNull();
+  });
+
   it.each(privateRoutes)("redirects unauthenticated access to %s to /login", async (route) => {
     renderWithFinanceProvider(<><Location /><AppRoutes /></>, { route });
     expect(await screen.findByRole("heading", { name: /Vamos continuar de onde paramos/ })).toBeInTheDocument();
