@@ -1,3 +1,4 @@
+import { localCivilToday } from "./civil-date";
 export const CATEGORY_META = {
   Moradia: { color: "#00d084", icon: "🏠" },
   Alimentação: { color: "#7c3aed", icon: "🍽️" },
@@ -28,7 +29,7 @@ const SEED_GOALS = [
   { id: "goal-emergency", name: "Reserva de emergência", current: 4200, target: 6000 },
 ];
 
-export function getCurrentMonthRange(date = new Date()) {
+export function getCurrentMonthRange(date = localCivilToday()) {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth();
   const monthNumber = String(month + 1).padStart(2, "0");
