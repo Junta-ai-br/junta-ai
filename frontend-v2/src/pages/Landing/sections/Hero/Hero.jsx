@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import DesktopChatPreview from "@/components/DesktopChatPreview/DesktopChatPreview";
 import "./Hero.css";
 
 function Hero() {
@@ -12,7 +13,8 @@ function Hero() {
           </span>
 
           <h1 className="hero__title">
-            Organizar sua vida financeira pode começar com uma conversa.
+            Organizar sua vida financeira pode começar com uma{" "}
+            <span className="hero__title-highlight">conversa.</span>
           </h1>
 
           <p className="hero__description">
@@ -33,11 +35,7 @@ function Hero() {
         </div>
 
         <div className="hero__preview">
-          <div className="hero__preview-placeholder">
-            <span className="hero__preview-label">
-              Prévia da interface
-            </span>
-          </div>
+          <DesktopChatPreview />
         </div>
       </div>
     </section>
