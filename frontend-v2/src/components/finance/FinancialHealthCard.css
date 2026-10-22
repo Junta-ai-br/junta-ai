@@ -18,3 +18,19 @@
 .financial-health__scale { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--gray-300); font-size: 0.62rem; }
 .financial-health__message { color: var(--gray-300); font-size: var(--font-small); margin: 0; }
 @media (prefers-reduced-motion: reduce) { .financial-health__bar span { transition: none; } }
+
+/* Keep the existing dark composition; adapt only the light-theme card. */
+[data-theme="light"] .assistant__widget.financial-health {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+  --health-light-color: color-mix(in srgb, var(--health-color) 50%, var(--text-primary));
+}
+[data-theme="light"] .financial-health .financial-health__heading { color: var(--brand-primary); }
+[data-theme="light"] .financial-health .financial-health__caption,
+[data-theme="light"] .financial-health .financial-health__score span,
+[data-theme="light"] .financial-health .financial-health__scale,
+[data-theme="light"] .financial-health .financial-health__message { color: var(--text-secondary); }
+[data-theme="light"] .financial-health .financial-health__status { color: var(--health-light-color); }
+[data-theme="light"] .financial-health .financial-health__bar { background: var(--surface-elevated); }
+[data-theme="light"] .financial-health .financial-health__bar span { background: var(--health-light-color); }

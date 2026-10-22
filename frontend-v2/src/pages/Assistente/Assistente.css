@@ -400,6 +400,11 @@
    Financial Summary
    ========================================================================== */
 
+.assistant__financial-status {
+  width: min(1400px, 100%);
+  margin: var(--spacing-16) auto 0;
+}
+
 .assistant__summary {
   width: min(1400px, 100%);
 
@@ -627,7 +632,8 @@
    ========================================================================== */
 
 .assistant__conversation {
-  min-height: 680px;
+  height: clamp(420px, 72dvh, 760px);
+  min-height: 0;
 
   display: flex;
   flex-direction: column;
@@ -648,9 +654,11 @@
   display: flex;
   flex-direction: column;
 
-  padding: clamp(1.5rem, 3vw, 2.5rem);
+  min-height: 0;
+  padding: var(--spacing-24) var(--spacing-20);
 
   overflow-y: auto;
+  scroll-behavior: auto;
 }
 
 
@@ -667,7 +675,7 @@
   width: 100%;
   max-width: 820px;
 
-  margin: auto 0;
+  margin: 0 auto;
 }
 
 .assistant__message {
@@ -761,167 +769,69 @@
    ========================================================================== */
 
 .assistant__message-bubble {
-  position: relative;
-
-  display: flex;
-  align-items: flex-start;
-
-  gap: 0.65rem;
-
-  max-width: min(70%, 560px);
-
-  padding: 0.85rem 1.1rem;
-
+  max-width: min(92%, 560px);
+  padding: var(--spacing-12) var(--spacing-16);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-16);
   color: var(--text-primary);
-
-  font-size: var(--font-body);
-
-  line-height: 1.5;
-
-  box-shadow: var(--shadow-sm);
-
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
+  font-size: var(--font-small);
+  line-height: var(--line-height-normal);
+  overflow-wrap: anywhere;
 }
 
-.assistant__message-bubble p {
-  margin: 0;
-}
-
-
-/* --------------------------------------------------------------------------
-   User Bubble
-   -------------------------------------------------------------------------- */
+.assistant__message-bubble p { margin: 0; }
 
 .assistant__message--user .assistant__message-bubble {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(113, 64, 250, 0.22),
-      rgba(113, 64, 250, 0.12)
-    );
-
-  border: 1px solid rgba(113, 64, 250, 0.28);
-
-  border-radius: 1.15rem 1.15rem 0.35rem 1.15rem;
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  border-bottom-right-radius: var(--radius-4);
+  color: var(--text-inverse);
 }
-
-
-/* --------------------------------------------------------------------------
-   Assistant Bubble
-   -------------------------------------------------------------------------- */
 
 .assistant__message--assistant .assistant__message-bubble {
-  background:
-    radial-gradient(
-      ellipse 100% 140% at 0% 0%,
-      rgba(113, 64, 250, 0.10),
-      transparent 65%
-    ),
-    var(--background);
-
-  border: 1px solid rgba(113, 64, 250, 0.16);
-
-  border-radius: 1.15rem 1.15rem 1.15rem 0.35rem;
+  background: var(--surface);
+  border-bottom-left-radius: var(--radius-4);
 }
-
-
-/* --------------------------------------------------------------------------
-   Assistant Brand Icon
-   -------------------------------------------------------------------------- */
 
 .assistant__message-brand {
-  width: 1.7rem;
-  height: 1.7rem;
-
-  flex: 0 0 auto;
-
   display: flex;
   align-items: center;
-  justify-content: center;
-
-  margin-top: 0.05rem;
-
-  border: 1px solid rgba(113, 64, 250, 0.22);
-
-  border-radius: 0.55rem;
-
-  background: rgba(113, 64, 250, 0.08);
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+  font-weight: var(--font-semibold);
 }
 
-.assistant__message-brand img {
-  width: 1rem;
-  height: 1rem;
-
-  object-fit: contain;
+.assistant__message-brand img,
+.assistant__processing-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
-.assistant__message-bubble:hover {
-  border-color: rgba(113, 64, 250, 0.25);
-
-  box-shadow:
-    var(--shadow-sm),
-    0 0 20px rgba(113, 64, 250, 0.045);
-}
-
-
-/* ==========================================================================
-   Typing Indicator
-   ========================================================================== */
-
-.assistant__message-bubble--typing {
-  min-width: 82px;
-
+.assistant__processing {
+  display: flex;
   align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12);
+  color: var(--text-secondary);
+  font-size: var(--font-small);
 }
 
-.assistant__typing {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 0.3rem;
+.assistant__processing-icon {
+  animation: assistantProcessing 1.2s ease-in-out infinite;
 }
 
-.assistant__typing span {
-  width: 5px;
-  height: 5px;
-
-  border-radius: 50%;
-
-  background: var(--brand-primary);
-
-  animation: assistantTyping 1.2s infinite ease-in-out;
+@keyframes assistantProcessing {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
-
-.assistant__typing span:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.assistant__typing span:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-@keyframes assistantTyping {
-  0%,
-  60%,
-  100% {
-    opacity: 0.3;
-    transform: translateY(0);
-  }
-
-  30% {
-    opacity: 1;
-    transform: translateY(-3px);
-  }
-}
-
 
 /* ==========================================================================
    Composer
    ========================================================================== */
 
 .assistant__composer {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
 
@@ -1614,7 +1524,7 @@
   }
 
   .assistant__conversation {
-    min-height: 620px;
+    min-height: 0;
   }
 
   .assistant__summary-card {
@@ -1647,7 +1557,7 @@
   }
 
   .assistant__message-bubble {
-    max-width: 78%;
+    max-width: min(92%, 560px);
   }
 }
 
@@ -1808,7 +1718,8 @@
   }
 
   .assistant__conversation {
-    min-height: 600px;
+    height: clamp(360px, 70dvh, 640px);
+    min-height: 0;
   }
 
   .assistant__sidebar {
@@ -1841,24 +1752,18 @@
     inset: 14px;
   }
 
+  .assistant__conversation-content {
+    padding: var(--spacing-16) var(--spacing-12);
+  }
+
   .assistant__messages {
-    gap: 0.8rem;
+    gap: var(--spacing-16);
   }
 
   .assistant__message-bubble {
-    max-width: 86%;
+    max-width: 100%;
 
     padding: 0.75rem 0.9rem;
-  }
-
-  .assistant__message-brand {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  .assistant__message-brand img {
-    width: 0.9rem;
-    height: 0.9rem;
   }
 
   .assistant__empty-state {
@@ -1884,7 +1789,7 @@
     transition: none;
   }
 
-  .assistant__typing span {
+  .assistant__processing-icon {
     animation: none;
   }
 }
@@ -1901,6 +1806,7 @@
 
 .assistant--embedded .assistant__navbar,
 .assistant--embedded .assistant__intro,
+.assistant--embedded .assistant__financial-status,
 .assistant--embedded .assistant__summary,
 .assistant--embedded .assistant__sidebar {
   display: none;
@@ -1923,3 +1829,7 @@
 .assistant__conversation-tools select { max-width: 100%; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); padding: 7px; border-radius: 6px; }
 .assistant__conversation-tools button { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text-primary); }
 .assistant__conversation > [role="alert"], .assistant__conversation > [role="status"], .assistant__conversation > p { margin: 8px 12px; }
+
+.assistant__conversation-tools,
+.assistant__conversation > [role="alert"],
+.assistant__conversation > [role="status"] { flex-shrink: 0; }

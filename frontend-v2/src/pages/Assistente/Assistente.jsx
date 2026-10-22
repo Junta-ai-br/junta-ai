@@ -112,7 +112,7 @@ export default function Assistente({
           Financial Summary
           ================================================================== */}
 
-      <div className="assistant__intro" aria-live="polite">
+      <div className="assistant__financial-status" aria-live="polite">
         <p>Mês corrente: {finance.period.from.split("-").reverse().join("/")} a {finance.period.to.split("-").reverse().join("/")}</p>
         {waitingForChat ? <p role="status">Aguardando confirmação e atualização dos dados financeiros. Retome o envio pendente no chat quando necessário.</p>
           : !covered && ["idle", "loading"].includes(finance.status) ? <p role="status">Carregando dados financeiros…</p>

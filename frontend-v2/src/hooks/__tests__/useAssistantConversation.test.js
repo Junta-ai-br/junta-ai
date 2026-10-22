@@ -24,9 +24,14 @@ describe("real conversation lifecycle", () => {
   it.each([true, false])("uses persisted history and backend execution evidence=%s without financial writes", async (executed) => {
     transport = async (config) => response(config, config.method === "post" ? reply(executed) : config.url === "/conversations" ? [conversation] : [userMessage]);
     const hook = await mount(); expect(hook.result.current.messages[0].text).toBe(userMessage.content);
+    expect(hook.result.current.messages[0].fresh).toBe(false);
     const storage = vi.spyOn(Storage.prototype, "setItem");
     await act(async () => { await hook.result.current.handleSubmit("gastei 0,01"); });
     expect(hook.result.current.messages.at(-1)).toMatchObject({ type: "assistant", text: assistantMessage.content, executionConfirmed: executed });
+    expect(hook.result.current.messages.find((item) => item.id === userMessage.id).fresh).toBe(false);
+    expect(hook.result.current.messages.at(-1).fresh).toBe(true);
+    await act(async () => { await hook.result.current.refreshHistory(); });
+    expect(hook.result.current.messages.every((item) => !item.fresh)).toBe(true);
     expect(posts()).toHaveLength(1); expect(posts()[0].url).toBe(`/conversations/${conversation.id}/messages`);
     expect(posts()[0].headers.get("Authorization")).toBe("Bearer same");
     expect(posts()[0].headers.get("Idempotency-Key")).toMatch(/^[0-9a-f-]{36}$/);
@@ -46,12 +51,14 @@ describe("real conversation lifecycle", () => {
     transport = async (config) => { if (config.method === "post" && !failed) { failed = true; throw Object.assign(new Error("Timeout"), { code: "ECONNABORTED" }); } return base(config); };
     await act(async () => { await hook.result.current.handleSubmit("  gastei 0,01  "); });
     expect(hook.result.current.messages).toEqual([]); expect(hook.result.current.recovery).not.toBeNull();
+    expect(hook.result.current.isTyping).toBe(false);
     await act(async () => { await hook.result.current.handleSubmit("new intent forbidden"); }); expect(posts()).toHaveLength(1);
     await act(async () => { await hook.result.current.retryMessage(); });
     expect(posts()).toHaveLength(2);
     expect(posts()[1].data).toBe(posts()[0].data);
     expect(posts()[1].headers.get("Idempotency-Key")).toBe(posts()[0].headers.get("Idempotency-Key"));
     expect(hook.result.current.recovery).toBeNull();
+    expect(hook.result.current.messages.every((item) => item.fresh)).toBe(true);
   });
   it("reports AI unavailability without a fictitious response or automatic retry", async () => {
     const hook = await mount();
@@ -74,4 +81,26 @@ describe("real conversation lifecycle", () => {
       expect(hook.result.current.inputValue).toBe(""); expect(posts()).toHaveLength(1);
     }
   });
+  it("publishes fresh messages only after financial reconciliation completes", async () => {
+    let finishRefresh;
+    const refreshFinancialData = vi.fn(() => new Promise((resolve) => { finishRefresh = resolve; }));
+    const hook = renderHook(() => useAssistantConversation({ refreshFinancialData }));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    let pending;
+    act(() => { pending = hook.result.current.handleSubmit("Mensagem"); });
+    await waitFor(() => expect(refreshFinancialData).toHaveBeenCalledOnce());
+    expect(hook.result.current.messages).toEqual([]);
+    expect(hook.result.current.isTyping).toBe(true);
+    await act(async () => { finishRefresh(); await pending; });
+    expect(hook.result.current.isTyping).toBe(false);
+    expect(hook.result.current.messages.map(({ id, fresh }) => ({ id, fresh }))).toEqual([
+      { id: userMessage.id, fresh: true }, { id: assistantMessage.id, fresh: true },
+    ]);
+    transport = async (config) => response(config, config.url === "/conversations" ? [conversation] : [userMessage, assistantMessage]);
+    await act(async () => { await hook.result.current.selectConversation(conversation.id); });
+    expect(hook.result.current.messages.map(({ id, fresh }) => ({ id, fresh }))).toEqual([
+      { id: userMessage.id, fresh: false }, { id: assistantMessage.id, fresh: false },
+    ]);
+  });
+
 });
