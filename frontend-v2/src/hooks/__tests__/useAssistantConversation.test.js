@@ -50,7 +50,7 @@ describe("real conversation lifecycle", () => {
     const base = transport; let failed = false;
     transport = async (config) => { if (config.method === "post" && !failed) { failed = true; throw Object.assign(new Error("Timeout"), { code: "ECONNABORTED" }); } return base(config); };
     await act(async () => { await hook.result.current.handleSubmit("  gastei 0,01  "); });
-    expect(hook.result.current.messages).toEqual([]); expect(hook.result.current.recovery).not.toBeNull();
+    expect(hook.result.current.messages).toEqual([expect.objectContaining({ type: "user", text: "  gastei 0,01  " })]); expect(hook.result.current.recovery).not.toBeNull();
     expect(hook.result.current.isTyping).toBe(false);
     await act(async () => { await hook.result.current.handleSubmit("new intent forbidden"); }); expect(posts()).toHaveLength(1);
     await act(async () => { await hook.result.current.retryMessage(); });
@@ -64,7 +64,7 @@ describe("real conversation lifecycle", () => {
     const hook = await mount();
     transport = async (config) => { throw new AxiosError("Unavailable", "ERR_BAD_RESPONSE", config, {}, { status: 503, config, data: '{"code":"message_processing_failed"}' }); };
     await act(async () => { await hook.result.current.handleSubmit("Olá"); });
-    expect(hook.result.current.error).toMatch(/IA não conseguiu/); expect(hook.result.current.messages).toEqual([]); expect(posts()).toHaveLength(1);
+    expect(hook.result.current.error).toMatch(/IA não conseguiu/); expect(hook.result.current.messages).toEqual([expect.objectContaining({ type: "user", text: "Olá" })]); expect(posts()).toHaveLength(1);
   });
   it.each(["new generation", "logout", "unmount"])("discards delayed response after %s", async (change) => {
     const hook = await mount(); const staleHandlers = hook.result.current;
@@ -81,7 +81,7 @@ describe("real conversation lifecycle", () => {
       expect(hook.result.current.inputValue).toBe(""); expect(posts()).toHaveLength(1);
     }
   });
-  it("publishes fresh messages only after financial reconciliation completes", async () => {
+  it("publishes the reply before reconciliation completes while keeping finances unavailable", async () => {
     let finishRefresh;
     const refreshFinancialData = vi.fn(() => new Promise((resolve) => { finishRefresh = resolve; }));
     const hook = renderHook(() => useAssistantConversation({ refreshFinancialData }));
@@ -89,8 +89,9 @@ describe("real conversation lifecycle", () => {
     let pending;
     act(() => { pending = hook.result.current.handleSubmit("Mensagem"); });
     await waitFor(() => expect(refreshFinancialData).toHaveBeenCalledOnce());
-    expect(hook.result.current.messages).toEqual([]);
-    expect(hook.result.current.isTyping).toBe(true);
+    expect(hook.result.current.messages).toHaveLength(2);
+    expect(hook.result.current.isTyping).toBe(false);
+    expect(hook.result.current.isReconciling).toBe(true);
     await act(async () => { finishRefresh(); await pending; });
     expect(hook.result.current.isTyping).toBe(false);
     expect(hook.result.current.messages.map(({ id, fresh }) => ({ id, fresh }))).toEqual([
@@ -101,6 +102,32 @@ describe("real conversation lifecycle", () => {
     expect(hook.result.current.messages.map(({ id, fresh }) => ({ id, fresh }))).toEqual([
       { id: userMessage.id, fresh: false }, { id: assistantMessage.id, fresh: false },
     ]);
+  });
+
+  it("shows the user immediately during lazy creation and replaces it once after the reply", async () => {
+    let finishCreation;
+    transport = async (config) => config.url === "/conversations" && config.method === "post"
+      ? new Promise((resolve) => { finishCreation = () => resolve(response(config, conversation)); })
+      : response(config, config.method === "post" ? reply() : []);
+    const hook = await mount();
+    let pending;
+    act(() => { pending = hook.result.current.handleSubmit("gastei 25"); });
+    expect(hook.result.current.messages).toEqual([expect.objectContaining({ type: "user", text: "gastei 25" })]);
+    expect(hook.result.current.isTyping).toBe(true);
+    await waitFor(() => expect(finishCreation).toBeDefined());
+    await act(async () => { finishCreation(); await pending; });
+    expect(hook.result.current.messages.map((item) => item.id)).toEqual([userMessage.id, assistantMessage.id]);
+  });
+
+  it("does not retry a successful message when financial refresh fails", async () => {
+    const hook = renderHook(() => useAssistantConversation({ refreshFinancialData: async () => { throw new Error("offline"); } }));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => { await hook.result.current.handleSubmit("gastei 25"); });
+    expect(hook.result.current.messages.at(-1).text).toBe(assistantMessage.content);
+    expect(hook.result.current.recovery).toBeNull();
+    expect(hook.result.current.error).toMatch(/atualizar os dados financeiros/);
+    expect(hook.result.current.isTyping).toBe(false);
+    expect(posts()).toHaveLength(1);
   });
 
 });

@@ -78,7 +78,7 @@ describe("AssistantConversation", () => {
   it("exposes one stable processing status and removes it on completion or error", () => {
     const { rerender } = render(<AssistantConversation isTyping />);
     const status = screen.getByRole("status");
-    expect(status).toHaveTextContent("Junta.ai: aguardando resposta e atualiza\u00e7\u00e3o\u2026");
+    expect(status).toHaveTextContent("Junta.ai está digitando…");
     expect(status).toHaveAttribute("aria-atomic", "true");
     expect(status.querySelector("img")).toHaveAttribute("width", "20");
     rerender(<AssistantConversation isTyping inputValue="Mensagem" />);

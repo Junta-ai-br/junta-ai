@@ -77,7 +77,11 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
       setState((value) => ({ ...value, error: "Informe uma mensagem não vazia de até 2000 caracteres." })); return;
     }
     lock.current = true;
-    setState((value) => ({ ...value, isTyping: true, error: null }));
+    const optimisticId = retry ? recovery.current.optimisticId : `pending-${crypto.randomUUID()}`;
+    setState((value) => ({ ...value, isTyping: true, error: null,
+      inputValue: "",
+      messages: retry ? value.messages : [...value.messages, { id: optimisticId, type: "user", text: message, fresh: true }],
+    }));
     let operation = retry ? recovery.current : null;
     try {
       if (!operation) {
@@ -89,7 +93,7 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
           lease.conversationId = id;
           setState((value) => ({ ...value, conversationId: id, conversations: [created, ...value.conversations] }));
         }
-        operation = { id, message, key: crypto.randomUUID() };
+        operation = { id, message, key: crypto.randomUUID(), optimisticId };
       }
       if (!current(lease)) return;
       recovery.current = operation;
@@ -97,13 +101,15 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
       if (!current(lease)) return;
       // Replays can report actionExecuted=false even when the original request committed.
       // Reconcile every successful message response before exposing current finances.
-      await refreshFinancialData?.();
-      if (!current(lease)) return;
       recovery.current = null;
-      setState((value) => ({ ...value, inputValue: "", recovery: null,
-        messages: [...value.messages.filter((item) => ![reply.userMessage.id, reply.assistantMessage.id].includes(item.id)),
+      setState((value) => ({ ...value, inputValue: "", recovery: null, isTyping: false, isReconciling: true,
+        messages: [...value.messages.filter((item) => ![operation.optimisticId, reply.userMessage.id, reply.assistantMessage.id].includes(item.id)),
           bubble(reply.userMessage, !value.messages.some((item) => item.id === reply.userMessage.id)),
           { ...bubble(reply.assistantMessage, !value.messages.some((item) => item.id === reply.assistantMessage.id)), executionConfirmed: reply.actionExecuted }] }));
+      try { await refreshFinancialData?.(); }
+      catch {
+        if (current(lease)) setState((value) => ({ ...value, error: "A resposta foi recebida, mas não foi possível atualizar os dados financeiros. Atualize os dados antes de consultar os totais." }));
+      }
     } catch (error) {
       if (!current(lease)) return;
       const code = error?.response?.data?.code;
@@ -111,13 +117,13 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
       // Unknown outcomes retain the exact key/body. Failed creation must be
       // reconciled with the conversation list before another POST /conversations.
       if (terminal && operation) {
-        await refreshFinancialData?.();
+        try { await refreshFinancialData?.(); } catch { /* Preserve the original send failure and recovery state. */ }
         if (!current(lease)) return;
       }
       recovery.current = terminal ? null : operation ?? { creationUnknown: true };
       setState((value) => ({ ...value, recovery: recovery.current, error: errorMessage(error, true) }));
     } finally {
-      if (current(lease)) { lock.current = false; setState((value) => ({ ...value, isTyping: false })); }
+      if (current(lease)) { lock.current = false; setState((value) => ({ ...value, isTyping: false, isReconciling: false })); }
     }
   };
 
@@ -140,6 +146,6 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
         setState((value) => ({ ...value, conversationId: null, messages: [], inputValue: "", error: null }));
       }
     },
-    canSend: !!owner && !view.loading && !view.isTyping && !view.recovery && conversations.validChatInput(view.inputValue),
+    canSend: !!owner && !view.loading && !view.isTyping && !view.isReconciling && !view.recovery && conversations.validChatInput(view.inputValue),
   };
 }

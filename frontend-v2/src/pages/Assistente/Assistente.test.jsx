@@ -86,7 +86,8 @@ describe("Assistente real chat", () => {
     expect(await screen.findByText(/IA não conseguiu processar/)).toBeInTheDocument();
     expect(screen.queryByText(/Seus gráficos já foram atualizados/)).not.toBeInTheDocument();
     expect(screen.queryByText("Qual categoria devo usar para essa saída?")).not.toBeInTheDocument();
-    expect(input).toHaveValue("gastei 25");
+    expect(input).toHaveValue("");
+    expect(screen.getByText("gastei 25")).toBeInTheDocument();
   });
   it("does not expose local goals or a local Health Score as official", async () => {
     renderWithFinanceProvider(<AppRoutes />, { route: "/assistente", initialFinanceData: {
