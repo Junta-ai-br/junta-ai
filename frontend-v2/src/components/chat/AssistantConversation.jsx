@@ -1,5 +1,7 @@
-import { motion } from "motion/react";
+import { useLayoutEffect, useRef } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { SendHorizontal } from "lucide-react";
+import logoIcon from "@/assets/logos/logo-icon.svg";
 
 export default function AssistantConversation({
   messages = [],
@@ -18,6 +20,35 @@ export default function AssistantConversation({
   retryMessage,
   canSend,
 }) {
+  const reduceMotion = useReducedMotion();
+  const scrollRef = useRef(null);
+  const followEnd = useRef(true);
+  const previousView = useRef(null);
+
+  useLayoutEffect(() => {
+    if (loading) return;
+    const container = scrollRef.current;
+    const previous = previousView.current;
+    const lastId = messages.at(-1)?.id;
+    // Loading another history starts at its end. Creating a conversation during
+    // a send must not override a reader who scrolled up while awaiting a reply.
+    const openedHistory = !previous || (previous.conversationId !== conversationId && !isTyping && !previous.isTyping);
+    if (openedHistory) followEnd.current = true;
+    const contentChanged = openedHistory || previous?.lastId !== lastId || previous?.isTyping !== isTyping;
+    if (container && contentChanged && followEnd.current) {
+      // Update only this viewport, before paint. Instant positioning avoids
+      // competing smooth-scroll animations and also respects reduced motion.
+      container.scrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+    }
+    previousView.current = { conversationId, lastId, isTyping };
+  }, [messages, conversationId, isTyping, loading]);
+
+  const trackReadingPosition = () => {
+    const container = scrollRef.current;
+    if (container) {
+      followEnd.current = container.scrollHeight - container.clientHeight - container.scrollTop <= 64;
+    }
+  };
   return (
     <section
       className="assistant__conversation"
@@ -35,12 +66,12 @@ export default function AssistantConversation({
       {loading && <p role="status">Carregando histórico persistido…</p>}
       {(error || recovery) && <div role="alert">{error && <p>{error}</p>}{recovery && !recovery.creationUnknown && <button type="button" disabled={isTyping} onClick={retryMessage}>Retomar envio anterior</button>}
         {recovery?.creationUnknown && <p>Atualize o histórico antes de iniciar outra conversa; a criação pode ter sido processada.</p>}</div>}
-      <div className="assistant__conversation-content">
+      <div className="assistant__conversation-content" ref={scrollRef} onScroll={trackReadingPosition}>
         <div className="assistant__messages">
           {messages.length === 0 && !isTyping && (
             <div className="assistant__empty-state">
               <div className="assistant__empty-icon">
-                <img src="/src/assets/logos/logo-icon.svg" alt="" />
+                <img src={logoIcon} alt="" />
               </div>
               <h2>Vamos conversar sobre seu dinheiro?</h2>
               <p>
@@ -53,17 +84,17 @@ export default function AssistantConversation({
             <motion.div
               key={message.id}
               className={`assistant__message assistant__message--${message.type}`}
-              initial={{ opacity: 0, y: 12 }}
+              initial={message.fresh && !reduceMotion ? { opacity: 0, y: 6 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: reduceMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <div
                 className="assistant__message-bubble"
                 data-execution={message.executionConfirmed === true ? "confirmed" : message.executionConfirmed === false ? "unconfirmed" : undefined}
               >
                 {message.type === "assistant" && (
-                  <span className="assistant__message-brand" aria-hidden="true">
-                    <img src="/src/assets/logos/logo-icon.svg" alt="" />
+                  <span className="assistant__message-brand">
+                    <img src={logoIcon} alt="" width="20" height="20" /> Junta.ai
                   </span>
                 )}
                 <p style={{ whiteSpace: "pre-wrap" }}>{message.text}</p>
@@ -72,28 +103,19 @@ export default function AssistantConversation({
           ))}
 
           {isTyping && (
-            <motion.div
+            <div
               className="assistant__message assistant__message--assistant"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
             >
-              <div className="assistant__message-bubble assistant__message-bubble--typing">
-                <span className="assistant__message-brand" aria-hidden="true">
-                  <img src="/src/assets/logos/logo-icon.svg" alt="" />
-                </span>
-                <span className="assistant__typing" aria-label="Junta.ai está digitando">
-                  <span />
-                  <span />
-                  <span />
-                </span>
+              <div className="assistant__processing" role="status" aria-live="polite" aria-atomic="true">
+                <img className="assistant__processing-icon" src={logoIcon} alt="" width="20" height="20" />
+                <span>Junta.ai: aguardando resposta e atualização…</span>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>
 
-      <form className="assistant__composer" onSubmit={handleSubmit}>
+      <form className="assistant__composer" onSubmitCapture={() => { followEnd.current = true; }} onSubmit={handleSubmit}>
         <input
           type="text"
           className="assistant__composer-input"

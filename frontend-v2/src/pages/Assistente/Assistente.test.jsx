@@ -70,6 +70,8 @@ describe("Assistente real chat", () => {
     expect(screen.getAllByRole("navigation", { name: "Navegação principal" })).toHaveLength(1);
     expect(screen.getByRole("button", { name: "Enviar mensagem" })).toBeDisabled();
     expect(container.querySelector('[data-execution="confirmed"]')).toBeNull();
+    expect(container.querySelectorAll(".assistant__intro")).toHaveLength(1);
+    expect(container.querySelector(".assistant__financial-status")).not.toBeNull();
   });
   it("shows AI unavailability without a simulated reply or category picker", async () => {
     const user = userEvent.setup(); renderWithFinanceProvider(<AppRoutes />, { route: "/assistente" });

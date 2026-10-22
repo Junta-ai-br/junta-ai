@@ -4,8 +4,8 @@ import * as conversations from "@/services/conversations.api";
 
 const generation = () => getSessionSnapshot()?.generation ?? null;
 const empty = (owner) => ({ owner, inputValue: "", messages: [], conversations: [], conversationId: null, loading: true, isTyping: false, error: null, recovery: null });
-const bubble = (message) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content });
-const history = (messages) => messages.filter((message) => message.role !== "SYSTEM").map(bubble);
+const bubble = (message, fresh = false) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content, fresh });
+const history = (messages) => messages.filter((message) => message.role !== "SYSTEM").map((message) => bubble(message));
 const errorMessage = (error, sending) => {
   if (["ECONNABORTED", "ETIMEDOUT"].includes(error?.code)) return "O tempo de espera terminou. O servidor pode ter processado a mensagem. Retome o envio anterior com a mesma identidade.";
   if (error?.response?.data?.code === "message_processing_in_progress") return "O envio anterior ainda está em processamento. Aguarde e retome-o manualmente.";
@@ -102,7 +102,8 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
       recovery.current = null;
       setState((value) => ({ ...value, inputValue: "", recovery: null,
         messages: [...value.messages.filter((item) => ![reply.userMessage.id, reply.assistantMessage.id].includes(item.id)),
-          bubble(reply.userMessage), { ...bubble(reply.assistantMessage), executionConfirmed: reply.actionExecuted }] }));
+          bubble(reply.userMessage, !value.messages.some((item) => item.id === reply.userMessage.id)),
+          { ...bubble(reply.assistantMessage, !value.messages.some((item) => item.id === reply.assistantMessage.id)), executionConfirmed: reply.actionExecuted }] }));
     } catch (error) {
       if (!current(lease)) return;
       const code = error?.response?.data?.code;
