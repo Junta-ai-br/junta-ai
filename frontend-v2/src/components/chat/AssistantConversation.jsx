@@ -108,7 +108,7 @@ export default function AssistantConversation({
             >
               <div className="assistant__processing" role="status" aria-live="polite" aria-atomic="true">
                 <img className="assistant__processing-icon" src={logoIcon} alt="" width="20" height="20" />
-                <span>Junta.ai: aguardando resposta e atualização…</span>
+                <span>Junta.ai está digitando…</span>
               </div>
             </div>
           )}

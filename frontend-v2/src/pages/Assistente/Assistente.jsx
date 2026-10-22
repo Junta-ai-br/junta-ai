@@ -31,7 +31,7 @@ export default function Assistente({
 
   const finance = useCanonicalFinance();
   const conversation = useAssistantConversation({ refreshFinancialData: finance.reload });
-  const waitingForChat = conversation.isTyping || !!conversation.recovery;
+  const waitingForChat = conversation.isTyping || conversation.isReconciling || !!conversation.recovery;
   const covered = !waitingForChat && !finance.refreshRequired
     && ["success", "empty"].includes(finance.status) && finance.coverage?.complete === true;
   const transactions = covered ? finance.transactions : [];
