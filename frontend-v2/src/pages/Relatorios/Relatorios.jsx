@@ -1,3 +1,4 @@
+import CategoryLabel from "@/components/finance/CategoryLabel";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownRight,
@@ -170,7 +171,7 @@ function PeriodInsightsCard({ insights, balance }) {
     : balance < 0
       ? "As despesas superaram as receitas neste período."
       : "Receitas e despesas ficaram equilibradas neste período.";
-  return <article className="report-panel insights-panel"><div className="panel-heading"><div><span className="reports-eyebrow">Leitura rápida</span><h3>O que o período revela</h3></div><CircleDollarSign size={22} className="panel-heading-icon" /></div><div className="insights-list">{insights.map((insight) => <div className="insight-row" key={insight.label}><span className={`insight-dot insight-dot--${insight.tone}`} /><div><span>{insight.label}</span><strong>{insight.value}</strong><small>{insight.detail}</small></div></div>)}</div><div className="positive-callout"><TrendingUp size={18} /><span>{message}</span></div></article>;
+  return <article className="report-panel insights-panel"><div className="panel-heading"><div><span className="reports-eyebrow">Leitura rápida</span><h3>O que o período revela</h3></div><CircleDollarSign size={22} className="panel-heading-icon" /></div><div className="insights-list">{insights.map((insight) => <div className="insight-row" key={insight.label}><span className={`insight-dot insight-dot--${insight.tone}`} /><div><span>{insight.label}</span><strong>{insight.value}</strong>{insight.categoryName && <small><CategoryLabel name={insight.categoryName} /></small>}<small>{insight.detail}</small></div></div>)}</div><div className="positive-callout"><TrendingUp size={18} /><span>{message}</span></div></article>;
 }
 
 function ReportActions({ onChangeFilters, onExport }) {

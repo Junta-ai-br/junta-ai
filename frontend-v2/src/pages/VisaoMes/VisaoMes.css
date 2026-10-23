@@ -66,3 +66,11 @@
 .finance-page button:disabled { opacity: .55; cursor: not-allowed; }
 .finance-chart-caption { margin: 12px 5vw 0; font-size: .85rem; opacity: .75; }
 @media (max-width: 760px) { .finance-header { flex-wrap: wrap; padding: 16px; }.finance-header-actions { width: 100%; margin-left: 0; justify-content: space-between; }.finance-kpis { grid-template-columns: repeat(2, 1fr); padding: 16px; }.finance-tabs, .finance-content { padding-left: 16px; padding-right: 16px; overflow-x: auto; }.finance-tabs { white-space: nowrap; }.finance-grid { grid-template-columns: 1fr; }.category-management-row { grid-template-columns: minmax(0, 1fr) auto; }.category-management-row > div { grid-column: 1 / -1; } }
+
+.transaction { flex-wrap: wrap; }
+.transaction > div:first-of-type { min-width: 0; }
+.transaction > b { flex: 0 0 auto; white-space: nowrap; }
+.transaction small { overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .transaction-actions { flex-basis: 100% !important; justify-content: flex-end; }
+}

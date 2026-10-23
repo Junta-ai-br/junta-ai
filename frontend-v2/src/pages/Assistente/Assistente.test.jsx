@@ -113,6 +113,9 @@ describe("official monthly assistant panel", () => {
     mount();
     expect(await screen.findByText("Receita oficial")).toBeInTheDocument();
     expect(screen.getByText("Despesa oficial")).toBeInTheDocument();
+    const info = screen.getByText("Receita oficial").closest(".assistant__transaction-info");
+    expect(info.querySelector("strong .category-label")).toBeVisible();
+    expect(info.querySelector("strong")).toHaveTextContent(category.name);
     expect(summary().getByText("R$ 1.234,56")).toBeInTheDocument();
     expect(summary().getByText("R$ 0,01")).toBeInTheDocument();
     expect(summary().getByText("R$ 1.234,55")).toBeInTheDocument();

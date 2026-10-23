@@ -1,3 +1,4 @@
+import CategoryLabel from "@/components/finance/CategoryLabel";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Dialog } from "radix-ui";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -106,7 +107,7 @@ export default function VisaoMes({ title = "Visão do mês", variant = "month" }
           {!visible.length && <p role="status">Nenhuma transação nesta categoria ou período.</p>}
           <div className="transaction-list">{visible.map((item) => <div className="transaction" key={item.id}>
             <span className="transaction-icon" aria-hidden="true">{item.type === "INCOME" ? "↗" : "↘"}</span>
-            <div><strong>{item.description || "Sem descrição"}</strong><small>{dateBR(item.transactionDate)} · {item.categoryName}</small></div>
+            <div><strong><CategoryLabel name={item.categoryName} /></strong><small>{dateBR(item.transactionDate)} · <span>{item.description || "Sem descrição"}</span></small></div>
             <b className={item.type === "INCOME" ? "income" : "expense"}>{formatMoneyBRL(item.signedAmount)}</b>
             <div className="transaction-actions"><button type="button" disabled={writeBlocked} aria-label={`Editar ${item.description || "lançamento"}`} onClick={(event) => open(event, "transaction", item.id)}>Editar</button><button type="button" disabled={writeBlocked} aria-label={`Excluir ${item.description || "lançamento"}`} onClick={(event) => open(event, "deleteTransaction", item.id)}>Excluir</button></div>
           </div>)}</div>

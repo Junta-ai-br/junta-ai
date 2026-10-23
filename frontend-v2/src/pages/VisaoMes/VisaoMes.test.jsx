@@ -135,3 +135,27 @@ describe("real finance cutover", () => {
     expect(calls.filter((call) => call.method === "post" && call.url === "/transactions")).toHaveLength(1);
   });
 });
+
+
+it.each(["light", "dark"])("renders category titles and original details with income/expense direction in %s mode", async (theme) => {
+  localStorage.setItem("theme", theme);
+  accounts.A.categories = [{ ...cat, name: "Sal\u00e1rio" }, { ...cat, id, name: "Transporte" }];
+  accounts.A.transactions = [
+    { ...entry, categoryName: "Sal\u00e1rio", description: "recebi salario 100" },
+    { ...entry, id, categoryId: id, categoryName: "Transporte", description: "paguei uber 25 reais", type: "EXPENSE", amount: "25.00" },
+  ];
+  saveSession(tokens("A"));
+  const user = userEvent.setup();
+  const { container } = renderWithFinanceProvider(<AppRoutes />, { route: "/visao-mes" });
+  await waitFor(() => kpi("Saldo", "R$ 75,00"));
+  await user.click(screen.getByRole("button", { name: "Transa\u00e7\u00f5es" }));
+  const list = container.querySelector(".transaction-list");
+  expect(within(list).getByText("Sal\u00e1rio").closest("strong")).toHaveTextContent("\ud83d\udcbc");
+  expect(within(list).getByText("Transporte").closest("strong")).toHaveTextContent("\ud83d\ude97");
+  expect(within(list).getByText("recebi salario 100")).toBeInTheDocument();
+  expect(within(list).getByText("paguei uber 25 reais")).toBeInTheDocument();
+  expect(list.querySelector(".income")).toHaveTextContent("100,00");
+  expect(list.querySelector(".expense")).toHaveTextContent("-R$");
+  expect(list.querySelector(".expense")).toHaveTextContent("25,00");
+  expect(accounts.A.transactions[1].description).toBe("paguei uber 25 reais");
+});
