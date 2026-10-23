@@ -1462,7 +1462,7 @@
   text-overflow: ellipsis;
 }
 
-.assistant__transaction-info span {
+.assistant__transaction-info > span {
   color: var(--text-tertiary);
 
   font-size: 0.72rem;

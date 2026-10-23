@@ -79,6 +79,8 @@ describe("Relatorios with real transactions", () => {
     expect(container.querySelector(".metric-card--green b")).toHaveTextContent("+100,0%");
     expect(screen.getByText("Salário real")).toBeInTheDocument();
     expect(screen.getByText("Aluguel real")).toBeInTheDocument();
+    expect(container.querySelector(".insights-list .category-label")).toBeInTheDocument();
+    expect(container.querySelector(".insights-list")).toHaveTextContent("\ud83c\udfe0");
     expect(screen.getByText("2 lançamentos")).toBeInTheDocument();
     expect(calls).toHaveLength(2);
     expect(calls[0]).toMatchObject({ method: "get", url: "/transactions", requiresAuth: true,

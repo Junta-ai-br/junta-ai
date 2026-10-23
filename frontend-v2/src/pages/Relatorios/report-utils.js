@@ -96,8 +96,8 @@ export function buildReport(transactions, range, previousRange) {
     },
     chart: activeWeeks,
     insights: [
-      { label: "Maior receita", value: biggestIncome ? formatCurrency(biggestIncome.amount) : formatCurrency(0), detail: biggestIncome?.desc || "Nenhuma entrada", tone: "positive" },
-      { label: "Maior despesa", value: biggestExpense ? formatCurrency(Math.abs(biggestExpense.amount)) : formatCurrency(0), detail: biggestExpense?.desc || "Nenhuma saída", tone: "negative" },
+      { label: "Maior receita", value: biggestIncome ? formatCurrency(biggestIncome.amount) : formatCurrency(0), ...(biggestIncome?.category ? { categoryName: biggestIncome.category } : {}), detail: biggestIncome?.desc || "Nenhuma entrada", tone: "positive" },
+      { label: "Maior despesa", value: biggestExpense ? formatCurrency(Math.abs(biggestExpense.amount)) : formatCurrency(0), ...(biggestExpense?.category ? { categoryName: biggestExpense.category } : {}), detail: biggestExpense?.desc || "Nenhuma saída", tone: "negative" },
       { label: "Total de movimentações", value: `${current.length} lançamentos`, detail: `${current.filter((item) => item.amount > 0).length} entradas · ${current.filter((item) => item.amount < 0).length} saídas`, tone: "neutral" },
     ],
     hasTransactions: current.length > 0,

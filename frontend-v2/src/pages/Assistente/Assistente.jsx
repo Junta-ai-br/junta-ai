@@ -1,3 +1,4 @@
+import CategoryLabel from "@/components/finance/CategoryLabel";
 import { Link } from "react-router-dom";
 import {
   TrendingDown,
@@ -334,13 +335,9 @@ export default function Assistente({
 
                       <div className="assistant__transaction-info">
 
-                        <strong>
-                          {transaction.description}
-                        </strong>
+                        <strong><CategoryLabel name={transaction.category} /></strong>
 
-                        <span>
-                          {transaction.category}
-                        </span>
+                        <span>{transaction.description}</span>
 
                       </div>
 
