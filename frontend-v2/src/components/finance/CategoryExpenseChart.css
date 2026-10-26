@@ -1,0 +1,43 @@
+﻿.category-expense-hint,
+.category-expense-empty {
+  margin-bottom: var(--spacing-16);
+  color: var(--text-secondary);
+  font-size: var(--font-small);
+}
+
+.category-expense-viewport {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+.category-expense-plot {
+  width: 100%;
+  height: clamp(320px, 32vw, 400px);
+}
+
+.category-expense-tooltip {
+  max-width: min(280px, 75vw);
+  padding: var(--spacing-12);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-small);
+  overflow-wrap: anywhere;
+}
+
+.category-expense-tooltip strong { display: block; margin-bottom: var(--spacing-8); }
+.category-expense-tooltip p { font-size: inherit; font-variant-numeric: tabular-nums; }
+
+/* Keep the tooltip outside the scroll area so it stays visible at either end. */
+.category-expense-body { position: relative; }
+.category-expense-tooltip-layer { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.category-expense-tooltip-layer .recharts-tooltip-wrapper {
+  position: absolute;
+  top: var(--spacing-8);
+  right: var(--spacing-8);
+  width: min(280px, calc(100% - 16px));
+}
+.category-expense-tooltip-layer .category-expense-tooltip { max-width: 100%; }
