@@ -1,3 +1,4 @@
+import { categoryColor } from "@/utils/category-colors";
 import CategoryLabel from "@/components/finance/CategoryLabel";
 import { Link } from "react-router-dom";
 import {
@@ -60,11 +61,10 @@ export default function Assistente({
   const balance = summary?.balanceCents;
   const balanceClass = balance > 0n ? "assistant__summary-value--positive"
     : balance < 0n ? "assistant__summary-value--negative" : "assistant__summary-value--neutral";
-  const colors = ["#7c3aed", "#00a873", "#e07a15", "#cd537a", "#3589cb"];
   const categoryData = groupByCategoryId(transactions).filter((item) => item.expensesCents > 0n)
     .sort((a, b) => a.expensesCents > b.expensesCents ? -1 : a.expensesCents < b.expensesCents ? 1 : a.categoryId.localeCompare(b.categoryId))
-    .map((item, index) => ({ ...item, name: finance.categories.find((category) => category.id.toLowerCase() === item.categoryId.toLowerCase())?.name,
-      color: colors[index % colors.length], emoji: "↘",
+    .map((item) => ({ ...item, name: finance.categories.find((category) => category.id.toLowerCase() === item.categoryId.toLowerCase())?.name,
+      color: categoryColor(item.categoryId), emoji: "↘",
       percentage: Number(item.expensesCents * 1000n / summary.expensesCents) / 10 }));
   const monthlyBalanceClass = balance < 0n ? "assistant__widget-month-value--negative" : "assistant__widget-month-value--positive";
   const monthlyBalanceFormatted = money(summary?.balance);
