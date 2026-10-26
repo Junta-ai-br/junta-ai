@@ -11,7 +11,7 @@ export function resourcePath(base, id) {
   return `${base}/${encodeURIComponent(id)}`;
 }
 
-export async function resourceRequest(method, url, { data, params, validate, transformRequest, transformResponse, signal, sessionGeneration } = {}) {
+export async function resourceRequest(method, url, { data, params, headers, validate, transformRequest, transformResponse, signal, sessionGeneration } = {}) {
   // Axios request interceptors run asynchronously. Check again at dispatch time,
   // before serialization/adapter, so an old command cannot be sent as a new user.
   const generationGuard = (body) => {
@@ -20,7 +20,7 @@ export async function resourceRequest(method, url, { data, params, validate, tra
     }
     return body;
   };
-  const response = await api.request({ method, url, data, params, requiresAuth: true,
+  const response = await api.request({ method, url, data, params, headers, requiresAuth: true,
     ...(sessionGeneration ? { transformRequest: [generationGuard, ...(transformRequest ? [transformRequest] : api.defaults.transformRequest)] }
       : transformRequest ? { transformRequest } : {}),
     ...(signal ? { signal } : {}),
