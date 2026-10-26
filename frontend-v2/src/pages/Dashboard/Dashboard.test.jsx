@@ -24,6 +24,7 @@ describe("real Dashboard", () => {
     renderWithFinanceProvider(<AppRoutes />, { route: "/Dashboard/" });
     await waitFor(() => expect(within(screen.getByText("Saldo").closest("article")).getByText("-R$ 99.999.999.999.999.999,99")).toBeInTheDocument());
     expect(screen.queryByRole("textbox", { name: "Mensagem" })).not.toBeInTheDocument();
-    expect(screen.getByText(/chat deste painel ainda não está conectado/)).toBeInTheDocument();
+    expect(screen.queryByText(/chat deste painel ainda não está conectado/)).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Abrir Assistente" })).toHaveAttribute("href", "/assistente");
   });
 });

@@ -9,7 +9,7 @@ describe("AuthHeader", () => {
     renderWithFinanceProvider(<AuthHeader activePath="/dashboard" />);
 
     expect(screen.getByRole("navigation", { name: "Navegação principal" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Planejador" })).toHaveAttribute("href", "/planejador");
     expect(screen.getByRole("link", { name: "Relatórios" })).toBeInTheDocument();
 
@@ -21,6 +21,20 @@ describe("AuthHeader", () => {
     expect(screen.getByRole("menuitem", { name: "Sair" })).toHaveAttribute("href", "/");
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
+  it("opens and closes responsive navigation with Escape and restores focus", () => {
+    const { container } = renderWithFinanceProvider(<AuthHeader activePath="/dashboard" />);
+    // jsdom does not evaluate viewport media queries. Exercise the mobile control directly.
+    const toggle = container.querySelector("button[aria-controls]");
+    toggle.style.display = "flex";
+    const navigation = screen.getByRole("navigation");
+    expect(toggle).toHaveAttribute("aria-controls", navigation.id);
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveFocus();
   });
 
   it("renders finance actions and dispatches category creation", () => {

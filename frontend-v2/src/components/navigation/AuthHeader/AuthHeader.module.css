@@ -48,6 +48,9 @@
   font-weight: var(--font-medium);
   line-height: 1;
   text-decoration: none;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  flex-shrink: 0;
   transition: color var(--transition-fast) var(--ease-standard), background-color var(--transition-fast) var(--ease-standard), border-color var(--transition-fast) var(--ease-standard);
 }
 
@@ -79,10 +82,11 @@
 
 .categoryButton {
   padding: 9px 12px;
-  border: 1px solid var(--finance-border);
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   background: transparent;
-  color: var(--finance-text);
+  color: var(--text-primary);
+  white-space: nowrap;
   font-weight: 600;
   cursor: pointer;
 }
@@ -276,4 +280,43 @@
   .user { display: none; }
   .menuToggle { display: flex; }
   .navbarActions { margin-left: auto; }
+}
+
+/* Finance controls get a dedicated row instead of compressing navigation links. */
+.navbarFinance .navbarInner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--spacing-12) var(--spacing-24);
+  padding-block: var(--spacing-12);
+}
+.navbarFinance .logo { grid-column: 1; grid-row: 1; }
+.navbarFinance .navigation { grid-column: 2; grid-row: 1; }
+.navbarFinance .navbarActions { grid-column: 3; grid-row: 1; margin-left: 0; }
+.navbarFinance .financeActions {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: var(--spacing-12);
+  border-top: 1px solid var(--border);
+}
+.categoryButton:hover { background: var(--surface-selected); border-color: var(--brand-primary); }
+.categoryButton:active { background: var(--surface-active); }
+
+@media (max-width: 1100px) and (min-width: 769px) {
+  .navbarFinance .navbarInner { column-gap: var(--spacing-16); }
+  .navbarFinance .navLink { padding-inline: 0.7rem; font-size: var(--font-small); }
+  .navbarFinance .userName { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; }
+}
+
+@media (max-width: 768px) {
+  .navbarFinance .navbarInner { grid-template-columns: 1fr auto; gap: var(--spacing-12); }
+  .navbarFinance .navbarActions { grid-column: 2; }
+  .navbarFinance .navigation { margin: 0; }
+  .navbarFinance .financeActions { justify-content: space-between; }
+}
+
+@media (max-width: 480px) {
+  .navbarFinance .financeActions > div { flex-basis: 100%; }
+  .navbarFinance .financeActions > div > button { width: 100%; }
 }

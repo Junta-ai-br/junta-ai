@@ -1,5 +1,5 @@
 import { revokeRefreshToken } from "@/services/auth/logout";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, LogOut, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -23,6 +23,8 @@ export default function AuthHeader({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const menuToggleRef = useRef(null);
+  const navigationId = useId();
   const { theme } = useTheme();
   const { profile, endSession } = useUser();
   const user = {
@@ -32,11 +34,11 @@ export default function AuthHeader({
   const logo = theme === THEMES.DARK ? logoHorizontalBranca : logoHorizontalPreta;
   const isFinanceVariant = variant === "finance";
   const financeTokens = {
-    surface: theme === THEMES.DARK ? "#111827" : "#ffffff",
-    border: theme === THEMES.DARK ? "#2d3748" : "#e5e7eb",
-    text: theme === THEMES.DARK ? "#f3f4f6" : "#111827",
-    textMuted: theme === THEMES.DARK ? "#cbd5e1" : "#4b5563",
-    inputBg: theme === THEMES.DARK ? "#0f172a" : "#f3f4f6",
+    surface: "var(--surface)",
+    border: "var(--border)",
+    text: "var(--text-primary)",
+    textMuted: "var(--text-secondary)",
+    inputBg: "var(--surface-elevated)",
   };
 
   useEffect(() => {
@@ -44,7 +46,11 @@ export default function AuthHeader({
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) setIsUserMenuOpen(false);
     };
     const closeOnEscape = (event) => {
-      if (event.key === "Escape") setIsUserMenuOpen(false);
+      if (event.key === "Escape") {
+        setIsUserMenuOpen(false);
+        if (menuToggleRef.current?.getAttribute("aria-expanded") === "true") menuToggleRef.current.focus();
+        setIsMenuOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", closeUserMenu);
@@ -65,30 +71,28 @@ export default function AuthHeader({
   const linkClass = (path) => `${styles.navLink}${activePath === path ? ` ${styles.navLinkActive}` : ""}`;
 
   return (
-    <header className={styles.navbar}>
+    <header className={`${styles.navbar}${isFinanceVariant ? ` ${styles.navbarFinance}` : ""}`}>
       <div className={styles.navbarInner}>
         <Link to="/assistente" className={styles.logo} aria-label="Junta.ai - Assistente" onClick={closeMenu}>
           <img src={logo} alt="Junta.ai" />
         </Link>
 
-        <nav className={`${styles.navigation}${isMenuOpen ? ` ${styles.navigationOpen}` : ""}`} aria-label="Navegação principal">
-          <Link to="/assistente" className={linkClass("/assistente")} onClick={closeMenu}>Assistente</Link>
-          <Link to="/dashboard" className={linkClass("/dashboard")} onClick={closeMenu}>Dashboard</Link>
-          <Link to="/planejador" className={linkClass("/planejador")} onClick={closeMenu}>Planejador</Link>
-          <Link to="/relatorios" className={linkClass("/relatorios")} onClick={closeMenu}>Relatórios</Link>
+        <nav id={navigationId} className={`${styles.navigation}${isMenuOpen ? ` ${styles.navigationOpen}` : ""}`} aria-label="Navegação principal">
+          <Link to="/assistente" className={linkClass("/assistente")} aria-current={activePath === "/assistente" ? "page" : undefined} onClick={closeMenu}>Assistente</Link>
+          <Link to="/dashboard" className={linkClass("/dashboard")} aria-current={activePath === "/dashboard" ? "page" : undefined} onClick={closeMenu}>Dashboard</Link>
+          <Link to="/planejador" className={linkClass("/planejador")} aria-current={activePath === "/planejador" ? "page" : undefined} onClick={closeMenu}>Planejador</Link>
+          <Link to="/relatorios" className={linkClass("/relatorios")} aria-current={activePath === "/relatorios" ? "page" : undefined} onClick={closeMenu}>Relatórios</Link>
           <Link to="/perfil" className={`${styles.navLink} ${styles.navLinkMobileOnly}`} onClick={closeMenu}>Perfil</Link>
           <Link to="/" className={`${styles.logout} ${styles.logoutMobileOnly}`} onClick={handleLogout}><LogOut size={16} /><span>Sair</span></Link>
         </nav>
 
-        <div className={styles.navbarActions}>
-          {isFinanceVariant && (
+        {isFinanceVariant && (
             <div className={styles.financeActions}>
               {onAddCategory && (
                 <button
                   type="button"
                   onClick={onAddCategory}
                   className={styles.categoryButton}
-                  style={{ "--finance-border": financeTokens.border, "--finance-text": financeTokens.text }}
                 >
                   ＋ Categoria
                 </button>
@@ -100,6 +104,7 @@ export default function AuthHeader({
             </div>
           )}
 
+        <div className={styles.navbarActions}>
           <ThemeSwitch />
 
           <div className={styles.userMenu} ref={userMenuRef}>
@@ -115,7 +120,7 @@ export default function AuthHeader({
             </div>}
           </div>
 
-          <button type="button" className={styles.menuToggle} aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={isMenuOpen} onClick={() => setIsMenuOpen((current) => !current)}>
+          <button type="button" ref={menuToggleRef} className={styles.menuToggle} aria-controls={navigationId} aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={isMenuOpen} onClick={() => setIsMenuOpen((current) => !current)}>
             {isMenuOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
         </div>

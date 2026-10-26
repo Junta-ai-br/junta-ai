@@ -1,20 +1,37 @@
 .dashboard-chat {
-  padding: 0 5vw 36px;
+  width: min(1232px, calc(100% - 2 * clamp(1rem, 4vw, 4rem)));
+  margin: 0 auto var(--spacing-48);
+  padding: var(--spacing-24);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-16);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-small);
 }
 
 .dashboard-chat__title {
-  margin: 0 0 12px;
+  margin-bottom: var(--spacing-8);
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-semibold);
 }
 
-.dashboard-chat .assistant__conversation {
-  height: 360px;
-  min-height: 360px;
+.dashboard-chat__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12) var(--spacing-16);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--brand-primary);
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
 }
 
-@media (max-width: 760px) {
-  .dashboard-chat {
-    padding: 0 16px 24px;
-  }
-}
+.dashboard-chat__link:hover { background: var(--surface-selected); border-color: var(--brand-primary); }
