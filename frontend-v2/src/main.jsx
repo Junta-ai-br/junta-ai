@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import AppProviders from "./app/providers";
 import { startSessionRenewal } from "./services/auth/refresh";
+import "./services/uncertain-attempt";
 
 import "./styles/global.css";
 

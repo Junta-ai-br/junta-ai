@@ -35,7 +35,7 @@ describe("real conversation lifecycle", () => {
     expect(posts()).toHaveLength(1); expect(posts()[0].url).toBe(`/conversations/${conversation.id}/messages`);
     expect(posts()[0].headers.get("Authorization")).toBe("Bearer same");
     expect(posts()[0].headers.get("Idempotency-Key")).toMatch(/^[0-9a-f-]{36}$/);
-    expect(posts()[0].timeout).toBe(65000); expect(storage).not.toHaveBeenCalled();
+    expect(posts()[0].timeout).toBe(65000); expect(storage.mock.calls.every(([key]) => ["junta_attempt_session", "junta_uncertain_chat"].includes(key))).toBe(true);
   });
   it("creates a conversation lazily and blocks concurrent Enter/click submissions", async () => {
     transport = async (config) => response(config, config.method === "post" ? config.url === "/conversations" ? conversation : reply() : []);

@@ -16,6 +16,8 @@ import { formatMoneyBRL } from "@/services/finance/signed-money";
 import useAssistantConversation from "@/hooks/useAssistantConversation";
 import useHealthScore from "@/hooks/useHealthScore";
 import FinancialHealthCard from "@/components/finance/FinancialHealthCard";
+import GoalsCard from "@/components/finance/GoalsCard";
+import useGoals from "@/hooks/useGoals";
 
 import "./Assistente.css";
 
@@ -31,8 +33,11 @@ export default function Assistente({
      ========================================================================== */
 
   const finance = useCanonicalFinance();
-  const conversation = useAssistantConversation({ refreshFinancialData: finance.reload });
-  const waitingForChat = conversation.isTyping || conversation.isReconciling || !!conversation.recovery;
+  const goals = useGoals();
+  const conversation = useAssistantConversation({ refreshFinancialData: async () => {
+    await Promise.all([finance.reload(), goals.reload()]);
+  } });
+  const waitingForChat = conversation.isTyping || conversation.isReconciling || (!!conversation.recovery && !conversation.recovery.reloaded);
   const covered = !waitingForChat && !finance.refreshRequired
     && ["success", "empty"].includes(finance.status) && finance.coverage?.complete === true;
   const transactions = covered ? finance.transactions : [];
@@ -213,13 +218,7 @@ export default function Assistente({
 
           {/* Metas */}
 
-          <section className="assistant__widget assistant__widget--goals">
-            <div className="assistant__widget-header"><div>
-              <span className="assistant__widget-label">Metas</span>
-              <h2 className="assistant__widget-title">Indisponível</h2>
-            </div></div>
-            <p className="assistant__widget-caption">As metas ainda não estão integradas neste painel.</p>
-          </section>
+          <GoalsCard model={goals} waiting={waitingForChat} />
 
           {/* Saúde Financeira */}
 
