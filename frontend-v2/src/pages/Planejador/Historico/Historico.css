@@ -603,3 +603,13 @@
     transition: none !important;
   }
 }
+.planner-goal-import { margin-top: 14px; min-width: 0; }
+.planner-goal-import__form { display: grid; gap: 10px; padding: 14px 0; }
+.planner-goal-import__form p { margin: 0; overflow-wrap: anywhere; }
+.planner-goal-import__form label { display: grid; gap: 6px; }
+.planner-goal-import__form input[type="date"] { width: 100%; max-width: 280px; min-width: 0; box-sizing: border-box; padding: 9px; border: 1px solid var(--border-color, #64748b); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+.planner-goal-import__form .planner-goal-import__consent { display: flex; align-items: flex-start; gap: 8px; }
+.planner-goal-import__buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.planner-goal-import button:disabled { opacity: .5; cursor: default; }
+.planner-goal-import [role="alert"] { color: var(--text-error, #e66b6b); }
+@media (max-width: 480px) { .planner-goal-import__form input[type="date"] { font-size: 16px; } }

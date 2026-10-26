@@ -18,6 +18,7 @@ import {
 } from "@/services/planner/store";
 
 import "./Historico.css";
+import PlannerGoalImport from "./PlannerGoalImport";
 
 function formatCurrency(value) {
   if (!Number.isFinite(Number(value))) {
@@ -329,6 +330,8 @@ function HistoryContent() {
                       </button>
                     </div>
                   </div>
+
+                  <PlannerGoalImport simulation={simulation} disabled={deleting.includes(simulation.id)} />
 
                   {isExpanded && (
                     <div className="planner-history-card__details-content">
