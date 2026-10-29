@@ -46,6 +46,28 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); clearSession(); vi.restoreAllMocks(); });
 describe("Assistente real chat", () => {
+  it("reloads persisted goal progress after a confirmed conversational withdrawal", async () => {
+    const user = userEvent.setup();
+    const goal = { id: "11111111-1111-4111-8111-111111111111", name: "Viagem", targetAmount: 200, currentAmount: 100, deadline: null, status: "IN_PROGRESS" };
+    api.defaults.adapter = async (config) => {
+      requests.push(config);
+      if (config.url === "/goals") return response(config, [goal]);
+      if (config.method === "post" && config.url.endsWith("/messages")) {
+        goal.currentAmount = 50;
+        return response(config, { conversationId: conversation.id, actionExecuted: true, userMessage,
+          assistantMessage: { ...assistantMessage, content: "Registrado: retirada da meta." } });
+      }
+      return financialResponse(config) ?? response(config, config.url === "/conversations" ? [conversation] : []);
+    };
+    mount();
+    const card = within(await screen.findByRole("region", { name: "Minhas metas" }));
+    expect(await card.findByText("R$ 100,00")).toBeInTheDocument();
+    await user.type(screen.getByRole("textbox", { name: "Mensagem" }), "Tirei 50 reais da minha meta de viagem.");
+    await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
+    expect(await card.findByText("R$ 50,00")).toBeInTheDocument();
+    expect(requests.filter((r) => r.url === "/goals" && r.method === "get").length).toBeGreaterThanOrEqual(2);
+    expect(requests.filter((r) => r.method === "post").map((r) => r.url)).toEqual([`/conversations/${conversation.id}/messages`]);
+  });
   it("preserves embedded layout and displays backend confirmation without another financial write", async () => {
     const user = userEvent.setup();
     const { container } = renderWithFinanceProvider(<Assistente variant="embedded" className="test-chat" height={280} width={420} />, { route: "/assistente" });
