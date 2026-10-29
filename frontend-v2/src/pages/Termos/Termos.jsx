@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/utils/institutional-contacts";
 import "./Termos.css";
 
 function Termos() {
@@ -262,7 +263,7 @@ function Termos() {
             <strong>14.Contato e legislação aplicável:</strong>
 
             Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de Rio de Janeiro/RJ para dirimir quaisquer questões relativas a estes termos, com renúncia expressa a qualquer outro, por mais privilegiado que seja. 
-            Em caso de dúvidas, sugestões ou reclamações, entre em contato conosco através do e-mail: contato@junta.ai. 
+            Em caso de dúvidas, sugestões ou reclamações, entre em contato conosco através do e-mail: {CONTACT_EMAIL}.
           </p>
 
         </div>

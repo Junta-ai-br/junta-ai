@@ -1,3 +1,4 @@
+import { SECURITY_EMAIL } from "@/utils/institutional-contacts";
 import "./Privacidade.css";
 
 function Privacidade() {
@@ -84,7 +85,7 @@ function Privacidade() {
               Excluir seus dados pessoais: Solicitar a exclusão de seus dados pessoais, desde que não haja uma obrigação legal para sua retenção.
               Revogar o consentimento: Revogar o consentimento para o tratamento de dados pessoais, quando aplicável.
 
-              Para exercer qualquer um desses direitos, entre em contato conosco através do e-mail: contato@juntaai.com.br
+              Para exercer qualquer um desses direitos, entre em contato conosco através do e-mail: {SECURITY_EMAIL}
             </p>
 
             <p className="page__section-title">
@@ -108,7 +109,7 @@ function Privacidade() {
             </p>
 
             <p>
-              Se você tiver dúvidas ou preocupações sobre esta Política de Privacidade ou sobre o tratamento dos seus dados pessoais, entre em contato conosco através do e-mail: contato@juntaai.com.br
+              Se você tiver dúvidas ou preocupações sobre esta Política de Privacidade ou sobre o tratamento dos seus dados pessoais, entre em contato conosco através do e-mail: {SECURITY_EMAIL}
             </p>
           </section>
         </div>

@@ -4,6 +4,7 @@ import Logo from "@/components/branding/logo";
 
 import { useTheme } from "@/contexts/useTheme";
 import { THEMES } from "@/utils/theme";
+import { CONTACT_EMAIL } from "@/utils/institutional-contacts";
 
 import footerColumns from "./footerColumns";
 
@@ -19,7 +20,7 @@ function GithubIcon({ size = 18 }) {
 
 const socialLinks = [
   { label: "GitHub", href: "https://github.com/Junta-ai-br/junta-ai", icon: GithubIcon },
-  { label: "E-mail", href: "mailto:contato.junta.ai@gmail.com", icon: Mail },
+  { label: "E-mail", href: `mailto:${CONTACT_EMAIL}`, icon: Mail },
 ];
 
 function scrollToTop() {
