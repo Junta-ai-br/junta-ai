@@ -40,6 +40,22 @@ function Location() {
 }
 
 describe("route protection", () => {
+  it.each([
+    ["/contato", /Conte no que podemos te ajudar/, null],
+    ["/privacidade", /Política de Privacidade/, "seguranca@junta-ai.com"],
+    ["/termos", /Termos de Uso/, "contato@junta-ai.com"],
+  ])("uses the institutional contact for %s and the general footer", async (route, heading, email) => {
+    renderWithFinanceProvider(<AppRoutes />, { route });
+    const page = (await screen.findByRole("heading", { name: heading })).closest("main");
+    const footer = screen.getByRole("contentinfo");
+    expect(within(footer).getByRole("link", { name: "E-mail" }))
+      .toHaveAttribute("href", "mailto:contato@junta-ai.com");
+    if (email) expect(page).toHaveTextContent(email);
+    if (route === "/privacidade") {
+      expect(page.textContent.match(/seguranca@junta-ai\.com/g)).toHaveLength(2);
+    }
+  });
+
   it("shows one registration introduction with all initial fields", async () => {
     renderWithFinanceProvider(<AppRoutes />, { route: "/cadastro" });
     await screen.findByRole("heading", { level: 1, name: "Vamos começar?" });
