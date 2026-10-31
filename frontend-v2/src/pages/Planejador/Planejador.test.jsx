@@ -141,21 +141,49 @@ describe("Planner actions", () => {
     await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Salvar simulação" })); });
     expect(loadPlannerSimulations()[0].simulation).toEqual({ monthlyAmount: 0.01, estimatedMonths: 1 });
   });
-  it("uses real financial updates when changing the selected period", async () => {
+  it.each([
+    { reference: [2026, 9, 19], from: "2026-09-20", to: "2026-10-19", before: "2026-09-19", after: "2026-10-20" },
+    { reference: [2026, 9, 31], from: "2026-10-02", to: "2026-10-31", before: "2026-10-01", after: "2026-11-01" },
+    { reference: [2026, 2, 1], from: "2026-01-31", to: "2026-03-01", before: "2026-01-30", after: "2026-03-02" },
+    { reference: [2028, 2, 1], from: "2028-02-01", to: "2028-03-01", before: "2028-01-31", after: "2028-03-02" },
+  ])("uses real financial updates when changing the selected period ($to)", async ({ reference, from, to, before, after }) => {
+    vi.setSystemTime(new Date(...reference, 12));
+    saveSession({ accessToken: "planner-test", refreshToken: "refresh", expiresInSeconds: 3600 });
     await setup(true);
-    const now = new Date();
-    const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+    expect(screen.getByRole("slider")).toHaveValue("3000");
+    // A month-start fixture falls outside the last 30 days on the 31st.
+    // Cover both inclusive boundaries and reject records outside the selected range.
     loadPlannerTransactions.mockResolvedValue([
-      { date, amount: 5000, category: "Renda" },
-      { date, amount: -1000, category: "Moradia" },
+      { date: from, amount: 5000, category: "Renda" },
+      { date: to, amount: -1000, category: "Moradia" },
+      { date: before, amount: 9000, category: "Renda" },
+      { date: after, amount: -8000, category: "Moradia" },
     ]);
     fireEvent.click(screen.getByRole("button", { name: /ltimos 30 dias/ }));
     await act(async () => {});
+    expect(loadPlannerTransactions).toHaveBeenLastCalledWith(expect.objectContaining({ from, to }));
     fireEvent.click(screen.getByRole("button", { name: /Criar planejamento/ }));
     act(() => vi.advanceTimersByTime(400));
     expect(screen.getByRole("slider")).toHaveValue("4000");
     await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Salvar simulação" })); });
     expect(loadPlannerSimulations()[0].historyContext).toMatchObject({ income: 5000, available: 4000 });
+  });
+  it("uses the goal reference when month-start records are outside the last 30 days", async () => {
+    vi.setSystemTime(new Date(2026, 9, 31, 12));
+    saveSession({ accessToken: "planner-test", refreshToken: "refresh", expiresInSeconds: 3600 });
+    await setup(true);
+    loadPlannerTransactions.mockResolvedValue([
+      { date: "2026-10-01", amount: 5000, category: "Renda" },
+      { date: "2026-10-01", amount: -1000, category: "Moradia" },
+    ]);
+    fireEvent.click(screen.getByRole("button", { name: /ltimos 30 dias/ }));
+    await act(async () => {});
+    expect(loadPlannerTransactions).toHaveBeenLastCalledWith(expect.objectContaining({ from: "2026-10-02", to: "2026-10-31" }));
+    fireEvent.click(screen.getByRole("button", { name: /Criar planejamento/ }));
+    act(() => vi.advanceTimersByTime(400));
+    expect(screen.getByRole("slider")).toHaveValue("1000");
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Salvar simulação" })); });
+    expect(loadPlannerSimulations()[0]).toMatchObject({ period: { type: "no_history" }, historyContext: null });
   });
   it("uses the current partial month and two previous months divided by three", async () => {
     vi.setSystemTime(new Date(2026, 9, 19, 12));
