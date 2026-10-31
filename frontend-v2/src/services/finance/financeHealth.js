@@ -21,7 +21,7 @@ export function isOfficialHealthScore(value, period) {
 }
 
 // Preserve exact monetary lexemes, including zero and negative balances. No score arithmetic here.
-function decodeDashboard(raw) {
+export function decodeDashboard(raw) {
   if (typeof raw !== "string") throw new FinancialContractError("Expected dashboard JSON.");
   JSON.parse(raw);
   let monetary = false;
@@ -31,7 +31,7 @@ function decodeDashboard(raw) {
       return JSON.stringify(normalizeSignedMoney(token));
     }
     if (token.startsWith('"') && /^\s*:/.test(raw.slice(offset + token.length))) {
-      monetary = ["totalIncome", "totalExpense", "balance"].includes(JSON.parse(token));
+      monetary = ["totalIncome", "totalExpense", "balance", "saved"].includes(JSON.parse(token));
     }
     return token;
   }));

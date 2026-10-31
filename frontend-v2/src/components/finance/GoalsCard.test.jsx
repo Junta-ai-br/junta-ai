@@ -5,6 +5,16 @@ import GoalsCard from "./GoalsCard";
 const goal = { id: "g", name: "Viagem", targetAmount: "100.00", currentAmount: "25.00", status: "IN_PROGRESS", deadline: null };
 const model = (props = {}) => ({ owner: Symbol(), status: "success", goals: [goal], create: vi.fn().mockResolvedValue(true), remove: vi.fn(), reload: vi.fn().mockResolvedValue(), retry: vi.fn(), ...props });
 describe("goals card", () => {
+  it("shows remaining, percentage and funded deletion protection", () => {
+    const data = model(); const view = render(<GoalsCard model={data} />);
+    expect(screen.getByText("Faltam R$ 75,00")).toBeInTheDocument();
+    expect(screen.getByText("25% concluído")).toBeInTheDocument();
+    expect(screen.getByLabelText("Excluir meta Viagem")).toBeDisabled();
+    view.rerender(<GoalsCard model={{ ...data, goals: [{ ...goal, currentAmount: "110.00", status: "COMPLETED" }] }} />);
+    expect(screen.getByText("Faltam R$ 0,00")).toBeInTheDocument();
+    expect(screen.getByText("100% concluído")).toBeInTheDocument();
+    expect(screen.getByText("Concluída")).toBeInTheDocument();
+  });
   it("requires explicit confirmation to dismiss a restored uncertain result", () => {
     const data = model({ pending: { reloaded: true }, discardUncertain: vi.fn() });
     const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
@@ -18,9 +28,9 @@ describe("goals card", () => {
     expect(data.discardUncertain).toHaveBeenCalledTimes(1);
   });
   it("shows exact progress and requires confirmation to delete", () => {
-    const data = model(); const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    const data = model({ goals: [{ ...goal, currentAmount: "0.00" }] }); const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
     render(<GoalsCard model={data} />);
-    expect(screen.getByRole("progressbar")).toHaveAttribute("value", "25");
+    expect(screen.getByRole("progressbar")).toHaveAttribute("value", "0");
     fireEvent.click(screen.getByLabelText("Excluir meta Viagem")); expect(data.remove).not.toHaveBeenCalled();
     confirm.mockReturnValue(true); fireEvent.click(screen.getByLabelText("Excluir meta Viagem")); expect(data.remove).toHaveBeenCalledWith("g");
   });

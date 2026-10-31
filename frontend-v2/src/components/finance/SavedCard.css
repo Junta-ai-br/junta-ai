@@ -1,0 +1,5 @@
+.saved-card { min-width: 0; padding: var(--spacing-24); border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); color: var(--text-primary); }
+.saved-card strong { display: block; color: var(--purple-400, #a78bfa); font-size: clamp(1.125rem, 2vw, 1.5rem); margin: var(--spacing-12) 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.saved-card small { display: block; color: var(--text-secondary); font-size: var(--font-caption); }
+.saved-card button { margin-top: var(--spacing-12); padding: 8px; color: var(--text-primary); background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer; }
+.saved-card button:focus-visible { outline: 2px solid var(--purple-400, #a78bfa); outline-offset: 3px; }

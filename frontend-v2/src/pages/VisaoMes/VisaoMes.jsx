@@ -1,6 +1,7 @@
 import { categoryColor } from "@/utils/category-colors";
 import CategoryExpenseChart from "@/components/finance/CategoryExpenseChart";
 import CategoryLabel from "@/components/finance/CategoryLabel";
+import SavedCard from "@/components/finance/SavedCard";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Dialog } from "radix-ui";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -81,6 +82,7 @@ export default function VisaoMes({ title = "Visão do mês", variant = "month" }
         <Kpi label="Receitas" value={finance.summary?.income} color="var(--success)" />
         <Kpi label="Despesas" value={finance.summary?.expenses} color="var(--error)" />
         <Kpi label="Saldo" value={finance.summary?.balance} color={finance.summary?.balanceCents < 0n ? "var(--error)" : "var(--success)"} />
+        {variant === "all" && <SavedCard />}
         <Kpi label="Categorias" value={covered ? finance.categories.length : null} color="var(--warning)" raw />
       </section>
       {covered && finance.transactions.length === 0 && <p role="status" className="finance-empty-state">Nenhuma movimentação neste período. Escolha outro período ou adicione um lançamento.</p>}
