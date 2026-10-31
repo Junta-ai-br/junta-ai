@@ -24,6 +24,9 @@
    ========================================================================== */
 
 .assistant {
+  --assistant-columns: minmax(0, 1fr) minmax(320px, 380px);
+  --assistant-column-gap: 1rem;
+
   min-height: 100vh;
 
   padding:
@@ -412,9 +415,16 @@
 
   display: grid;
 
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: var(--assistant-columns);
 
-  gap: 1rem;
+  gap: var(--assistant-column-gap);
+}
+
+.assistant__summary-main {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--assistant-column-gap);
+  min-width: 0;
 }
 
 .assistant__summary-card {
@@ -621,13 +631,11 @@
 
   display: grid;
 
-  grid-template-columns:
-    minmax(0, 1fr)
-    minmax(320px, 380px);
+  grid-template-columns: var(--assistant-columns);
 
-  gap: 1rem;
+  gap: var(--assistant-column-gap);
 
-  align-items: start;
+  align-items: stretch;
 }
 
 
@@ -636,8 +644,9 @@
    ========================================================================== */
 
 .assistant__conversation {
-  height: clamp(420px, 72dvh, 760px);
-  min-height: 0;
+  height: auto;
+  min-height: 420px;
+  contain: size;
 
   display: flex;
   flex-direction: column;
@@ -671,6 +680,7 @@
    ========================================================================== */
 
 .assistant__messages {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
 
@@ -1496,6 +1506,7 @@
 
 @media (max-width: 992px) {
   .assistant__summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .assistant__summary-main { display: contents; }
   .assistant {
     padding-inline: 1.5rem;
   }
@@ -1723,6 +1734,7 @@
   }
 
   .assistant__conversation {
+    contain: none;
     height: clamp(360px, 70dvh, 640px);
     min-height: 0;
   }
@@ -1825,6 +1837,7 @@
 }
 
 .assistant--embedded .assistant__conversation {
+  contain: none;
   height: var(--assistant-height, 360px);
   min-height: 0;
 }

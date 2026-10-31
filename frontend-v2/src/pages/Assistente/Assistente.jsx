@@ -130,6 +130,7 @@ export default function Assistente({
         aria-label="Resumo financeiro"
       >
 
+        <div className="assistant__summary-main">
         <article className="assistant__summary-card assistant__summary-card--income">
 
           <div className="assistant__summary-icon">
@@ -192,6 +193,7 @@ export default function Assistente({
 
         </article>
 
+        </div>
         <SavedCard waiting={waitingForChat} variant="summary" />
       </section>
 
