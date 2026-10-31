@@ -24,7 +24,7 @@
 .finance-add { background: var(--brand-primary); border-color: var(--brand-primary); color: var(--text-inverse); white-space: nowrap; }
 .finance-add:hover:not(:disabled) { background: var(--brand-primary-hover); border-color: var(--brand-primary-hover); }
 .finance-add:active:not(:disabled) { background: var(--brand-primary-active); }
-.finance-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--spacing-16); margin-top: var(--spacing-24); }
+.finance-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: var(--spacing-16); margin-top: var(--spacing-24); }
 .finance-kpi, .finance-panel {
   min-width: 0;
   border: 1px solid var(--border);

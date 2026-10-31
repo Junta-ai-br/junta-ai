@@ -21,6 +21,23 @@ afterEach(() => { cleanup(); clearSession(); vi.restoreAllMocks(); });
 const mount = async () => { const hook = renderHook(() => useAssistantConversation()); await waitFor(() => expect(hook.result.current.loading).toBe(false)); return hook; };
 const posts = () => calls.filter((call) => call.method === "post");
 describe("real conversation lifecycle", () => {
+  it("sends a structured source choice once through the backend and never simulates financial success", async () => {
+    const selection = { option_id: "source_registered", pending_id: "18add5f0-cd0e-4e67-8844-fd08dd734afe", conversation_id: conversation.id };
+    let resolveSend;
+    transport = async (config) => config.method === "post" ? new Promise((resolve) => { resolveSend = () => resolve(response(config, reply(false))); })
+      : response(config, config.url === "/conversations" ? [conversation] : [{ ...assistantMessage, quickReplies: [selection] }]);
+    const hook = await mount();
+    let first, second;
+    act(() => { first = hook.result.current.selectQuickReply(selection); second = hook.result.current.selectQuickReply(selection); });
+    await waitFor(() => expect(resolveSend).toBeTypeOf("function"));
+    expect(posts()).toHaveLength(1);
+    expect(JSON.parse(posts()[0].data)).toEqual({ message: "Sim, já registrei", quickReply: selection });
+    expect(hook.result.current.messages.some((m) => m.executionConfirmed === true)).toBe(false);
+    await act(async () => { resolveSend(); await Promise.all([first, second]); });
+    expect(hook.result.current.messages.at(-1).executionConfirmed).toBe(false);
+    await act(async () => hook.result.current.selectQuickReply(selection));
+    expect(posts()).toHaveLength(1);
+  });
   it.each([true, false])("uses persisted history and backend execution evidence=%s without financial writes", async (executed) => {
     transport = async (config) => response(config, config.method === "post" ? reply(executed) : config.url === "/conversations" ? [conversation] : [userMessage]);
     const hook = await mount(); expect(hook.result.current.messages[0].text).toBe(userMessage.content);

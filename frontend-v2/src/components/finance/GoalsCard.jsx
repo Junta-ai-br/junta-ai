@@ -55,11 +55,12 @@ function GoalsContent({ model, waiting }) {
         const percent = Number(current * 10000n / target > 10000n ? 10000n : current * 10000n / target) / 100;
         return <li key={goal.id}>
           <div className="goals-card__row"><strong>{goal.name}</strong>
-            <button type="button" className="goals-card__icon" disabled={disabled} aria-label={`Excluir meta ${goal.name}`} onClick={() => {
+            <button type="button" className="goals-card__icon" disabled={disabled || current > 0n} title={current > 0n ? "Retire o valor guardado antes de excluir a meta" : undefined} aria-label={`Excluir meta ${goal.name}`} onClick={() => {
               if (window.confirm(`Excluir a meta "${goal.name}"?`)) model.remove(goal.id);
             }}><Trash2 size={16} /></button></div>
           <progress max="100" value={percent} aria-label={`Progresso de ${goal.name}`} />
           <div className="goals-card__amounts"><span>{formatMoneyBRL(goal.currentAmount)}</span><span>de {formatMoneyBRL(goal.targetAmount)}</span></div>
+          <div className="goals-card__amounts"><span>Faltam {formatMoneyBRL(target > current ? target - current : 0n)}</span><span>{percent.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}% concluído</span></div>
           <small>{goal.status === "COMPLETED" ? "Concluída" : goal.status === "CANCELLED" ? "Cancelada" : "Em andamento"}{goal.deadline ? ` · Prazo: ${goal.deadline.split("-").reverse().join("/")}` : ""}</small>
         </li>;
       })}</ul>}

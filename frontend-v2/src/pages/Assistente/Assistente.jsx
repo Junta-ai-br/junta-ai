@@ -19,6 +19,7 @@ import useHealthScore from "@/hooks/useHealthScore";
 import FinancialHealthCard from "@/components/finance/FinancialHealthCard";
 import GoalsCard from "@/components/finance/GoalsCard";
 import useGoals from "@/hooks/useGoals";
+import SavedCard from "@/components/finance/SavedCard";
 
 import "./Assistente.css";
 
@@ -219,6 +220,7 @@ export default function Assistente({
           {/* Metas */}
 
           <GoalsCard model={goals} waiting={waitingForChat} />
+          <SavedCard waiting={waitingForChat} />
 
           {/* Saúde Financeira */}
 

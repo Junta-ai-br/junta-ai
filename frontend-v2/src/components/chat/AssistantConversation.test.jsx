@@ -16,6 +16,22 @@ vi.mock("motion/react", async () => {
 import AssistantConversation from "@/components/chat/AssistantConversation";
 
 describe("AssistantConversation", () => {
+  it("exposes source choices to keyboard and disables obsolete or sending options", async () => {
+    const user = userEvent.setup();
+    const option = { option_id: "source_registered", pending_id: "pending", conversation_id: "conversation" };
+    const message = { id: "source", type: "assistant", text: "Esses recursos já foram registrados?", quickReplies: [option, { ...option, option_id: "source_unregistered" }] };
+    const select = vi.fn();
+    const view = render(<AssistantConversation messages={[message]} selectQuickReply={select} />);
+    const button = screen.getByRole("button", { name: "Sim, já registrei" });
+    button.focus(); await user.keyboard("{Enter}");
+    expect(select).toHaveBeenCalledWith(option);
+    expect(screen.getByRole("textbox", { name: "Mensagem" })).toBeEnabled();
+    view.rerender(<AssistantConversation messages={[message]} selectQuickReply={select} isTyping />);
+    expect(button).toBeDisabled();
+    expect(screen.getByRole("group", { name: "Origem dos recursos" })).toHaveAttribute("aria-busy", "true");
+    view.rerender(<AssistantConversation messages={[message, { id: "later", type: "assistant", text: "Proposta atual" }]} selectQuickReply={select} />);
+    expect(button).toBeDisabled();
+  });
   it("renders user and assistant message bubbles", () => {
     render(
       <AssistantConversation

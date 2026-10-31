@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { getSessionSnapshot, subscribeSession } from "@/services/auth/session";
 import { executeGoalCommand, goalPayload, listGoals } from "@/services/goals.api";
 import { readAttempt, startAttempt, finishAttempt } from "@/services/uncertain-attempt";
+import { invalidateSaved } from "@/services/saved.api";
 
 const generation = () => getSessionSnapshot()?.generation ?? null;
 const initial = (owner) => ({ owner, goals: [], status: "loading", error: "", busy: false, pending: null });
@@ -56,6 +57,7 @@ export default function useGoals() {
       await executeGoalCommand(command, active.owner, active.controller.signal);
       if (!current(active)) return false;
       finishAttempt("goals", command.key, active.owner);
+      invalidateSaved(active.owner);
       active.command = null;
       setState((s) => ({ ...s, pending: null }));
       await reload();

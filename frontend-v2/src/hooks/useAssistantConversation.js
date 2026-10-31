@@ -2,10 +2,11 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { getSessionSnapshot, subscribeSession } from "@/services/auth/session";
 import * as conversations from "@/services/conversations.api";
 import { readAttempt, startAttempt, finishAttempt } from "@/services/uncertain-attempt";
+import { invalidateSaved } from "@/services/saved.api";
 
 const generation = () => getSessionSnapshot()?.generation ?? null;
 const empty = (owner) => ({ owner, inputValue: "", messages: [], conversations: [], conversationId: null, loading: true, isTyping: false, error: null, recovery: null });
-const bubble = (message, fresh = false) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content, fresh });
+const bubble = (message, fresh = false) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content, fresh, ...(message.quickReplies?.length ? { quickReplies: message.quickReplies } : {}) });
 const history = (messages) => messages.filter((message) => message.role !== "SYSTEM").map((message) => bubble(message));
 const errorMessage = (error, sending) => {
   if (["ECONNABORTED", "ETIMEDOUT"].includes(error?.code)) return "O tempo de espera terminou. O servidor pode ter processado a mensagem. Retome o envio anterior com a mesma identidade.";
@@ -24,6 +25,10 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
   const recovery = useRef(null);
   const current = (lease) => active.current === lease && generation() === lease?.owner && !lease.controller.signal.aborted;
   const options = (lease) => ({ signal: lease.controller.signal, generation: lease.owner });
+  const reconcileFinancialData = async (lease) => {
+    try { await refreshFinancialData?.(); }
+    finally { if (current(lease)) invalidateSaved(lease.owner); }
+  };
 
   useEffect(() => {
     const restored = readAttempt("chat", owner);
@@ -74,7 +79,7 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
     finally { if (current(lease)) lock.current = false; }
   };
 
-  const send = async (message, retry = false) => {
+  const send = async (message, retry = false, quickReply = null) => {
     const lease = active.current;
     if (!lease || lease.owner !== owner || !current(lease) || lock.current || recovery.current?.reloaded || (!retry && recovery.current) || (retry && !recovery.current?.key)) return;
     if (!retry && !conversations.validChatInput(message)) {
@@ -97,22 +102,23 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
           lease.conversationId = id;
           setState((value) => ({ ...value, conversationId: id, conversations: [created, ...value.conversations] }));
         }
-        operation = { id, message, key: crypto.randomUUID(), optimisticId };
+        operation = { id, message, key: crypto.randomUUID(), optimisticId, ...(quickReply ? { quickReply } : {}) };
       }
       if (!current(lease)) return;
       if (!startAttempt("chat", operation.key, lease.owner)) throw Object.assign(new Error("Attempt not sent"), { code: "ATTEMPT_NOT_SENT" });
       recovery.current = operation;
-      const reply = await conversations.sendMessage(operation.id, operation.message, operation.key, options(lease));
+      const reply = await conversations.sendMessage(operation.id, operation.message, operation.key,
+        { ...options(lease), ...(operation.quickReply ? { quickReply: operation.quickReply } : {}) });
       if (!current(lease)) return;
       finishAttempt("chat", operation.key, lease.owner);
       // Replays can report actionExecuted=false even when the original request committed.
       // Reconcile every successful message response before exposing current finances.
       recovery.current = null;
       setState((value) => ({ ...value, inputValue: "", recovery: null, isTyping: false, isReconciling: true,
-        messages: [...value.messages.filter((item) => ![operation.optimisticId, reply.userMessage.id, reply.assistantMessage.id].includes(item.id)),
+        messages: [...value.messages.filter((item) => ![operation.optimisticId, reply.userMessage.id, reply.assistantMessage.id].includes(item.id)).map((item) => ({ ...item, quickReplies: [] })),
           bubble(reply.userMessage, !value.messages.some((item) => item.id === reply.userMessage.id)),
           { ...bubble(reply.assistantMessage, !value.messages.some((item) => item.id === reply.assistantMessage.id)), executionConfirmed: reply.actionExecuted }] }));
-      try { await refreshFinancialData?.(); }
+      try { await reconcileFinancialData(lease); }
       catch {
         if (current(lease)) setState((value) => ({ ...value, error: "A resposta foi recebida, mas não foi possível atualizar os dados financeiros. Atualize os dados antes de consultar os totais." }));
       }
@@ -120,11 +126,11 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
       if (!current(lease)) return;
       const code = error?.response?.data?.code;
       const notSent = error?.code === "ATTEMPT_NOT_SENT";
-      const terminal = notSent || code === "message_processing_failed" || [400, 403, 404].includes(error?.response?.status);
+      const terminal = notSent || ["message_processing_failed", "quick_reply_stale"].includes(code) || [400, 403, 404].includes(error?.response?.status);
       // Unknown outcomes retain the exact key/body. Failed creation must be
       // reconciled with the conversation list before another POST /conversations.
       if (terminal && operation) {
-        try { await refreshFinancialData?.(); } catch { /* Preserve the original send failure and recovery state. */ }
+        try { await reconcileFinancialData(lease); } catch { /* Preserve the original send failure and recovery state. */ }
         if (!current(lease)) return;
       }
       recovery.current = terminal ? null : operation ?? { creationUnknown: true };
@@ -142,6 +148,12 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
     inputValue: owner ? view.inputValue : "", messages: owner ? view.messages : [],
     setInputValue: (inputValue) => { if (owner && generation() === owner && active.current?.owner === owner) setState((value) => ({ ...value, inputValue })); },
     handleSubmit: (event) => { event?.preventDefault?.(); return send(typeof event === "string" ? event : view.inputValue); },
+    selectQuickReply: (selection) => {
+      if (!conversations.validQuickReply(selection) || selection.conversation_id !== view.conversationId
+          || !view.messages.at(-1)?.quickReplies?.some((option) => option.option_id === selection.option_id
+            && option.pending_id === selection.pending_id && option.conversation_id === selection.conversation_id)) return;
+      return send(conversations.quickReplyLabels[selection.option_id], false, selection);
+    },
     retryMessage: () => send(null, true),
     acknowledgeUncertain: async () => {
       const lease = active.current;
@@ -149,7 +161,7 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
       const key = recovery.current.key;
       lock.current = true;
       try {
-        await refreshFinancialData?.();
+        await reconcileFinancialData(lease);
         if (!current(lease)) return;
         finishAttempt("chat", key, lease.owner); recovery.current = null;
         setState((value) => ({ ...value, recovery: null, error: null }));

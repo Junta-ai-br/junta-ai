@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SendHorizontal } from "lucide-react";
 import logoIcon from "@/assets/logos/logo-icon.svg";
+import { quickReplyLabels } from "@/services/conversations.api";
+import "./QuickReplies.css";
 
 export default function AssistantConversation({
   messages = [],
@@ -20,6 +22,7 @@ export default function AssistantConversation({
   retryMessage,
     acknowledgeUncertain,
   canSend,
+  selectQuickReply,
 }) {
   const reduceMotion = useReducedMotion();
   const scrollRef = useRef(null);
@@ -103,6 +106,11 @@ export default function AssistantConversation({
                   </span>
                 )}
                 <p style={{ whiteSpace: "pre-wrap" }}>{message.text}</p>
+                {message.type === "assistant" && message.quickReplies?.length > 0 && <div className="assistant__quick-replies" role="group" aria-label="Origem dos recursos" aria-busy={isTyping}>
+                  {message.quickReplies.map((option) => <button type="button" key={option.option_id}
+                    disabled={loading || isTyping || !!recovery || messages.at(-1)?.id !== message.id || !selectQuickReply}
+                    onClick={() => selectQuickReply?.(option)}>{quickReplyLabels[option.option_id]}</button>)}
+                </div>}
               </div>
             </motion.div>
           ))}
