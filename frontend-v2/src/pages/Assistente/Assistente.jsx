@@ -192,6 +192,7 @@ export default function Assistente({
 
         </article>
 
+        <SavedCard waiting={waitingForChat} variant="summary" />
       </section>
 
       {/* ==================================================================
@@ -220,7 +221,6 @@ export default function Assistente({
           {/* Metas */}
 
           <GoalsCard model={goals} waiting={waitingForChat} />
-          <SavedCard waiting={waitingForChat} />
 
           {/* Saúde Financeira */}
 

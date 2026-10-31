@@ -1,5 +1,13 @@
-.saved-card { min-width: 0; padding: var(--spacing-24); border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); color: var(--text-primary); }
-.saved-card strong { display: block; color: var(--purple-400, #a78bfa); font-size: clamp(1.125rem, 2vw, 1.5rem); margin: var(--spacing-12) 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.saved-card { position: relative; min-width: 0; color: var(--text-primary); }
+.saved-card.finance-kpi { padding: var(--spacing-24); border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); }
+.saved-card strong { color: var(--brand-primary); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.saved-card.finance-kpi strong { display: block; font-size: clamp(1.125rem, 2vw, 1.5rem); margin: var(--spacing-12) 0 0; }
+.saved-card__icon { position: absolute; top: var(--spacing-16); right: var(--spacing-16); color: var(--brand-primary); }
+.saved-card.finance-kpi > span { padding-right: 2rem; }
 .saved-card small { display: block; color: var(--text-secondary); font-size: var(--font-caption); }
-.saved-card button { margin-top: var(--spacing-12); padding: 8px; color: var(--text-primary); background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer; }
-.saved-card button:focus-visible { outline: 2px solid var(--purple-400, #a78bfa); outline-offset: 3px; }
+.saved-card .saved-card__description--hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.saved-card button { margin-top: var(--spacing-12); min-height: 44px; padding: var(--spacing-8); color: var(--text-primary); background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer; }
+.saved-card button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+[data-theme="dark"] .saved-card { --saved-highlight: var(--purple-300); }
+.saved-card { --saved-highlight: var(--brand-primary); }
+.saved-card strong, .saved-card__icon, .saved-card .assistant__summary-icon { color: var(--saved-highlight); }

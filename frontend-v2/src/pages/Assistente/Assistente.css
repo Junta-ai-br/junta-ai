@@ -412,13 +412,14 @@
 
   display: grid;
 
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 1rem;
 }
 
 .assistant__summary-card {
   position: relative;
+  min-width: 0;
 
   min-height: 104px;
 
@@ -565,6 +566,7 @@
 
 .assistant__summary-label {
   position: relative;
+  padding-right: 2.5rem;
 
   z-index: 1;
 
@@ -578,6 +580,8 @@
 
 .assistant__summary-value {
   position: relative;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
 
   z-index: 1;
 
@@ -1491,6 +1495,7 @@
    ========================================================================== */
 
 @media (max-width: 992px) {
+  .assistant__summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .assistant {
     padding-inline: 1.5rem;
   }
