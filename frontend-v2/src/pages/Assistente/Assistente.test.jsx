@@ -33,6 +33,7 @@ const dashboard = (config, income = "0.00", expense = "0.00", score = null, clas
 const financialResponse = (config) => config.url === "/categories" ? response(config, [category])
   : config.url === "/transactions" ? response(config, page()) : config.url === "/dashboard" ? dashboard(config) : null;
 const summary = () => within(screen.getByRole("region", { name: "Resumo financeiro" }));
+const monthlyValues = (text) => summary().getAllByText(text).filter((element) => !element.closest(".saved-card"));
 const mount = () => renderWithFinanceProvider(<AppRoutes />, { route: "/assistente" });
 let requests;
 beforeEach(() => {
@@ -125,6 +126,14 @@ describe("Assistente real chat", () => {
 });
 
 describe("official monthly assistant panel", () => {
+  it("groups four indicators in order without duplicating Saved in the sidebar", async () => {
+    const { container } = mount();
+    await screen.findByRole("button", { name: "Nova conversa" });
+    const cards = summary().getAllByRole("article");
+    expect(cards.map((card) => card.querySelector(".assistant__summary-label").textContent.trim())).toEqual(["Receitas", "Despesas", "Saldo", "Guardado"]);
+    expect(container.querySelectorAll(".saved-card")).toHaveLength(1);
+    expect(container.querySelector(".assistant__sidebar .saved-card")).toBeNull();
+  });
   it("loads every page for the current month and retains exact amounts and backend labels", async () => {
     const records = [transaction(), transaction({ id: userMessage.id, type: "EXPENSE", description: "Despesa oficial", amount: "0.01" })];
     api.defaults.adapter = async (config) => {
@@ -156,7 +165,7 @@ describe("official monthly assistant panel", () => {
     mount();
     await waitFor(() => expect(rejectRead).toBeTypeOf("function"));
     expect(screen.getByText("Carregando dados financeiros…")).toBeInTheDocument();
-    expect(summary().getAllByText("Indisponível")).toHaveLength(3);
+    expect(monthlyValues("Indisponível")).toHaveLength(3);
     expect(screen.queryByText("Nenhuma movimentação neste mês.")).not.toBeInTheDocument();
     await act(async () => { rejectRead(new Error("Offline")); });
     expect(await screen.findByText("Não foi possível confirmar os dados financeiros atuais.")).toBeInTheDocument();
@@ -201,7 +210,7 @@ describe("official monthly assistant panel", () => {
     localStorage.setItem("junta_transactions", JSON.stringify([{ desc: "Fake", amount: 999 }]));
     mount();
     await screen.findByText("Nenhuma movimentação neste mês.");
-    expect(summary().getAllByText("R$ 0,00")).toHaveLength(3);
+    expect(monthlyValues("R$ 0,00")).toHaveLength(3);
     expect(await screen.findByText("Em avaliação")).toBeInTheDocument();
     expect(document.querySelector(".financial-health__bar span")).toHaveStyle({ width: "50%" });
     expect(screen.getByText("Ainda não há lançamentos suficientes para uma avaliação confiável. O indicador será atualizado conforme você registrar suas movimentações.")).toBeInTheDocument();
@@ -229,7 +238,7 @@ describe("official monthly assistant panel", () => {
     await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
     await waitFor(() => expect(finishReload).toBeTypeOf("function"));
     expect(summary().queryByText("R$ 1.234,56")).not.toBeInTheDocument();
-    expect(summary().getAllByText("Indisponível")).toHaveLength(3);
+    expect(monthlyValues("Indisponível")).toHaveLength(3);
     await act(async () => { finishReload(); });
     expect(await summary().findAllByText("R$ 1.259,56")).toHaveLength(2);
     expect(await screen.findByText("Resposta recebida da API")).toBeInTheDocument();
@@ -252,10 +261,10 @@ describe("official monthly assistant panel", () => {
     await user.type(screen.getByRole("textbox", { name: "Mensagem" }), "recebi 25");
     await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
     await screen.findByText(/O tempo de espera terminou/);
-    expect(summary().getAllByText("Indisponível")).toHaveLength(3);
+    expect(monthlyValues("Indisponível")).toHaveLength(3);
     await user.click(screen.getByRole("button", { name: "Atualizar histórico" }));
     await waitFor(() => expect(screen.getByRole("button", { name: "Retomar envio anterior" })).toBeEnabled());
-    expect(summary().getAllByText("Indisponível")).toHaveLength(3);
+    expect(monthlyValues("Indisponível")).toHaveLength(3);
     const retry = screen.getByRole("button", { name: /Retomar/ });
     await user.click(retry);
     expect(await summary().findAllByText("R$ 1.259,56")).toHaveLength(2);
@@ -283,7 +292,7 @@ describe("official monthly assistant panel", () => {
     await user.type(screen.getByRole("textbox", { name: "Mensagem" }), "recebi 25");
     await user.click(screen.getByRole("button", { name: "Enviar mensagem" }));
     await screen.findByText("Não foi possível confirmar os dados financeiros atuais.");
-    expect(summary().getAllByText("Indisponível")).toHaveLength(3);
+    expect(monthlyValues("Indisponível")).toHaveLength(3);
     expect(screen.queryByText("Receita oficial")).not.toBeInTheDocument();
     failed = false;
     await user.click(screen.getByRole("button", { name: "Atualizar dados" }));

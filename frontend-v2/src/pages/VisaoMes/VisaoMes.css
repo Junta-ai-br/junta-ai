@@ -25,6 +25,10 @@
 .finance-add:hover:not(:disabled) { background: var(--brand-primary-hover); border-color: var(--brand-primary-hover); }
 .finance-add:active:not(:disabled) { background: var(--brand-primary-active); }
 .finance-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: var(--spacing-16); margin-top: var(--spacing-24); }
+.finance-kpis--saved { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.finance-kpi { position: relative; min-width: 0; }
+.finance-kpi > span { padding-right: 2rem; }
+.finance-kpi__icon { position: absolute; top: var(--spacing-16); right: var(--spacing-16); }
 .finance-kpi, .finance-panel {
   min-width: 0;
   border: 1px solid var(--border);
@@ -83,6 +87,7 @@
   .finance-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 600px) {
+  .finance-kpis { grid-template-columns: minmax(0, 1fr); }
   .finance-kpi, .finance-panel { padding: var(--spacing-16); border-radius: var(--radius-lg); }
   .finance-kpis { gap: var(--spacing-12); }
   .finance-header-actions, .finance-add { width: 100%; }

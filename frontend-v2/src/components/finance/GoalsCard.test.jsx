@@ -7,6 +7,9 @@ const model = (props = {}) => ({ owner: Symbol(), status: "success", goals: [goa
 describe("goals card", () => {
   it("shows remaining, percentage and funded deletion protection", () => {
     const data = model(); const view = render(<GoalsCard model={data} />);
+    expect(screen.getByRole("heading", { name: "Minhas metas" })).toBeInTheDocument();
+    expect(screen.queryByText("Metas", { exact: true })).not.toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "Progresso de Viagem" })).toHaveAttribute("value", "25");
     expect(screen.getByText("Faltam R$ 75,00")).toBeInTheDocument();
     expect(screen.getByText("25% concluído")).toBeInTheDocument();
     expect(screen.getByLabelText("Excluir meta Viagem")).toBeDisabled();
@@ -14,6 +17,7 @@ describe("goals card", () => {
     expect(screen.getByText("Faltam R$ 0,00")).toBeInTheDocument();
     expect(screen.getByText("100% concluído")).toBeInTheDocument();
     expect(screen.getByText("Concluída")).toBeInTheDocument();
+    expect(screen.getByRole("progressbar")).toHaveAttribute("value", "100");
   });
   it("requires explicit confirmation to dismiss a restored uncertain result", () => {
     const data = model({ pending: { reloaded: true }, discardUncertain: vi.fn() });

@@ -2,6 +2,7 @@ import { categoryColor } from "@/utils/category-colors";
 import CategoryExpenseChart from "@/components/finance/CategoryExpenseChart";
 import CategoryLabel from "@/components/finance/CategoryLabel";
 import SavedCard from "@/components/finance/SavedCard";
+import { TrendingUp, TrendingDown, WalletCards } from "lucide-react";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Dialog } from "radix-ui";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -78,10 +79,10 @@ export default function VisaoMes({ title = "Visão do mês", variant = "month" }
         <button type="button" disabled={busy} onClick={() => finance.reload()}>Atualizar consulta</button>
       </div>}
       {finance.refreshRequired && <p role="status" className="finance-empty-state">A visualização precisa ser reconciliada. Uma operação pode já ter sido processada; atualize a consulta antes de realizar outra gravação. <button type="button" disabled={busy} onClick={() => finance.reload()}>Atualizar consulta</button></p>}
-      <section className="finance-kpis" aria-label="Indicadores financeiros">
-        <Kpi label="Receitas" value={finance.summary?.income} color="var(--success)" />
-        <Kpi label="Despesas" value={finance.summary?.expenses} color="var(--error)" />
-        <Kpi label="Saldo" value={finance.summary?.balance} color={finance.summary?.balanceCents < 0n ? "var(--error)" : "var(--success)"} />
+      <section className={`finance-kpis${variant === "all" ? " finance-kpis--saved" : ""}`} aria-label="Indicadores financeiros">
+        <Kpi label="Receitas" value={finance.summary?.income} color="var(--success)" icon={TrendingUp} />
+        <Kpi label="Despesas" value={finance.summary?.expenses} color="var(--error)" icon={TrendingDown} />
+        <Kpi label="Saldo" value={finance.summary?.balance} color={finance.summary?.balanceCents < 0n ? "var(--error)" : "var(--success)"} icon={WalletCards} />
         {variant === "all" && <SavedCard />}
         <Kpi label="Categorias" value={covered ? finance.categories.length : null} color="var(--warning)" raw />
       </section>
@@ -128,4 +129,4 @@ export default function VisaoMes({ title = "Visão do mês", variant = "month" }
 }
 
 function Panel({ title, children }) { return <article className="finance-panel"><h2>{title}</h2>{children}</article>; }
-function Kpi({ label, value, color, raw }) { return <article className="finance-kpi"><span>{label}</span><strong style={{ color }}>{value == null ? "Indisponível" : raw ? value : formatMoneyBRL(value)}</strong></article>; }
+function Kpi({ label, value, color, raw, icon: Icon }) { return <article className="finance-kpi">{Icon && <div className="finance-kpi__icon" style={{ color }}><Icon size={22} strokeWidth={1.8} aria-hidden="true" /></div>}<span>{label}</span><strong style={{ color }}>{value == null ? "Indisponível" : raw ? value : formatMoneyBRL(value)}</strong></article>; }

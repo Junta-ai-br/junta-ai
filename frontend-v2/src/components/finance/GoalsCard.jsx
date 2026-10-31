@@ -27,7 +27,7 @@ function GoalsContent({ model, waiting }) {
   };
   return <section className="assistant__widget assistant__widget--goals goals-card" aria-label="Minhas metas">
     <div className="assistant__widget-header">
-      <div><span className="assistant__widget-label">Metas</span><h2 className="assistant__widget-title">Minhas metas</h2></div>
+      <h2 className="assistant__widget-title">Minhas metas</h2>
       <button type="button" className="goals-card__icon" aria-label={open ? "Fechar criação de meta" : "Criar meta"} disabled={disabled} onClick={() => setOpen(!open)}>{open ? <X size={18} /> : <Plus size={18} />}</button>
     </div>
     {open && <form className="goals-card__form" onSubmit={submit}>
