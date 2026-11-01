@@ -1,5 +1,5 @@
+import ProblemIllustration from "./ProblemIllustration";
 import "./Problem.css";
-import Bubble from "../../../../components/common/Bubble";
 
 export default function Problem() {
   return (
@@ -28,63 +28,22 @@ export default function Problem() {
             para a sua vida.
           </p>
         </header>
-
-        <div className="problem__conversation">
-          <Bubble
-            size="md"
-            className="bubble--left"
-            delay={0}
-            floatDelay={0}
-          >
-            Você sabe quanto gastou.
-          </Bubble>
-
-          <Bubble
-            size="md"
-            className="bubble--left-secondary"
-            delay={0.7}
-            floatDelay={0.5}
-          >
-            <strong>Mas sabe por que gastou?</strong>
-          </Bubble>
-
-          <Bubble
-            size="lg"
-            className="bubble--center"
-            delay={1.4}
-            floatDelay={1}
-          >
-            Números mostram o que aconteceu.
-          </Bubble>
-
-          <Bubble
-            size="lg"
-            className="bubble--center-secondary"
-            delay={2.1}
-            floatDelay={0.25}
-          >
-            <strong>Contexto explica por que aconteceu.</strong>
-          </Bubble>
-
-          <Bubble
-            size="md"
-            className="bubble--right"
-            delay={2.8}
-            floatDelay={0.75}
-          >
-            Você não precisa de mais gráficos.
-          </Bubble>
-
-          <Bubble
-            size="xl"
-            className="bubble--right-secondary"
-            delay={3.5}
-            floatDelay={1.25}
-          >
-            <strong>
-              Você precisa de alguém que converse com você.
-            </strong>
-          </Bubble>
+        <div className="problem__composition">
+          <div className="problem__story">
+            <div className="problem__pair">
+              <p>Você sabe quanto gastou.</p>
+              <p><strong>Mas sabe por que gastou?</strong></p>
+            </div>
+            <div className="problem__pair">
+              <p>Números mostram o que aconteceu.</p>
+              <p><strong>Contexto explica por que aconteceu.</strong></p>
+            </div>
+            <div className="problem__pair problem__pair--conclusion">
+              <p>Você não precisa de mais gráficos.</p>
+              <p><strong>Você precisa de alguém que converse com você.</strong></p>
+            </div>
+          </div>
+          <ProblemIllustration />
         </div>
       </div>
     </section>

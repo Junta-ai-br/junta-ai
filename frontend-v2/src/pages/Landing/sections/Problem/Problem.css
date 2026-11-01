@@ -85,141 +85,80 @@ Header
   text-wrap: pretty;
 }
 
-/* --------------------------------------------------------------------------
-Conversation
--------------------------------------------------------------------------- */
-
-/*
-A composição usa Grid para manter os Bubbles dentro do fluxo da página.
-
-O Bubble continua sendo um componente independente.
-O Problem controla apenas:
-
-- posição
-- largura
-- composição
-
-Dessa forma, a seção cresce naturalmente conforme o conteúdo.
-*/
-
-.problem__conversation {
+/* Narrative and illustration share a natural-flow editorial composition. */
+.problem__composition { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); align-items: center; gap: clamp(2rem, 4vw, 3rem); margin-top: clamp(2.5rem, 5vw, 4rem); }
+.problem__story {
+  min-width: 0;
+  max-inline-size: 34rem;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: 1.5rem;
-  row-gap: 2rem;
-
-  width: 100%;
-
-  margin-top: 9rem;
+  gap: clamp(2rem, 4vw, 3rem);
 }
-
-/* --------------------------------------------------------------------------
-Bubble 01
--------------------------------------------------------------------------- */
-
-.bubble--left {
-  grid-column: 1 / span 4;
-  grid-row: 1;
-
-  width: 100%;
+.problem__pair { display: grid; row-gap: 0.5rem; }
+.problem__pair p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
+  line-height: 1.5;
+  text-wrap: pretty;
 }
-
-/* --------------------------------------------------------------------------
-Bubble 02
--------------------------------------------------------------------------- */
-
-.bubble--left-secondary {
-  grid-column: 2 / span 4;
-  grid-row: 2;
-
-  width: 100%;
-
-  margin-top: -10px;
+.problem__pair p + p { margin-top: 0; }
+.problem__pair strong {
+  display: block;
+  color: var(--text-primary);
+  font-family: var(--heading-family);
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  font-weight: var(--font-semibold);
+  line-height: 1.25;
+  letter-spacing: -0.035em;
 }
-
-/* --------------------------------------------------------------------------
-Bubble 03
--------------------------------------------------------------------------- */
-
-.bubble--center {
-  grid-column: 8 / span 5;
-  grid-row: 3;
-
-  width: 100%;
+.problem__pair--conclusion strong {
+  color: var(--brand-primary);
+  font-size: clamp(1.7rem, 2.8vw, 2.4rem);
+  font-weight: var(--font-bold);
+  line-height: 1.2;
+  text-wrap: balance;
 }
-
-/* --------------------------------------------------------------------------
-Bubble 04
--------------------------------------------------------------------------- */
-
-.bubble--center-secondary {
-  grid-column: 9 / span 4;
-  grid-row: 4;
-
-  width: min(430px, 100%);
-}
-
-/* --------------------------------------------------------------------------
-Bubble 05
--------------------------------------------------------------------------- */
-
-.bubble--right {
-  grid-column: 2 / span 5;
-  grid-row: 5;
-
-  width: 100%;
-}
-
-/* --------------------------------------------------------------------------
-Bubble 06
--------------------------------------------------------------------------- */
-
-.bubble--right-secondary {
-  grid-column: 4 / span 5;
-  grid-row: 6;
-
-  width: min(540px, 100%);
-}
-
-/* --------------------------------------------------------------------------
-Tablet
--------------------------------------------------------------------------- */
-
+[data-theme="dark"] .problem__pair--conclusion strong { color: var(--purple-300); }
+.problem__illustration { position: relative; isolation: isolate; min-width: 0; width: 100%; aspect-ratio: 1 / 1.08; margin: 0; }
+.problem__illustration::before { content: ""; position: absolute; inset: 12% 6% 3%; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--brand-primary) 7%, transparent), transparent 70%); z-index: 0; pointer-events: none; }
+.problem__person { position: absolute; width: 66%; height: auto; left: 19%; bottom: 0; z-index: 4; display: block; }
+.problem__object { position: absolute; z-index: 2; transform: rotate(var(--object-angle, 0deg)); pointer-events: none; }
+.problem__object-motion, .problem__object img { display: block; width: 100%; height: auto; }
+.problem__object--sheet { width: 37%; left: 0; top: 9%; --object-angle: -9deg; z-index: 1; }
+.problem__object--bars { width: 34%; right: 0; top: 14%; --object-angle: 8deg; z-index: 1; }
+.problem__object--pie { width: 24%; left: 0; top: 47%; --object-angle: -8deg; z-index: 1; }
+.problem__object--accounts { width: 20%; left: 3%; top: 31%; --object-angle: -12deg; }
+.problem__object--goals { width: 19%; right: 0; top: 48%; --object-angle: 11deg; }
+.problem__object--calculator { width: 24%; right: 0; bottom: 4%; --object-angle: 8deg; }
+.problem__object--receipt { width: 23%; left: 0; bottom: 1%; --object-angle: -11deg; }
+.problem__object--questions { width: 31%; left: 39%; top: 0; z-index: 3; }
 @media (max-width: 992px) {
-  .problem {
-    padding-block: 8rem;
-  }
+  .problem { padding-block: 8rem; }
+  .problem__header { max-width: 760px; }
+  .problem__title { max-width: 720px; }
+  .problem__composition { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1.75rem; }
+  .problem__object--pie, .problem__object--accounts { display: none; }
+}
+@media (max-width: 900px) {
+  .problem__composition { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .problem__illustration { grid-row: 1; max-width: 360px; margin-inline: auto; aspect-ratio: 1 / 1.05; }
+  .problem__story { width: 100%; max-width: 640px; margin-inline: auto; gap: 2.5rem; }
 
-  .problem__header {
-    max-width: 760px;
-  }
-
-  .problem__title {
-    max-width: 720px;
-  }
-
-  .problem__conversation {
-    display: flex;
-    flex-direction: column;
-
-    gap: 1.25rem;
-
-    margin-top: 5rem;
-  }
-
-  .problem__conversation > .bubble {
-    width: 100%;
-    max-width: 680px;
-
-    margin-inline: auto;
-  }
+  .problem__pair strong { font-size: clamp(1.5rem, 4.5vw, 1.9rem); }
+  .problem__pair--conclusion strong { font-size: clamp(2rem, 4.6vw, 2.2rem); }
 }
 
-/* --------------------------------------------------------------------------
-Mobile
--------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .problem__object--goals, .problem__object--calculator, .problem__object--receipt { display: none; }
+  .problem__illustration { max-width: 340px; }
+}
 
 @media (max-width: 576px) {
+  .problem__composition { gap: 1.5rem; margin-top: 2.5rem; }
+  .problem__pair p { font-size: 1rem; }
+  .problem__story { gap: 2rem; }
+  .problem__pair strong { font-size: clamp(1.4rem, 5.5vw, 1.65rem); }
+  .problem__pair--conclusion strong { font-size: clamp(1.65rem, 6.2vw, 1.95rem); }
   .problem {
     padding-block: 7rem;
   }
