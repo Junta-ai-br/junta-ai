@@ -87,27 +87,6 @@ Demo Area
 }
 
 /* --------------------------------------------------------------------------
-Temporary Placeholder
--------------------------------------------------------------------------- */
-
-.showcase__placeholder {
-  width: 100%;
-  min-height: 560px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.showcase__placeholder-label {
-  color: var(--text-tertiary);
-
-  font-family: var(--font-mono, monospace);
-  font-size: var(--font-small);
-  letter-spacing: 0.04em;
-}
-
-/* --------------------------------------------------------------------------
 Tablet
 -------------------------------------------------------------------------- */
 
@@ -121,10 +100,6 @@ Tablet
   }
 
   .showcase__demo {
-    min-height: 500px;
-  }
-
-  .showcase__placeholder {
     min-height: 500px;
   }
 }
@@ -159,9 +134,5 @@ Mobile
     min-height: 460px;
 
     border-radius: var(--radius-md);
-  }
-
-  .showcase__placeholder {
-    min-height: 460px;
   }
 }
