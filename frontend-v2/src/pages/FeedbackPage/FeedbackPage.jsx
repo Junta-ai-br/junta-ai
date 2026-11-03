@@ -1,4 +1,5 @@
 import usePublicForm from "@/hooks/usePublicForm";
+import { FORM_LIMITS, normalizePublicFormText } from "@/services/public-forms";
 import { Send } from "lucide-react";
 
 import Button from "@/components/common/Button";
@@ -189,13 +190,16 @@ function FeedbackPage() {
               <textarea
                 id="message"
                 name="message"
-                {...fieldProps("message")}
+                {...fieldProps("message", "feedback-message-count")}
                 rows="6"
                 placeholder="O que você gostaria que a gente soubesse?"
                 value={formData.message}
                 onChange={handleChange}
                 required
               />
+              <span className="feedback-page__helper" id="feedback-message-count">
+                {normalizePublicFormText(formData.message).length} / {FORM_LIMITS.message} caracteres (emojis podem contar como dois).
+              </span>
             </div>
           </div>
 

@@ -1,4 +1,5 @@
 import usePublicForm from "@/hooks/usePublicForm";
+import { FORM_LIMITS, normalizePublicFormText } from "@/services/public-forms";
 import { Send } from "lucide-react";
 
 import Button from "@/components/common/Button";
@@ -183,13 +184,16 @@ function Contato() {
               <textarea
                 id="message"
                 name="message"
-                {...fieldProps("message")}
+                {...fieldProps("message", "contact-message-count")}
                 rows="6"
                 placeholder="Conte pra gente o que você gostaria de saber."
                 value={formData.message}
                 onChange={handleChange}
                 required
               />
+              <span className="page__helper" id="contact-message-count">
+                {normalizePublicFormText(formData.message).length} / {FORM_LIMITS.message} caracteres (emojis podem contar como dois).
+              </span>
             </div>
           </div>
 
