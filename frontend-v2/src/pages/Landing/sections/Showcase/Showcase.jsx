@@ -1,4 +1,5 @@
 import "./Showcase.css";
+import AssistantDemo from "./AssistantDemo";
 
 export default function Showcase() {
   return (
@@ -17,11 +18,7 @@ export default function Showcase() {
         </header>
 
         <div className="showcase__demo">
-          <div className="showcase__placeholder">
-            <span className="showcase__placeholder-label">
-              Chat preview
-            </span>
-          </div>
+          <AssistantDemo />
         </div>
 
       </div>
