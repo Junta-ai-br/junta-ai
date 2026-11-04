@@ -1,6 +1,6 @@
 import { api, API_URL } from "./api";
 
-export const FORM_LIMITS = { name: 120, email: 254, subject: 32, subjectOther: 160, message: 10000 };
+export const FORM_LIMITS = { name: 100, email: 254, subject: 32, subjectOther: 120, message: 3000 };
 const subjects = {
   contact: ["faq", "junta", "sugestao", "parceria", "imprensa", "outro"],
   feedback: ["experiencia", "sugestao", "problema", "duvida", "privacidade", "financeiro", "assistente", "outro"],
@@ -8,11 +8,14 @@ const subjects = {
 // Character.isWhitespace / String.strip in Java (NBSP is intentionally excluded).
 // eslint-disable-next-line no-control-regex -- Java strip includes these control whitespace characters.
 const edgeWhitespace = /^[\u0009-\u000d\u001c-\u0020\u1680\u2000-\u2006\u2008-\u200a\u2028\u2029\u205f\u3000]+|[\u0009-\u000d\u001c-\u0020\u1680\u2000-\u2006\u2008-\u200a\u2028\u2029\u205f\u3000]+$/g;
+export function normalizePublicFormText(value) {
+  return (value ?? "").replace(edgeWhitespace, "");
+}
 const invalidHeader = /[\p{Cc}\u2028\u2029]/u;
 const emailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 export function validatePublicForm(form, kind) {
-  const payload = Object.fromEntries(Object.keys(FORM_LIMITS).map((key) => [key, (form[key] ?? "").replace(edgeWhitespace, "")]));
+  const payload = Object.fromEntries(Object.keys(FORM_LIMITS).map((key) => [key, normalizePublicFormText(form[key])]));
   if (payload.subject !== "outro") payload.subjectOther = "";
   const fields = {};
   for (const [key, limit] of Object.entries(FORM_LIMITS)) {
@@ -40,6 +43,7 @@ export async function sendPublicForm(kind, payload) {
 }
 
 export function publicFormError(error) {
+  if (error.response?.status === 413) return "O conteúdo excede o tamanho permitido. Revise os campos e use até 3.000 caracteres na mensagem.";
   if (error.code === "API_UNAVAILABLE" || error.response?.status === 503) return "O envio está temporariamente indisponível. Tente novamente mais tarde.";
   if (error.response?.status === 400) return "Não foi possível validar os dados. Revise os campos antes de tentar novamente.";
   if (error.response?.status === 429) return "Muitas tentativas de envio. Aguarde alguns minutos antes de tentar novamente.";

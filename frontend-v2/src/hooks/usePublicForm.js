@@ -51,11 +51,11 @@ export default function usePublicForm(kind) {
     inFlight.current = false;
   }
 
-  function fieldProps(name) {
+  function fieldProps(name, descriptionId) {
     return {
       disabled: isSending,
       "aria-invalid": Boolean(fieldErrors[name]),
-      "aria-describedby": fieldErrors[name] ? `${kind}-${name}-error` : undefined,
+      "aria-describedby": [descriptionId, fieldErrors[name] ? `${kind}-${name}-error` : null].filter(Boolean).join(" ") || undefined,
     };
   }
 

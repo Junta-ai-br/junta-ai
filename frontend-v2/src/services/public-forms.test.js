@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { validatePublicForm, FORM_LIMITS } from "./public-forms";
+import { validatePublicForm, FORM_LIMITS, normalizePublicFormText } from "./public-forms";
 
 const valid = { name: "Ana", email: "ana@example.com", subject: "outro", subjectOther: "Assunto", message: "Linha 1\nLinha 2" };
 afterEach(() => vi.unstubAllEnvs());
@@ -46,7 +46,7 @@ describe.each(["contact", "feedback"])("public %s service", (kind) => {
     await expect(sendPublicForm(kind, valid)).rejects.toMatchObject({ code: "UNCONFIRMED" });
   });
 
-  it.each([400, 429, 503, "ERR_NETWORK", "ECONNABORTED", "ETIMEDOUT"])("propagates %s without retries", async (failure) => {
+  it.each([400, 413, 429, 503, "ERR_NETWORK", "ECONNABORTED", "ETIMEDOUT"])("propagates %s without retries", async (failure) => {
     const { api, sendPublicForm } = await load("https://backend.example.test");
     const error = typeof failure === "number" ? { response: { status: failure, data: { mensagem: "erro", campos: {} } } } : { code: failure };
     api.defaults.adapter = vi.fn().mockRejectedValue(error);
@@ -56,6 +56,24 @@ describe.each(["contact", "feedback"])("public %s service", (kind) => {
 });
 
 describe("backend-compatible validation", () => {
+  it.each([
+    [" \t\n\u2003Olá\n😀\u2003 \n", "Olá\n😀"],
+    [" \u2003\n", ""],
+    ["\u00a0Olá\u00a0", "\u00a0Olá\u00a0"],
+    ["\ufeffOlá\ufeff", "\ufeffOlá\ufeff"],
+  ])("shares Java-compatible normalization between the counter and validation for %j", (raw, expected) => {
+    expect(normalizePublicFormText(raw)).toBe(expected);
+    expect(validatePublicForm({ ...valid, message: raw }, "contact").payload.message).toBe(expected);
+    expect(normalizePublicFormText(raw).length).toBe(expected.length);
+  });
+  it("uses the approved public-form limits and preserves Unicode at the message boundary", () => {
+    expect(FORM_LIMITS).toEqual({ name: 100, email: 254, subject: 32, subjectOther: 120, message: 3000 });
+    const message = "Á\n" + "😀".repeat(1499);
+    expect(message).toHaveLength(3000);
+    expect(validatePublicForm({ ...valid, message }, "contact").fields).toEqual({});
+    expect(validatePublicForm({ ...valid, message }, "feedback").payload.message).toBe(message);
+    expect(validatePublicForm({ ...valid, message: message + "!" }, "contact").fields).toHaveProperty("message");
+  });
   it("strips Java whitespace and preserves internal newlines", () => {
     expect(validatePublicForm({ ...valid, name: "\u2003 Ana \u2003", message: " \nLinha 1\n\nLinha 2\n " }, "contact").payload).toEqual({ ...valid, message: "Linha 1\n\nLinha 2" });
     expect(validatePublicForm({ ...valid, name: "\u00a0Ana\u00a0" }, "contact").payload.name).toBe("\u00a0Ana\u00a0");
@@ -72,8 +90,8 @@ describe("backend-compatible validation", () => {
   });
 
   it("counts emoji as two UTF-16 units", () => {
-    expect(validatePublicForm({ ...valid, name: "😀".repeat(60) }, "contact").fields).not.toHaveProperty("name");
-    expect(validatePublicForm({ ...valid, name: "😀".repeat(61) }, "contact").fields).toHaveProperty("name");
+    expect(validatePublicForm({ ...valid, name: "😀".repeat(50) }, "contact").fields).not.toHaveProperty("name");
+    expect(validatePublicForm({ ...valid, name: "😀".repeat(51) }, "contact").fields).toHaveProperty("name");
   });
 
   it("checks email format, email size, subject size and subject membership", () => {

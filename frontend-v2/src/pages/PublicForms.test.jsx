@@ -24,6 +24,36 @@ describe.each([
   }
   function submit() { fireEvent.submit(screen.getByRole("button", { name: send }).closest("form")); }
 
+  it("counts UTF-16 without truncating pasted text and keeps the counter associated with validation errors", () => {
+    render(<Component />);
+    const message = screen.getByLabelText(messageLabel);
+    expect(message).toHaveAccessibleDescription(/0 \/ 3000 caracteres/);
+    const value = "\u2003 " + "Á\n" + "😀".repeat(1500) + " \n";
+    fireEvent.change(message, { target: { value } });
+    expect(message).toHaveValue(value);
+    expect(message).toHaveAccessibleDescription(/3002 \/ 3000 caracteres/);
+    submit();
+    expect(message).toHaveAttribute("aria-invalid", "true");
+    expect(message).toHaveAccessibleDescription(/3002 \/ 3000 caracteres.*Use no máximo 3000/s);
+    expect(message).toHaveValue(value);
+    expect(backend.post).not.toHaveBeenCalled();
+  });
+
+  it("counts the validated message at the limit while preserving all typed edge whitespace", async () => {
+    render(<Component />);
+    fill();
+    const normalized = "Á\n" + "😀".repeat(1499);
+    const raw = " \u2003\t" + normalized + "\n  ";
+    const message = screen.getByLabelText(messageLabel);
+    fireEvent.change(message, { target: { value: raw } });
+    expect(message).toHaveValue(raw);
+    expect(message).toHaveAccessibleDescription(/3000 \/ 3000 caracteres/);
+    submit();
+    await screen.findByText(received);
+    expect(backend.post).toHaveBeenCalledWith(`/${kind}`, expect.objectContaining({ message: normalized }), expect.any(Object));
+    expect(backend.post).toHaveBeenCalledTimes(1);
+  });
+
   it("sends normalized payload, confirms success and resets all fields", async () => {
     render(<Component />);
     fill("outro");
@@ -55,7 +85,7 @@ describe.each([
   });
 
   it.each([
-    [400, "Revise os campos"], [429, "Aguarde alguns minutos"], [503, "temporariamente indisponível"],
+    [400, "Revise os campos"], [413, "excede o tamanho permitido"], [429, "Aguarde alguns minutos"], [503, "temporariamente indisponível"],
     ["ERR_NETWORK", "A mensagem pode ter sido enviada"], ["ECONNABORTED", "O tempo de espera terminou"], ["ETIMEDOUT", "O tempo de espera terminou"],
   ])("handles %s, preserves all values and allows manual retry", async (status, message) => {
     const error = typeof status === "number" ? { response: { status, data: { timestamp: "now", status, erro: "Erro", mensagem: "Backend", campos: {} } } } : { code: status };
@@ -102,7 +132,7 @@ describe.each([
     fill("outro");
     fireEvent.change(screen.getByLabelText("Nome"), { target: { value: " \u2003 " } });
     fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: "invalid" } });
-    fireEvent.change(screen.getByLabelText(messageLabel), { target: { value: "a".repeat(10001) } });
+    fireEvent.change(screen.getByLabelText(messageLabel), { target: { value: "a".repeat(3001) } });
     submit();
     for (const label of ["Nome", "E-mail", "Qual assunto?", messageLabel]) {
       expect(screen.getByLabelText(label)).toHaveAttribute("aria-invalid", "true");
@@ -111,8 +141,8 @@ describe.each([
     expect(screen.getByLabelText("Nome")).toHaveFocus();
     expect(backend.post).not.toHaveBeenCalled();
     fill("outro");
-    fireEvent.change(screen.getByLabelText("Qual assunto?"), { target: { value: "a".repeat(161) } });
-    fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "😀".repeat(61) } });
+    fireEvent.change(screen.getByLabelText("Qual assunto?"), { target: { value: "a".repeat(121) } });
+    fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "😀".repeat(51) } });
     submit();
     expect(screen.getByLabelText("Qual assunto?")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Nome")).toHaveAttribute("aria-invalid", "true");
