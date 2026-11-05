@@ -1,3 +1,4 @@
+
 # 💜 Junta.ai | Seu assistente financeiro para o dia a dia.
 
 <p align="center">
@@ -17,40 +18,40 @@
 
 > **Um assistente financeiro conversacional desenvolvido para ajudar pessoas a construir uma relação mais consciente e tranquila com o próprio dinheiro através da Inteligência Artificial.**
 
+🌐 **Site oficial:** https://junta-ai.com
+
 ---
 
-# 📖 O que é o Junta.ai?
+## 📖 O que é o Junta.ai?
 
 O **Junta.ai** é um assistente financeiro conversacional que transforma conversas em organização, contexto e decisões mais conscientes sobre dinheiro.
 
-Em vez de depender exclusivamente de planilhas, formulários ou interfaces complexas, a proposta é permitir que o usuário converse naturalmente sobre sua vida financeira enquanto a aplicação organiza informações, acompanha objetivos e apresenta insights de forma simples e contextualizada.
+Em vez de depender exclusivamente de planilhas, formulários ou interfaces complexas, a proposta é permitir que o usuário converse naturalmente sobre sua vida financeira enquanto a aplicação organiza informações, acompanha objetivos e apresenta dados de forma simples e contextualizada.
 
-A proposta combina **Inteligência Artificial, desenvolvimento Full Stack, desenvolvimento seguro e uma experiência centrada no usuário** para tornar a organização financeira mais acessível e menos intimidante.
+O projeto combina **Inteligência Artificial, desenvolvimento Full Stack, desenvolvimento seguro e uma experiência centrada no usuário** para tornar a organização financeira mais acessível e menos intimidante.
 
-O projeto é desenvolvido como **Projeto Final da formação em Desenvolvimento Full Stack da +praTi / Codifica**.
+O Junta.ai é desenvolvido como **Projeto Final da formação em Desenvolvimento Full Stack da +praTi / Codifica**, com perspectiva de continuidade e evolução além da formação.
 
 ---
 
-# 💡 Por que Junta.ai?
+## 💡 Por que Junta.ai?
 
-O projeto nasceu inicialmente com o nome **Grana AI**, refletindo sua primeira proposta como uma ferramenta de organização financeira.
+O projeto nasceu inicialmente com o nome **Grana AI**, refletindo sua primeira proposta como ferramenta de organização financeira.
 
 À medida que o produto evoluiu, ficou claro que sua missão era maior do que simplesmente controlar gastos ou organizar planilhas.
 
-O objetivo passou a ser criar um assistente capaz de acompanhar o usuário em sua jornada financeira, oferecendo contexto, orientação e conversas que incentivem decisões mais conscientes.
+O objetivo passou a ser criar um assistente capaz de acompanhar o usuário em sua jornada financeira, oferecendo contexto e orientação para decisões mais conscientes.
 
 Foi dessa evolução que surgiu o nome **Junta.ai**.
 
 "Junta" faz parte do vocabulário brasileiro e carrega dois significados que representam a essência do produto:
 
-- 💰 **Juntar dinheiro**, incentivando hábitos financeiros mais saudáveis;
-- 🤝 **Estar junto**, transmitindo a ideia de um assistente que acompanha o usuário, em vez de apenas registrar informações.
-
-Junta.ai representa uma nova visão de produto.
+- 💰 **Juntar dinheiro:** incentivar hábitos financeiros mais saudáveis e o planejamento de objetivos.
+- 🤝 **Estar junto:** transmitir a ideia de um assistente que acompanha o usuário, em vez de apenas registrar informações.
 
 ---
 
-# 💜 Nossa Filosofia
+## 💜 Nossa Filosofia
 
 > **O Junta.ai não existe para controlar as finanças do usuário.**
 >
@@ -58,308 +59,345 @@ Junta.ai representa uma nova visão de produto.
 
 O produto foi pensado para apoiar o usuário sem assumir uma postura de cobrança ou julgamento.
 
+Nossa filosofia se traduz em uma premissa:
+
+**Sem fórmulas mágicas, sem sermão e sem fingir que todo mundo vive a mesma realidade.**
+
 A experiência busca combinar:
 
-- autonomia;
-- clareza;
-- contexto;
-- planejamento;
-- baixa fricção;
-- transparência;
-- segurança;
-- respeito às escolhas do usuário.
+- Autonomia e respeito às escolhas individuais.
+- Clareza e transparência.
+- Organização e planejamento financeiro.
+- Linguagem acessível e baixa fricção.
+- Segurança e privacidade.
+- Orientações contextualizadas, sem julgamentos.
 
-O objetivo é que a tecnologia ajude o usuário a compreender melhor sua situação financeira e tomar suas próprias decisões.
+A tecnologia deve ampliar a capacidade de compreensão e decisão das pessoas, não substituir sua autonomia.
 
 ---
 
-# 🎯 Principais Funcionalidades
+## 🎯 Principais Funcionalidades
 
-As funcionalidades abaixo fazem parte do escopo do MVP e estão sendo implementadas progressivamente.
+O MVP reúne funcionalidades de organização financeira, visualização de dados e uma experiência conversacional conectada aos serviços da aplicação.
 
-### 💬 Conversação em linguagem natural
+As funcionalidades possuem diferentes níveis de implementação e validação, apresentados na seção **Estado do MVP**.
 
-O usuário poderá registrar informações financeiras por meio de uma conversa, utilizando linguagem natural.
+### 💬 Assistente conversacional
 
-### 💰 Registro de receitas e despesas
+A interface conversacional permite que o usuário interaja com o Junta.ai utilizando linguagem natural.
 
-O sistema deverá interpretar as informações fornecidas pelo usuário e transformá-las em registros financeiros estruturados.
+Entre os recursos implementados estão:
 
-### 🧠 Organização inteligente
+- Criação e consulta de conversas.
+- Histórico de mensagens.
+- Envio de mensagens ao backend.
+- Exibição de respostas retornadas pela API.
+- Tratamento de falhas e estados de processamento.
+- Proteção contra reenvios involuntários de operações.
 
-As movimentações poderão ser classificadas e organizadas automaticamente a partir do contexto fornecido pelo usuário.
+O processamento por IA depende das configurações e integrações disponíveis no ambiente de execução.
+
+### 💰 Receitas, despesas e categorias
+
+A aplicação disponibiliza recursos para organização de movimentações financeiras:
+
+- Cadastro de receitas e despesas.
+- Consulta, edição e exclusão de transações.
+- Organização por categorias.
+- Consulta por períodos.
+- Validação de dados financeiros.
+
+As operações são realizadas por serviços autenticados do backend.
 
 ### 🎯 Metas financeiras
 
-O usuário poderá definir objetivos financeiros e acompanhar seu progresso.
+O planejamento financeiro contempla:
 
-### 📊 Dashboard financeiro
+- Criação e acompanhamento de metas.
+- Consulta de objetivos e progresso.
+- Operações relacionadas às metas financeiras.
+- Tratamento de comandos com chaves de idempotência.
+- Proteções para tentativas cujo resultado não foi confirmado.
 
-Informações financeiras serão apresentadas por meio de indicadores e visualizações que facilitem a compreensão da situação financeira.
+A recuperação de operações incertas possui limitações documentadas e não representa uma recuperação automática integral.
 
-### 🧭 Saúde financeira
+### 📊 Dashboard e visão financeira
 
-O sistema poderá utilizar indicadores financeiros e informações fornecidas pelo usuário para apresentar uma visão contextualizada de sua situação.
-
-### 🧠 Recomendações contextualizadas
-
-A Inteligência Artificial poderá utilizar as informações disponíveis para oferecer sugestões relacionadas ao contexto financeiro do usuário.
-
-### 📈 Acompanhamento da evolução
-
-O sistema será capaz de organizar o histórico financeiro e utilizar essas informações para fornecer uma visão mais ampla da evolução do usuário.
-
----
-
-# 🤖 Inteligência Artificial
-
-O Junta.ai utiliza **Inteligência Artificial** como parte central da experiência conversacional.
-
-A arquitetura utiliza agentes especializados e **CrewAI** como framework de orquestração, enquanto o **MCP (Model Context Protocol)** participa da definição do contexto, recursos e limites disponíveis para essa camada.
-
-Os agentes operam dentro do contexto estabelecido pela arquitetura da aplicação.
-
-O objetivo é utilizar IA para interpretar mensagens, organizar informações financeiras e apoiar experiências contextualizadas, mantendo o usuário no controle de suas decisões.
-
-Os detalhes de implementação, especificações dos agentes, regras operacionais e decisões relacionadas à arquitetura de IA são mantidos na documentação interna do projeto.
-
----
-
-# 🔐 Desenvolvimento Seguro
-
-Segurança é uma preocupação transversal do Junta.ai.
-
-Por lidar com informações financeiras, o projeto considera práticas de desenvolvimento seguro desde a arquitetura e implementação.
-
-Entre os princípios considerados estão:
-
-- proteção de dados;
-- autenticação e controle de acesso;
-- gestão segura de credenciais;
-- validação de entradas;
-- segurança das integrações;
-- princípio do menor privilégio;
-- segurança na utilização de Inteligência Artificial;
-- testes e validações de segurança.
-
-A estratégia é orientada por boas práticas de engenharia de software e referências como a **OWASP**, além dos aprendizados obtidos durante a **GloboSec Week**.
-
-Os requisitos, decisões e controles técnicos detalhados são mantidos na documentação interna do projeto.
-
----
-
-# ♿ Acessibilidade visual básica
-
-A interface considera aspectos básicos de acessibilidade visual, incluindo:
-
-- Light Mode e Dark Mode;
-- contraste visual;
-- espaçamento e legibilidade;
-- adaptação da interface a diferentes tamanhos de tela.
-
-Recursos adicionais de acessibilidade serão avaliados conforme a evolução do projeto.
-
----
-
-# 📊 Dados e Visualizações
-
-O dashboard do Junta.ai foi projetado para apresentar informações financeiras de forma visual e facilitar a compreensão dos dados.
+O dashboard apresenta informações financeiras por meio de indicadores e visualizações.
 
 A interface contempla:
 
-- acompanhamento de receitas;
-- acompanhamento de despesas;
-- saldo;
-- categorias;
-- períodos;
-- filtros por datas;
-- gráficos financeiros;
-- acompanhamento de metas.
+- Receitas e despesas.
+- Indicadores de saldo.
+- Distribuição por categorias.
+- Gráficos financeiros.
+- Acompanhamento temporal.
+- Filtros por período.
+- Visualização de movimentações.
 
-A integração entre os dados provenientes da experiência conversacional, persistência e visualizações está em desenvolvimento.
+As informações são obtidas dos serviços financeiros da aplicação, com validações de contrato e tratamento de estados de carregamento e erro.
+
+### 📈 Relatórios financeiros
+
+A aplicação também disponibiliza relatórios para facilitar a análise dos dados:
+
+- Relatórios mensais.
+- Relatórios trimestrais.
+- Relatórios semestrais.
+- Relatórios anuais.
+- Indicadores e visualizações financeiras.
+- Exportação para CSV, Excel e PDF.
+
+### 👤 Conta e perfil
+
+A área autenticada contempla:
+
+- Cadastro e login.
+- Proteção de rotas.
+- Gerenciamento de perfil.
+- Fluxo de exclusão de conta.
+
+### 🌐 Páginas institucionais
+
+O frontend também disponibiliza páginas de apresentação do produto, planos, equipe, atualizações, contato, feedback, privacidade e termos de uso.
+
+**Nota:** as demonstrações animadas e os mockups apresentados na landing page são recursos visuais de apresentação do produto. Não representam, isoladamente, evidência de execução financeira real.
 
 ---
 
-# 🧪 Testes e Validação
+## 🏗️ Arquitetura da Aplicação
 
-A estratégia de testes busca verificar se as funcionalidades implementadas correspondem aos requisitos definidos e apresentam o comportamento esperado.
+O Junta.ai utiliza uma arquitetura com responsabilidades separadas entre interface, serviços de aplicação, persistência e processamento conversacional.
 
-Entre os objetivos estão:
+### 💻 Frontend
 
-- validar requisitos funcionais;
-- verificar comportamentos esperados;
-- testar integrações;
-- validar funcionalidades relacionadas à Inteligência Artificial;
-- identificar comportamentos fora do escopo;
-- verificar requisitos de segurança;
-- registrar evidências dos testes realizados.
+Aplicação desenvolvida em **React**, responsável por:
 
-A equipe também pretende realizar **testes com usuários reais na primeira metade de outubro de 2026**, buscando coletar feedback, identificar problemas de usabilidade e orientar melhorias antes da apresentação final do projeto.
+- Interface e navegação.
+- Interação com o usuário.
+- Apresentação de informações financeiras.
+- Visualizações e componentes reutilizáveis.
+- Comunicação com as APIs.
 
-Os detalhes da estratégia, critérios e evidências de testes são mantidos na documentação interna.
+### ⚙️ Backend
+
+Serviço desenvolvido em **Java com Spring Boot**, responsável por:
+
+- Autenticação e autorização.
+- Regras de domínio financeiro.
+- Validação de operações.
+- Persistência de dados.
+- Comunicação com os serviços da aplicação.
+- Execução das operações financeiras.
+
+### 🗄️ Banco de dados
+
+O **PostgreSQL** é utilizado para persistência dos dados da aplicação.
+
+### 🤖 AI Service
+
+Serviço desenvolvido em **Python**, responsável pelo processamento estruturado das solicitações conversacionais encaminhadas pelo backend.
+
+A arquitetura estabelece uma separação importante:
+
+**A IA interpreta e auxilia o processamento das solicitações; o backend permanece responsável pela execução autoritativa e persistência das operações financeiras.**
+
+### 🧠 CrewAI e modelos de linguagem
+
+O AI Service possui implementação de orquestração com **CrewAI** e integração configurável com modelos **Gemini**.
+
+A execução com modelos externos depende da configuração e disponibilidade do provedor.
+
+Os testes realizados com adaptadores simulados verificam comportamentos específicos, mas não comprovam, isoladamente, a execução com modelos reais em produção.
+
+### 🔗 MCP | Model Context Protocol
+
+O Junta.ai está evoluindo sua arquitetura baseada em MCP para estabelecer contratos formais de comunicação e disponibilização de recursos entre os componentes da aplicação.
+
+O projeto já possui uma implementação experimental e propostas de contratos, que estão em processo de revisão e validação para adoção como parte da arquitetura oficial.
+
+A próxima etapa contempla:
+
+- Formalização dos contratos.
+- Validação de compatibilidade.
+- Definição das responsabilidades e limites de acesso.
+- Integração progressiva com o AI Service.
+
+A formalização de um contrato não significa, automaticamente, que sua integração produtiva esteja concluída.
+
+**O MVP não depende de integração com Open Finance.**
 
 ---
 
-# 🛠️ Tecnologias
+## 🛠️ Tecnologias
 
 <p align="center">
 
-<img src="https://skillicons.dev/icons?i=react,javascript,vite,java,spring,postgres,docker,nginx,git,github,vscode,azure" />
+<img src="https://skillicons.dev/icons?i=react,javascript,vite,java,spring,postgres,docker,git,github,vscode,azure" alt="Tecnologias utilizadas no Junta.ai" />
 
 </p>
 
-## Frontend
-
-- React
-- JavaScript
-- Vite
-- HTML
-- CSS
-
-## Backend
-
-- Java
-- Spring Boot
-- API REST
-
-## Inteligência Artificial
-
-- CrewAI
-- MCP (Model Context Protocol)
-- Agentes de Inteligência Artificial
-- LLMs
-
-## Banco de Dados
-
-- PostgreSQL
-
-## Infraestrutura e Cloud
-
-- Docker
-- Containers
-- NGINX
-- Azure
-
-## Integrações
-
-- API REST
-- WhatsApp (em análise)
-
-## Segurança
-
-- Spring Security
-- JWT
-- OWASP
-- Práticas de Secure Development
-
-## Testes
-
-- Testes unitários
-- Testes de integração
-- Testes funcionais
-- Testes de componentes
-- Validação baseada em requisitos
-
----
-
-# 🚧 Status do Projeto
-
-🟡 **MVP em desenvolvimento**
-
-O Junta.ai encontra-se em processo de evolução arquitetural e implementação do MVP.
-
-Atualmente, as principais frentes incluem:
-
-- 🎨 Design System
-- 💻 Desenvolvimento da interface em React
-- 💬 Experiência conversacional
-- 🤖 Estruturação e orquestração dos agentes de IA
-- 🔗 Configuração do MCP
-- ⚙️ Estruturação do backend
-- 🗄️ Implementação da persistência de dados
-- 📱 Integração com WhatsApp (em análise)
-- 🐳 Containerização da aplicação
-- ☁️ Infraestrutura em nuvem
-- 🔐 Desenvolvimento seguro
-- ♿ Acessibilidade visual básica
-- 🧪 Estratégia de testes
-- 👤 Autenticação e autorização
-
----
-
-# 🚀 Objetivos do MVP
-
-- [x] Definição da visão do produto
-- [x] Prototipação inicial
-- [x] Evolução da identidade para Junta.ai
-- [x] Definição inicial do Design System
-- [x] Estruturação da experiência conversacional
-- [x] Definição do PostgreSQL
-- [x] Configuração inicial do MCP
-- [ ] Comunicação inicial com WhatsApp (em análise)
-- [ ] Conversação funcional com agentes de IA
-- [ ] Registro inteligente de receitas e despesas
-- [ ] Organização das transações
-- [ ] Acompanhamento de metas financeiras
-- [ ] Dashboard financeiro integrado aos dados
-- [ ] Saúde financeira
-- [ ] Recomendações financeiras contextualizadas
-- [ ] Histórico financeiro
-- [ ] Persistência completa de dados
-- [ ] API de integração entre frontend, IA e banco de dados
-- [ ] Autenticação e autorização
-- [ ] Controles de segurança
-- [ ] Testes automatizados
-- [ ] MVP funcional
-
----
-
-# 📈 Evolução do Projeto
-
-| Etapa | Status |
+| Camada | Tecnologias |
 |---|---|
-| 💡 Ideação | ✅ |
-| 🎨 Protótipo com IA | ✅ |
-| 📚 Definição da visão do produto | ✅ |
-| 🔄 Evolução Grana AI → Junta.ai | ✅ |
-| 📐 Arquitetura inicial | ✅ |
-| 🎨 Design System | ✅ |
-| 🔗 MCP do agente | ✅ |
-| 💻 Estrutura Frontend | 🚧 |
-| 💬 Experiência Conversacional | 🚧 |
-| 🤖 Agentes de IA | 🚧 |
-| ⚙️ Backend | 🚧 |
-| 🔐 Desenvolvimento Seguro | 🚧 |
-| 💾 Persistência de Dados | 🚧 |
-| ☁️ Infraestrutura em Cloud | 🚧 |
-| 👤 Autenticação e Autorização | 🚧 |
-| ♿ Acessibilidade visual básica | 🚧 |
-| 🧪 Testes | 🚧 |
-| 📱 Integração WhatsApp | ⏳ |
-| 👥 Validação com Usuários | ⏳ |
-| 🚀 MVP | ⏳ |
+| Frontend | React 19, JavaScript, Vite 8, React Router 7 |
+| Interface | CSS, Radix UI, Lucide, Motion |
+| Visualizações | Recharts |
+| Comunicação HTTP | Axios |
+| Backend | Java, Spring Boot, API REST |
+| Banco de dados | PostgreSQL |
+| AI Service | Python, CrewAI, Gemini |
+| Contratos e integração de IA | MCP |
+| Testes frontend | Vitest, React Testing Library |
+| Qualidade | ESLint, testes automatizados e GitHub Actions |
+| Infraestrutura | Docker, Azure e Vercel |
 
-**Legenda:**
-
-- ✅ Concluído
-- 🚧 Em desenvolvimento
-- ⏳ Planejado
+As tecnologias possuem diferentes estados de implantação e integração. Sua presença nesta tabela não significa que todos os componentes estejam operacionais simultaneamente em produção.
 
 ---
 
-# 📂 Estrutura do Projeto
+## 🔐 Desenvolvimento Seguro e Privacidade
 
-A estrutura pública do repositório está organizada para apresentar a aplicação e sua documentação sem expor materiais internos de desenvolvimento.
+Segurança é uma preocupação transversal do Junta.ai.
+
+Por lidar com informações financeiras, o projeto considera práticas de desenvolvimento seguro desde a arquitetura até a implementação das funcionalidades.
+
+Entre os mecanismos implementados e documentados estão:
+
+- Autenticação e proteção de rotas.
+- Controle de acesso a operações autenticadas.
+- Validação de entradas e respostas das APIs.
+- Tratamento de sessões expiradas.
+- Chaves de idempotência para determinadas operações financeiras.
+- Proteções contra reenvios involuntários.
+- Limites de tamanho e requisições em formulários públicos.
+- Tratamento de erros sem exposição intencional de informações sensíveis.
+- Separação entre interpretação por IA e execução financeira autoritativa.
+
+A estratégia é orientada por boas práticas de engenharia de software e referências como a **OWASP**, além dos aprendizados obtidos durante a **GloboSec Week**.
+
+Os controles possuem escopos e limitações específicos. A documentação técnica distingue implementação, testes locais e validação em ambiente implantado.
+
+Documentações internas relacionadas à segurança, contratos e decisões operacionais são mantidas separadamente, com acesso restrito à equipe.
+
+---
+
+## ♿ Experiência e Acessibilidade
+
+A interface do Junta.ai foi desenvolvida considerando princípios de usabilidade, clareza e acessibilidade.
+
+Entre os aspectos contemplados estão:
+
+- Light Mode e Dark Mode.
+- Responsividade.
+- Legibilidade e contraste.
+- Espaçamento e hierarquia visual.
+- Componentes reutilizáveis.
+- Estados de carregamento e erro.
+- Navegação e identificação de controles.
+
+Essas medidas não constituem, isoladamente, uma certificação de conformidade integral com as WCAG.
+
+A experiência permanece em evolução, com oportunidades de melhoria identificadas ao longo do desenvolvimento e das validações.
+
+---
+
+## 🧪 Testes e Qualidade
+
+O Junta.ai utiliza testes automatizados para verificar comportamentos da aplicação e apoiar a evolução do MVP.
+
+No frontend, são utilizados **Vitest** e **React Testing Library**.
+
+Entre os cenários contemplados estão:
+
+- Componentes e interações.
+- Rotas e autenticação.
+- Contratos de serviços.
+- Validações de entrada.
+- Fluxos financeiros.
+- Tratamento de erros.
+- Comportamentos relacionados à integração com APIs.
+
+O projeto também utiliza ferramentas de análise estática e processos de integração contínua.
+
+### Execução local do frontend
+
+**Pré-requisitos:** Node.js e npm compatíveis com as dependências do projeto.
+
+```bash
+git clone https://github.com/Junta-ai-br/junta-ai.git
+cd junta-ai/frontend-v2
+npm ci
+npm run dev
+```
+
+### Comandos disponíveis
+
+```bash
+npm run lint
+npm run test:run
+npm run test:coverage
+npm run build
+npm run preview
+```
+
+Para integração com o backend, é necessário configurar a variável de ambiente `VITE_API_URL` conforme o ambiente utilizado.
+
+Os testes automatizados verificam comportamentos específicos, mas não substituem a validação ponta a ponta, os testes de infraestrutura ou a avaliação com usuários reais.
+
+---
+
+## 🚧 Estado do MVP
+
+🟡 **MVP em desenvolvimento e integração**
+
+O Junta.ai possui implementações de frontend, serviços financeiros, autenticação, visualizações, planejamento e relatórios.
+
+A evolução do projeto está concentrada na consolidação das integrações, validação operacional e amadurecimento das funcionalidades.
+
+| Área | Situação documental |
+|---|---|
+| Identidade e visão do produto | Definidas |
+| Frontend React | Implementado |
+| Autenticação e rotas protegidas | Implementadas |
+| Serviços de transações | Implementados |
+| Metas financeiras | Implementadas, com limitações documentadas |
+| Dashboard e relatórios | Implementados |
+| Assistente conversacional | Interface e integração com API implementadas |
+| Orquestração CrewAI | Implementação condicional |
+| MCP | Contratos em formalização; integração produtiva pendente |
+| Testes automatizados | Implementados |
+| Validação completa em produção | A confirmar |
+| Testes formais com usuários | Evidências a consolidar |
+
+Os estados representam evidências de implementação disponíveis na documentação e no código, não uma certificação de disponibilidade de cada funcionalidade no ambiente público.
+
+### Próximas etapas
+
+As prioridades de evolução incluem:
+
+- Formalização e validação dos contratos MCP.
+- Consolidação da integração com o AI Service.
+- Validação dos fluxos financeiros ponta a ponta.
+- Ampliação das evidências de testes e validação operacional.
+- Avaliação da experiência com usuários.
+- Refinamento contínuo de usabilidade, acessibilidade e segurança.
+
+---
+
+## 📂 Estrutura do Projeto
+
+A estrutura pública do repositório reúne a aplicação frontend, documentação e materiais relacionados à evolução do produto.
 
 ```text
 junta-ai/
-
 ├── docs/
+│   ├── ai/
 │   ├── design-system/
 │   ├── product/
 │   ├── research/
+│   ├── security/
 │   ├── team/
-│   └── README-Docs.md
+│   └── ...
 │
 ├── frontend-v2/
 │   ├── src/
@@ -367,102 +405,66 @@ junta-ai/
 │   │   ├── assets/
 │   │   ├── components/
 │   │   ├── contexts/
+│   │   ├── hooks/
 │   │   ├── layouts/
 │   │   ├── pages/
+│   │   ├── services/
 │   │   └── ...
-│   │
 │   └── ...
 │
+├── prototype/
 ├── README.md
-└── .gitignore
+└── ...
 ```
 
-> Documentações técnicas detalhadas e materiais internos relacionados à IA, segurança, arquitetura e testes são mantidos separadamente.
+A pasta `docs/` contém documentação pública sobre o produto, experiência, decisões e evolução técnica.
 
 ---
 
-# 📚 Documentação
+## 📚 Documentação e Repositórios
 
-A documentação pública está organizada na pasta **`/docs`**.
+O desenvolvimento do Junta.ai está distribuído entre repositórios com responsabilidades específicas.
 
-| Área | Descrição |
+| Repositório | Responsabilidade |
 |---|---|
-| 📐 Product | Visão, princípios e especificações do produto |
-| 🔎 Research | Pesquisas, evidências, hipóteses e validações |
-| 🎨 Design System | Diretrizes e decisões relacionadas à interface |
-| 👥 Team | Informações relacionadas à equipe |
-| 📝 Documentação | Organização e orientação dos documentos públicos |
+| [junta-ai](https://github.com/Junta-ai-br/junta-ai) | Frontend, produto e documentação pública |
+| [junta-ai-backend](https://github.com/Junta-ai-br/junta-ai-backend) | Backend, APIs e domínio financeiro |
+| `junta-ai-ai` | AI Service, orquestração e desenvolvimento de IA |
+| `junta-ai-motion` | Recursos de motion design e animação |
 
-A documentação pública apresenta o contexto necessário para compreender o produto, sua evolução e suas principais decisões.
+Os repositórios de IA e motion design possuem acesso privado.
 
-Detalhes técnicos de implementação são mantidos separadamente para a equipe do projeto.
+A documentação pública está organizada na pasta [`docs/`](https://github.com/Junta-ai-br/junta-ai/tree/main/docs).
+
+Materiais internos de segurança, contratos e decisões operacionais são mantidos separadamente.
 
 ---
 
-# 🌐 Protótipo Original
+## 🌐 Protótipo Original
 
-O Junta.ai teve início como um protótipo desenvolvido durante um bootcamp utilizando ferramentas de Inteligência Artificial para acelerar a fase de ideação e validação da interface.
+O Junta.ai teve início como um protótipo desenvolvido durante um bootcamp, utilizando ferramentas de Inteligência Artificial para acelerar a ideação e a exploração da interface.
 
 A primeira versão utilizava o nome **Grana AI**.
 
-### 🔗 Repositório original
+**Repositório original:**
 
 https://github.com/danieli-dutra/grana-ai-finance-assistant
 
----
-
-# 📌 Origem e Evolução
-
-O projeto passou por diferentes fases até chegar ao conceito atual.
-
-```text
-Grana AI
-   │
-   ▼
-Protótipo com IA
-   │
-   ▼
-Validação da proposta
-   │
-   ▼
-Evolução da visão do produto
-   │
-   ▼
-Junta.ai
-   │
-   ▼
-Aplicação Full Stack
-   │
-   ▼
-Experiência conversacional
-   │
-   ▼
-Inteligência Artificial + MCP
-   │
-   ▼
-Orquestração de agentes
-   │
-   ▼
-Desenvolvimento seguro
-   │
-   ▼
-Infraestrutura em containers e cloud
-   │
-   ▼
-Testes e validação
-```
-
-A evolução do projeto representa uma mudança de visão: de uma ferramenta de organização financeira para uma experiência conversacional orientada a contexto, autonomia, clareza e segurança.
+O projeto evoluiu posteriormente para uma aplicação Full Stack com foco em experiência conversacional, organização financeira e desenvolvimento seguro.
 
 ---
 
-# 👥 Equipe
+## 👥 Equipe
+
+O Junta.ai é desenvolvido colaborativamente como Projeto Final da formação em Desenvolvimento Full Stack da **+praTi / Codifica**.
+
+O projeto reúne diferentes experiências e conhecimentos em desenvolvimento de software, inteligência artificial, produto, UX/UI, infraestrutura e segurança.
 
 ### 👑 Liderança
 
-**Danieli Dutra Braga** — Líder da equipe e responsável pela liderança do desenvolvimento do projeto.
+**Danieli Dutra Braga** — Líder da equipe e responsável pela coordenação do desenvolvimento do Junta.ai.
 
-### 🤝 Equipe
+### 🤝 Integrantes
 
 - Artur Alejandro
 - Caio Firmino
@@ -475,7 +477,7 @@ A evolução do projeto representa uma mudança de visão: de uma ferramenta de 
 - Simone Frez
 - Thais Rodrigues
 
-O projeto é desenvolvido como parte da formação em **Desenvolvimento Full Stack da +praTi / Codifica**.
+O desenvolvimento do Junta.ai é resultado da colaboração entre seus integrantes, desde a concepção do produto até a implementação e evolução de suas funcionalidades.
 
 ---
 
@@ -491,14 +493,12 @@ O projeto é desenvolvido como parte da formação em **Desenvolvimento Full Sta
 
 ---
 
-# © Direitos sobre o projeto
+## © Direitos sobre o Projeto
 
-O código, documentação, identidade visual, materiais e demais conteúdos deste repositório são disponibilizados para fins de apresentação e acompanhamento do desenvolvimento do projeto.
+O código, a documentação, a identidade visual, os materiais e os demais conteúdos deste repositório são disponibilizados para fins de apresentação e acompanhamento do desenvolvimento do projeto.
 
-**Este repositório não possui uma licença open source.**
+**Este repositório não possui uma licença open source declarada.**
 
-Não é autorizada a cópia, redistribuição, comercialização ou utilização deste projeto, integral ou parcialmente, sem autorização prévia dos responsáveis.
+A ausência de uma licença open source não concede permissão geral para cópia, redistribuição, comercialização ou reutilização do projeto.
 
 Para solicitações relacionadas ao uso do projeto, entre em contato com a equipe do Junta.ai.
-
----
