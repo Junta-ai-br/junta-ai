@@ -29,7 +29,7 @@ const publicRoutes = [
   ["/sobre", /11 pessoas/],
   ["/contato", /Conte no que podemos te ajudar/],
   ["/privacidade", /Política de Privacidade/],
-  ["/termos", /Termos de Uso/],
+  ["/termos", /^Termos de Uso$/],
   ["/feedback", /Tem algo para contar/],
   ["/login", /Vamos continuar de onde paramos/],
   ["/cadastro", /Vamos começar/],
@@ -43,7 +43,7 @@ describe("route protection", () => {
   it.each([
     ["/contato", /Conte no que podemos te ajudar/, null],
     ["/privacidade", /Política de Privacidade/, "seguranca@junta-ai.com"],
-    ["/termos", /Termos de Uso/, "contato@junta-ai.com"],
+    ["/termos", /^Termos de Uso$/, "contato@junta-ai.com"],
   ])("uses the institutional contact for %s and the general footer", async (route, heading, email) => {
     renderWithFinanceProvider(<AppRoutes />, { route });
     const page = (await screen.findByRole("heading", { name: heading })).closest("main");

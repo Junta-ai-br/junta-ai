@@ -1,108 +1,100 @@
-/* -------------------------------------------------------------------------- */
-/* Page */
-/* -------------------------------------------------------------------------- */
-
-.page {
-  min-height: 100vh;
-  padding: var(--spacing-64) var(--spacing-32);
+﻿.terms-page {
+  padding: var(--spacing-64) var(--spacing-24);
   background: var(--background);
+  color: var(--text-secondary);
 }
 
-.page__container {
-  width: min(100%, 1120px);
-  margin: 0 auto;
+.terms-page__container {
+  width: min(100%, 70ch);
+  margin-inline: auto;
+  overflow-wrap: break-word;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Header */
-/* -------------------------------------------------------------------------- */
-
-.page__header {
-  max-width: 760px;
+.terms-page__header {
   margin-bottom: var(--spacing-48);
 }
 
-.page__eyebrow {
-  display: block;
-  margin-bottom: var(--spacing-12);
+.terms-page h1 {
+  margin: 0 0 var(--spacing-32);
+  color: var(--text-primary);
+  font-size: var(--font-display);
+  line-height: var(--line-height-tight);
+  text-wrap: balance;
+}
 
-  font-size: 0.875rem;
-  font-weight: 600;
+.terms-page__section + .terms-page__section {
+  margin-top: var(--spacing-48);
+}
+
+.terms-page h2 {
+  margin: 0 0 var(--spacing-20);
+  color: var(--text-primary);
+  font-size: var(--font-title);
+  line-height: var(--line-height-normal);
+  text-wrap: balance;
+}
+
+.terms-page h3 {
+  margin: var(--spacing-24) 0 var(--spacing-16);
+  color: var(--text-primary);
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-semibold);
+  line-height: var(--line-height-normal);
+}
+
+.terms-page p,
+.terms-page ul {
+  margin: 0 0 var(--spacing-20);
+  line-height: var(--line-height-relaxed);
+}
+
+.terms-page ul {
+  padding-left: var(--spacing-24);
+  list-style: disc;
+}
+
+.terms-page li + li {
+  margin-top: var(--spacing-12);
+}
+
+.terms-page strong {
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
+}
+
+.terms-page a {
   color: var(--brand-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-underline-offset: var(--spacing-4);
+  overflow-wrap: anywhere;
 }
 
-.page__title {
-  margin: 0 0 var(--spacing-16);
-
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.1;
-  font-weight: 700;
-  color: var(--text-primary);
+.terms-page a:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: var(--spacing-4);
+  border-radius: var(--radius-4);
 }
 
-.page__description {
-  margin: 0;
-
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
+.terms-page__closing {
+  margin-top: var(--spacing-48);
+  padding-top: var(--spacing-24);
+  border-top: 1px solid var(--border-subtle);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Content */
-/* -------------------------------------------------------------------------- */
-
-.page__content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-32);
-
-  max-width: 860px;
-}
-
-.page__section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-12);
-}
-
-.page__section-title {
-  margin: 0;
-
-  font-size: 1.5rem;
-  line-height: 1.3;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.page__text {
-  margin: 0;
-
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--text-secondary);
-}
-
-/* -------------------------------------------------------------------------- */
-/* Responsive */
-/* -------------------------------------------------------------------------- */
-
-@media (max-width: 768px) {
-  .page {
+@media (max-width: 600px) {
+  .terms-page {
     padding: var(--spacing-48) var(--spacing-20);
   }
 
-  .page__header {
+  .terms-page h1 {
+    font-size: var(--font-heading);
+  }
+
+  .terms-page__header {
     margin-bottom: var(--spacing-32);
   }
 
-  .page__title {
-    font-size: 2.25rem;
-  }
-
-  .page__description {
-    font-size: 1rem;
+  .terms-page__section + .terms-page__section {
+    margin-top: var(--spacing-32);
   }
 }
