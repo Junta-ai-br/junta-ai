@@ -38,7 +38,15 @@ function TeamCard({ member, featured = false }) {
 
       <div className="team-card__content">
         <h3 className="team-card__name">
-          {name}{countryFlag && <> <span role="img" aria-label="Bandeira do Chile">{countryFlag}</span></>}
+          {name}{countryFlag && (
+            <> <img
+              className="team-card__flag"
+              src={countryFlag}
+              alt="Bandeira do Chile"
+              width={18}
+              height={12}
+            /></>
+          )}
         </h3>
 
         <p className="team-card__role">{role}</p>

@@ -320,3 +320,10 @@
   color: var(--text-secondary);
   font-size: var(--font-caption);
 }
+
+.team-card__flag {
+  display: inline-block;
+  width: 1.125em;
+  height: auto;
+  vertical-align: middle;
+}

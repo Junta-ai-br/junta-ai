@@ -1,6 +1,8 @@
-﻿import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import Team from "./Team";
+import chileFlag from "../../../../assets/flags/chile.svg";
+import chileFlagSvg from "../../../../assets/flags/chile.svg?raw";
 import teamMembers from "./teamMembers";
 
 afterEach(cleanup);
@@ -25,11 +27,20 @@ describe("About team", () => {
     expect(card).not.toHaveClass("team-card--featured");
   });
 
-  it("places the accessible Chile flag next to Artur's name and renders only real social links", () => {
+  it("places the accessible local SVG Chile flag next to Artur's name and renders only real social links", () => {
     const { container } = render(<Team />);
     const flag = screen.getByRole("img", { name: "Bandeira do Chile" });
     expect(flag.closest("h3")).toHaveTextContent("Artur Alejandro");
-    expect(flag.textContent).toBe("\u{1f1e8}\u{1f1f1}");
+    expect(flag.tagName).toBe("IMG");
+    const svg = new DOMParser().parseFromString(chileFlagSvg, "image/svg+xml").documentElement;
+    expect(svg.tagName).toBe("svg");
+    expect(svg.getAttribute("viewBox")).toBe("0 0 30 20");
+    expect(flag).toHaveAttribute("src", chileFlag);
+    expect(flag).toHaveAttribute("alt", "Bandeira do Chile");
+    expect(flag.previousSibling.textContent).toBe(" ");
+    expect(flag.closest("h3").firstChild.textContent).toBe("Artur Alejandro");
+    expect(screen.getAllByRole("img", { name: "Bandeira do Chile" })).toHaveLength(1);
+    expect(flag.closest("h3").textContent).not.toContain("\u{1f1e8}\u{1f1f1}");
     expect(container.querySelector('a[href="#"], a:not([href])')).toBeNull();
     for (const member of teamMembers.filter((member) => !member.virtual)) {
       const card = screen.getByRole("heading", { name: new RegExp(member.name) }).closest("article");

@@ -1,3 +1,4 @@
+import chileFlag from "../../../../assets/flags/chile.svg";
 import avatarJu from "../../../../assets/avatares/equipe/ava-ju.png";
 import avatarArtur from "../../../../assets/avatares/equipe/ava-artur.png";
 import avatarDaniel from "../../../../assets/avatares/equipe/ava-daniel.png";
@@ -54,7 +55,7 @@ const teamMembers = [
 
   {
     name: "Artur Alejandro",
-    countryFlag: "🇨🇱",
+    countryFlag: chileFlag,
     role: "Desenvolvimento Back-end • Integração • Banco de Dados",
     avatar: avatarArtur,
     linkedin: "#",
