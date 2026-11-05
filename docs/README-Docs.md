@@ -6,7 +6,9 @@ Este é o índice da documentação pública do Junta.ai. Para a sequência de l
 
 ## Produto
 
-- [Visão geral e estado do MVP](product/overview.md)
+- [Visão geral do produto](product/overview.md)
+- [Estado do MVP](product/mvp-status.md)
+- [Roadmap de evolução](product/roadmap.md)
 - [Funcionalidades do MVP](product/features/README.md)
 - [Visão de longo prazo](product/vision.md)
 - [Filosofia](product/philosophy.md)
@@ -41,6 +43,10 @@ Este é o índice da documentação pública do Junta.ai. Para a sequência de l
 
 - [SEC-01 · Visão geral pública](security/sec-01-overview.md)
 - [Guia de desenvolvimento](team/guia-de-desenvolvimento.md)
+
+## Histórico de mudanças
+
+- [Histórico seletivo de mudanças](../CHANGELOG.md)
 
 ## Escopo público
 

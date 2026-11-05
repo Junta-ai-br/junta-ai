@@ -99,7 +99,7 @@ Nos próximos documentos você encontrará informações sobre:
 - Jornada do usuário
 - Escopo e limites do MVP, descritos nesta visão geral
 
-Não há documentos separados de funcionalidades ou roadmap na árvore pública consultada. A [jornada do usuário](user-journey.md) distingue a experiência desejada das capacidades atuais.
+Consulte o [índice de funcionalidades](features/README.md) para as capacidades detalhadas, o [estado do MVP](mvp-status.md) para a fotografia de implementação e validação e o [roadmap](roadmap.md) para as direções de evolução. A [jornada do usuário](user-journey.md) distingue a experiência desejada das capacidades atuais.
 
 ---
 
