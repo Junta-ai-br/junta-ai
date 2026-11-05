@@ -1,3 +1,5 @@
+import chileFlag from "../../../../assets/flags/chile.svg";
+import avatarJu from "../../../../assets/avatares/equipe/ava-ju.png";
 import avatarArtur from "../../../../assets/avatares/equipe/ava-artur.png";
 import avatarDaniel from "../../../../assets/avatares/equipe/ava-daniel.png";
 import avatarDanieli from "../../../../assets/avatares/equipe/ava-danieli.png";
@@ -17,7 +19,7 @@ const teamMembers = [
 
   {
     name: "Danieli Dutra",
-    role: "Liderança • PO • UX/UI • Pesquisa de Mercado • Agentes • Documentação",
+    role: "Liderança • PO • UX/UI • Pesquisa de Mercado • AI Service • Agentes • Documentação • Branding",
     avatar: avatarDanieli,
     linkedin: "https://www.linkedin.com/in/danieli-dutra",
     github: "https://github.com/danieli-dutra",
@@ -25,7 +27,7 @@ const teamMembers = [
 
   {
     name: "Daniel Ferreira",
-    role: "Arquiteto de Software • MCP • Agentes • Integração",
+    role: "Back-end • DevOps • API REST • Java • Data Engineer",
     avatar: avatarDaniel,
     linkedin: "https://www.linkedin.com/in/dan-dev/",
     github: "https://github.com/Daniel-Pascoa",
@@ -39,12 +41,21 @@ const teamMembers = [
     github: "https://github.com/thaisNY",
   },
 
+  {
+    name: "Simone Frez",
+    role: "Back-end • Java • Spring Boot • API REST • Tests",
+    avatar: avatarSimone,
+    linkedin: "https://www.linkedin.com/in/simone-da-silva-645337138/",
+    github: "https://github.com/SimoneFrez",
+  },
+
   // -------------------------------------------------------------------------
   // Equipe
   // -------------------------------------------------------------------------
 
   {
     name: "Artur Alejandro",
+    countryFlag: chileFlag,
     role: "Desenvolvimento Back-end • Integração • Banco de Dados",
     avatar: avatarArtur,
     linkedin: "#",
@@ -61,7 +72,7 @@ const teamMembers = [
 
   {
     name: "Jordan Fischer",
-    role: "Política de Segurança e Termos de Uso • Documentação",
+    role: "Gestão de Pessoas • Política de Segurança e Termos de Uso • Documentação • Narração Publicitária",
     avatar: avatarJordan,
     linkedin: "https://www.linkedin.com/in/jordan-fischer-2873a7432/",
     github: "https://github.com/jordanfischer2",
@@ -77,7 +88,7 @@ const teamMembers = [
 
   {
     name: "Maria Eduarda",
-    role: "Design Gráfico • Front-end • Documentação",
+    role: "Front-end • Documentação • Apresentação Final",
     avatar: avatarMaria,
     linkedin: "https://www.linkedin.com/in/maria-eduarda-maia-pereira",
     github: "https://github.com/Dudamaiap",
@@ -93,18 +104,17 @@ const teamMembers = [
 
   {
     name: "Robert Melo",
-    role: "Back-end • Integração • Banco de Dados",
+    role: "Front-end • Tela de Cadastro",
     avatar: avatarRobert,
     linkedin: "https://www.linkedin.com/in/devmello11/",
     github: "https://github.com/devmello11",
   },
 
   {
-    name: "Simone Frez",
-    role: "Back-end • Java • Spring Boot • API REST • Tests",
-    avatar: avatarSimone,
-    linkedin: "https://www.linkedin.com/in/simone-da-silva-645337138/",
-    github: "https://github.com/SimoneFrez",
+    name: "Ju",
+    role: "Assistente virtual do Junta.ai",
+    avatar: avatarJu,
+    virtual: true,
   },
 ];
 

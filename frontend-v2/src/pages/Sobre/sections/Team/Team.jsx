@@ -19,11 +19,11 @@ function GithubIcon(props) {
 }
 
 function TeamCard({ member, featured = false }) {
-  const { name, role, avatar, linkedin, github } = member;
+  const { name, role, avatar, linkedin, github, countryFlag, virtual } = member;
 
   return (
     <article
-      className={`team-card${featured ? " team-card--featured" : ""}`}
+      className={`team-card${featured ? " team-card--featured" : ""}${virtual ? " team-card--virtual" : ""}`}
     >
       <div className="team-card__avatar-wrapper">
         <img
@@ -37,13 +37,24 @@ function TeamCard({ member, featured = false }) {
       </div>
 
       <div className="team-card__content">
-        <h3 className="team-card__name">{name}</h3>
+        <h3 className="team-card__name">
+          {name}{countryFlag && (
+            <> <img
+              className="team-card__flag"
+              src={countryFlag}
+              alt="Bandeira do Chile"
+              width={18}
+              height={12}
+            /></>
+          )}
+        </h3>
 
         <p className="team-card__role">{role}</p>
+        {virtual && <p className="team-card__virtual-label">Personagem virtual • Em breve</p>}
       </div>
 
-      <div className="team-card__links">
-        <a
+      {((linkedin && linkedin !== "#") || (github && github !== "#")) && <div className="team-card__links">
+        {linkedin && linkedin !== "#" && <a
           href={linkedin}
           className="team-card__link"
           aria-label={`LinkedIn de ${name}`}
@@ -51,9 +62,9 @@ function TeamCard({ member, featured = false }) {
           rel="noopener noreferrer"
         >
           <LinkedinIcon width={16} height={16} aria-hidden="true" />
-        </a>
+        </a>}
 
-        <a
+        {github && github !== "#" && <a
           href={github}
           className="team-card__link"
           aria-label={`GitHub de ${name}`}
@@ -61,16 +72,16 @@ function TeamCard({ member, featured = false }) {
           rel="noopener noreferrer"
         >
           <GithubIcon width={16} height={16} aria-hidden="true" />
-        </a>
-      </div>
+        </a>}
+      </div>}
     </article>
   );
 }
 
 function Team() {
-  const featuredMembers = teamMembers.slice(0, 3);
+  const featuredMembers = teamMembers.slice(0, 4);
 
-  const regularMembers = [...teamMembers.slice(3)].sort((a, b) =>
+  const regularMembers = [...teamMembers.slice(4).filter((member) => !member.virtual)].sort((a, b) =>
     a.name.localeCompare(b.name, "pt-BR", {
       sensitivity: "base",
     }),
@@ -101,7 +112,7 @@ function Team() {
         </div>
 
         <div className="team__members">
-          {regularMembers.map((member) => (
+          {[...regularMembers, ...teamMembers.filter((member) => member.virtual)].map((member) => (
             <TeamCard
               key={member.name}
               member={member}
