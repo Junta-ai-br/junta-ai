@@ -12,11 +12,14 @@ import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
 import Card from "@/components/common/Card";
 import Button from "@/components/common/Button";
-import Checkbox from "@/components/forms/Checkbox";
+import Input from "@/components/forms/Input";
 
 import { useUser } from "@/contexts/useUser";
+import { deleteMyAccount } from "@/services/account.api";
 
 import "./ExcluirConta.css";
+
+export const CONFIRMATION_PHRASE = "Desejo excluir minha conta permanentemente";
 
 const DELETION_ITEMS = [
   "Suas informações pessoais (nome, e-mail e telefone).",
@@ -25,33 +28,45 @@ const DELETION_ITEMS = [
   "Histórico de conversas e planejamentos.",
 ];
 
+function deletionErrorMessage(error) {
+  const status = error?.response?.status;
+  if (status === 401 || error?.code === "SESSION_EXPIRED") {
+    return "Sua sessão expirou. Entre novamente e tente excluir a conta.";
+  }
+  if (!status) {
+    return "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.";
+  }
+  return "Não foi possível excluir sua conta agora. Tente novamente em instantes.";
+}
+
 export default function ExcluirConta() {
   const navigate = useNavigate();
   const { clearProfile } = useUser();
 
-  const [confirmed, setConfirmed] = useState(false);
-  const [showConfirmHint, setShowConfirmHint] = useState(false);
+  const [typed, setTyped] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function handleConfirmToggle() {
-    setConfirmed((current) => !current);
-    setShowConfirmHint(false);
-  }
+  const confirmed = typed.trim() === CONFIRMATION_PHRASE;
 
-  function handleDelete() {
-    if (!confirmed) {
-      setShowConfirmHint(true);
+  async function handleDelete() {
+    if (!confirmed || isDeleting) return;
+
+    setErrorMessage("");
+    setIsDeleting(true);
+
+    try {
+      await deleteMyAccount();
+    } catch (error) {
+      setErrorMessage(deletionErrorMessage(error));
+      setIsDeleting(false);
       return;
     }
 
-    setIsDeleting(true);
-
-    window.setTimeout(() => {
-      clearProfile();
-      setIsDeleting(false);
-      setIsDeleted(true);
-    }, 700);
+    clearProfile();
+    setIsDeleting(false);
+    setIsDeleted(true);
   }
 
   function handleGoHome() {
@@ -106,7 +121,7 @@ export default function ExcluirConta() {
                   </p>
 
                   <p className="delete-account-card__warning">
-                    Ao excluir sua conta, seus dados poderão ser removidos
+                    Ao excluir sua conta, seus dados serão removidos
                     permanentemente. Essa ação não poderá ser desfeita.
                   </p>
                 </div>
@@ -124,13 +139,20 @@ export default function ExcluirConta() {
                   </ul>
                 </div>
 
-                <Checkbox
-                  id="excluir-conta-confirmacao"
-                  label="Eu entendo que essa ação é permanente e desejo excluir minha conta."
-                  checked={confirmed}
-                  onChange={handleConfirmToggle}
-                  error={showConfirmHint ? "Marque a caixa para continuar." : ""}
+                <Input
+                  id="excluir-conta-frase"
+                  label={`Para confirmar, digite: ${CONFIRMATION_PHRASE}`}
+                  value={typed}
+                  onChange={(event) => setTyped(event.target.value)}
+                  autoComplete="off"
+                  disabled={isDeleting}
                 />
+
+                {errorMessage && (
+                  <p className="input-message input-message--error" role="alert">
+                    {errorMessage}
+                  </p>
+                )}
 
                 <div className="delete-account-card__actions">
                   <Link to="/perfil" className="button button--secondary">
