@@ -10,9 +10,9 @@ O objetivo não é criar burocracia, mas facilitar a colaboração da equipe, ma
 
 ## Branch `main`
 
-A branch `main` representa sempre a versão mais estável do projeto.
+A branch `main` reúne as alterações integradas após revisão e as verificações aplicáveis.
 
-Ela deve conter apenas código validado, revisado e pronto para demonstrações ou deploy.
+A integração não comprova, por si só, validação completa ou disponibilidade em produção. Esses estados exigem evidências próprias.
 
 > **Nunca desenvolva diretamente na `main`.**
 
@@ -25,19 +25,20 @@ Cada funcionalidade deve ser desenvolvida em uma branch própria.
 ### Exemplos
 
 ```text
-feature/login
-feature/dashboard
-feature/chat
-feature/settings
-feature/design-system
-feature/problem-section
+feat/login
+feat/dashboard
+feat/chat
+feat/settings
+feat/design-system
+docs/product-status
 ```
 
 ### Convenções
 
 | Prefixo | Quando utilizar |
 |----------|-----------------|
-| `feature/` | Nova funcionalidade |
+| `feat/` | Nova funcionalidade; preferir este prefixo nas novas branches |
+| `feature/` | Prefixo existente em branches anteriores |
 | `fix/` | Correção de bugs |
 | `refactor/` | Reorganização ou melhoria de código |
 | `docs/` | Documentação |
@@ -48,17 +49,17 @@ feature/problem-section
 
 # 🔄 Antes de começar
 
-Sempre atualize sua branch antes de iniciar uma nova implementação.
+Antes de começar, confira a branch, as alterações locais e os worktrees. Preserve o trabalho existente e não troque de branch ou integre mudanças automaticamente sobre uma árvore com alterações pendentes.
 
 ```bash
-git checkout main
-git pull
-
-git checkout sua-branch
-git merge main
+git status --short --branch
+git branch --show-current
+git worktree list
+git fetch origin
+git log --oneline HEAD..origin/main
 ```
 
-Assim você reduz a chance de conflitos futuros.
+O fetch atualiza referências sem integrar mudanças à branch atual. Combine a forma de atualização com a equipe, considerando o estado da branch. Use o worktree correto; para trabalho independente, uma branch dedicada em worktree isolado pode evitar interferência nas tarefas em andamento. Não sobrescreva branches ou worktrees existentes.
 
 ---
 
@@ -126,10 +127,10 @@ Caso uma implementação futura apresente problemas, será muito mais fácil ret
 
 Antes de enviar sua branch para o GitHub, confira:
 
-- Projeto executa normalmente
-- Não existem erros no console
-- Código organizado
-- Arquivos desnecessários removidos
+- Escopo e diff revisados, sem alterações alheias à tarefa
+- Para código: verificações e testes adequados à mudança; conferir a experiência afetada quando aplicável
+- Para documentação: conteúdo, links e `git diff --check` verificados; não exigir build ou suíte completa sem necessidade
+- Somente os arquivos pretendidos incluídos no commit, sem segredos ou materiais internos
 - Commit realizado
 
 Depois envie sua branch:
@@ -146,7 +147,7 @@ Quando sua funcionalidade estiver pronta, abra um **Pull Request (PR)** para sol
 
 Antes de criar o PR:
 
-- Atualize sua branch com a `main`
+- Confira a diferença em relação à `main` e combine a atualização necessária, preservando alterações locais e outros worktrees
 - Resolva possíveis conflitos
 - Verifique se tudo continua funcionando
 - Revise seu próprio código
@@ -180,7 +181,7 @@ Sempre que existir um token correspondente, utilize-o.
 ### Prefira
 
 ```css
-padding: var(--spacing-6);
+padding: var(--spacing-24);
 border-radius: var(--radius-xl);
 color: var(--text-primary);
 background: var(--surface);
