@@ -7,6 +7,7 @@ Este é o índice da documentação pública do Junta.ai. Para a sequência de l
 ## Produto
 
 - [Visão geral e estado do MVP](product/overview.md)
+- [Funcionalidades do MVP](product/features/README.md)
 - [Visão de longo prazo](product/vision.md)
 - [Filosofia](product/philosophy.md)
 - [Princípios de produto](product/product-principles.md)
