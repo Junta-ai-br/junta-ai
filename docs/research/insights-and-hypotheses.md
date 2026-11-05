@@ -1,8 +1,25 @@
 # Insights and Hypotheses
 
+**Revisão documental:** 05/11/2026.
+
 Este documento transforma resultados de pesquisa em hipóteses que podem orientar o desenvolvimento e ser posteriormente validadas com usuários.
 
 Uma hipótese não é tratada como fato até que existam evidências suficientes para sustentá-la.
+
+## Situação das hipóteses
+
+As observações e hipóteses abaixo foram preservadas; as referências de origem são apresentadas no nível necessário à documentação pública. Não há resultados de testes com usuários do Junta.ai associados a estas hipóteses neste documento; sua validação permanece pendente.
+
+| Hipótese | Pendência de evidência com usuários |
+|---|---|
+| H01 | Comparar esforço, erros e percepção de facilidade no registro manual e conversacional. |
+| H02 | Avaliar percepção de autonomia e confiança nas alternativas de compartilhamento. |
+| H03 | Avaliar utilidade e incômodo de diferentes frequências de intervenção. |
+| H04 | Verificar compreensão do planejamento de metas e comparação de cenários. |
+| H05 | Avaliar a sugestão opcional de poupança, sem presumir mudança de comportamento. |
+| H06 | Verificar compreensão dos dados e capacidade de encontrar informações no dashboard. |
+
+Os resultados devem ser registrados em [validação com usuários](user-validation.md). As propostas de intervenção, compartilhamento e sugestões descritas abaixo não comprovam funcionalidades implantadas nem autorizam mudanças de escopo.
 
 ## H01 — Registro conversacional
 
@@ -21,7 +38,9 @@ Uma hipótese não é tratada como fato até que existam evidências suficientes
 
 ## H02 — Autonomia sobre dados
 
-**Origem:** teste do Pierre + princípio de autonomia do Junta.ai.
+**Origem:** observação qualitativa realizada durante um teste real com usuário do Junta.ai, com procedência confirmada pela responsável pelo produto, em conjunto com o princípio de autonomia do projeto.
+
+**Limite da evidência:** o teste fundamentou a formulação de H02, mas a observação qualitativa não comprova sua generalização nem torna a hipótese validada. A validação da hipótese permanece pendente. O participante não é identificado nesta documentação pública. Open Finance não é dependência do MVP.
 
 **Observação:** o uso de Open Finance pode oferecer automação, mas uma integração que analisa automaticamente toda a movimentação pode ser percebida como excessivamente invasiva por alguns usuários.
 
@@ -77,7 +96,7 @@ Uma hipótese não é tratada como fato até que existam evidências suficientes
 
 **Hipótese:** quando existe uma sobra financeira identificável, uma sugestão contextual de direcionamento para uma meta pode aumentar a intenção de poupar sem reduzir a percepção de autonomia.
 
-**Exemplo:**
+**Exemplo hipotético (não representa dados de usuário ou resultado de pesquisa):**
 
 > "Você terminou o mês com R$ 420 disponíveis. Quer direcionar R$ 200 para sua meta?"
 

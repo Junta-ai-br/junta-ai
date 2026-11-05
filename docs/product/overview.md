@@ -4,9 +4,9 @@
 |--------|-------|
 | **Documento** | Product-01 |
 | **Título** | Overview |
-| **Versão** | 1.0 |
-| **Status** | Implemented |
-| **Última atualização** | 01/08/2026 |
+| **Versão** | 1.1 |
+| **Status** | Visão de produto com escopo do MVP explicitado |
+| **Última atualização** | 05/11/2026 |
 | **Responsável** | Equipe Junta.ai |
 
 ---
@@ -15,7 +15,7 @@
 
 O Junta.ai é uma plataforma de organização financeira que utiliza inteligência artificial para transformar conversas em ações práticas.
 
-Em vez de depender de planilhas complexas ou aplicativos difíceis de utilizar, o usuário conversa naturalmente com um assistente inteligente que o ajuda a registrar movimentações, compreender sua situação financeira, acompanhar metas e construir hábitos mais conscientes ao longo do tempo.
+Em vez de depender de planilhas complexas ou aplicativos difíceis de utilizar, a proposta é permitir que o usuário converse naturalmente com um assistente que o ajude a registrar movimentações, compreender sua situação financeira, acompanhar metas e construir hábitos mais conscientes ao longo do tempo.
 
 Nosso objetivo não é apenas organizar informações financeiras, mas tornar essa experiência mais simples, acessível e tranquila para qualquer pessoa.
 
@@ -47,12 +47,20 @@ O Junta.ai busca oferecer uma alternativa mais simples: transformar uma conversa
 
 # Como o Junta.ai funciona
 
-De forma geral, a experiência acontece em quatro etapas:
+No fluxo conversacional do MVP, é necessário distinguir:
 
-1. O usuário conversa naturalmente com o assistente.
-2. A inteligência artificial interpreta o contexto da conversa.
-3. As informações são organizadas automaticamente.
-4. O sistema apresenta sugestões, acompanhamentos e recursos para auxiliar a tomada de decisão.
+1. **Mensagem:** o usuário informa o que deseja organizar ou consultar.
+2. **Interpretação:** o assistente busca compreender a solicitação e pode pedir esclarecimentos.
+3. **Confirmação:** quando necessário, o usuário complementa ou confirma as informações da operação.
+4. **Registro:** uma operação só deve ser apresentada como concluída após a confirmação de que foi efetivamente registrada.
+
+Nem toda mensagem financeira resulta em uma operação persistida. A experiência conversacional depende das integrações disponíveis e pode apresentar falhas. Sua validação completa no ambiente implantado permanece a confirmar.
+
+## Escopo atual e evolução
+
+O código do MVP contempla conversas e histórico, receitas e despesas por categoria, metas financeiras, dashboard, relatórios e gerenciamento de conta. A presença desses recursos no código não comprova disponibilidade integral em produção.
+
+Recomendações contínuas, lembretes proativos e automações abrangentes permanecem como evolução de produto, sem validação operacional consolidada nesta revisão. O MVP não depende de Open Finance. O estado das tecnologias de IA é descrito na [visão geral de IA](../ai/ai-overview.md).
 
 O usuário continua sendo responsável por suas escolhas. O papel do Junta.ai é oferecer apoio, contexto e organização.
 
@@ -70,7 +78,7 @@ O produto prioriza usuários que procuram uma experiência simples, intuitiva e 
 
 A inteligência artificial é parte da experiência, mas não o centro do produto.
 
-Ela interpreta conversas, organiza informações e oferece recomendações quando apropriado.
+Seu papel é auxiliar a interpretação das conversas e a organização das informações, respeitando os fluxos suportados. Respostas contextualizadas não comprovam acompanhamento contínuo ou recomendações proativas já validadas.
 
 As decisões continuam sendo do usuário.
 
@@ -89,8 +97,9 @@ Nos próximos documentos você encontrará informações sobre:
 - Princípios que orientam as decisões
 - Público-alvo
 - Jornada do usuário
-- Funcionalidades
-- Roadmap do produto
+- Escopo e limites do MVP, descritos nesta visão geral
+
+Não há documentos separados de funcionalidades ou roadmap na árvore pública consultada. A [jornada do usuário](user-journey.md) distingue a experiência desejada das capacidades atuais.
 
 ---
 
@@ -99,3 +108,4 @@ Nos próximos documentos você encontrará informações sobre:
 | Versão | Data | Alterações |
 |---------|------|------------|
 | **1.0** | 01/08/2026 | Criação inicial do documento. |
+| **1.1** | 05/11/2026 | Distinção entre experiência desejada, MVP implementado e validações pendentes. |
