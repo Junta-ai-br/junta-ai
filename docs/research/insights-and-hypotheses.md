@@ -38,6 +38,8 @@ Os resultados devem ser registrados em [validação com usuários](user-validati
 
 ## H02 — Autonomia sobre dados
 
+As hipóteses abaixo possuem diferentes origens, incluindo literatura, análise de soluções existentes e observações qualitativas. H02 foi formulada a partir de uma observação realizada durante um teste real com usuário do Junta.ai. Essa evidência não constitui validação conclusiva da hipótese. Os resultados de validação das seis hipóteses ainda não estão consolidados neste documento.
+
 **Origem:** observação qualitativa realizada durante um teste real com usuário do Junta.ai, com procedência confirmada pela responsável pelo produto, em conjunto com o princípio de autonomia do projeto.
 
 **Limite da evidência:** o teste fundamentou a formulação de H02, mas a observação qualitativa não comprova sua generalização nem torna a hipótese validada. A validação da hipótese permanece pendente. O participante não é identificado nesta documentação pública. Open Finance não é dependência do MVP.
