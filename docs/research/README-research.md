@@ -1,5 +1,7 @@
 # Research
 
+**Revisão documental:** 05/11/2026.
+
 Esta seção reúne as pesquisas utilizadas para apoiar as decisões de desenvolvimento do Junta.ai.
 
 O objetivo não é substituir testes com usuários nem transformar o projeto em uma análise extensa de mercado. A pesquisa existe para ajudar a equipe a compreender problemas, avaliar soluções existentes, formular hipóteses e validar decisões de produto.
@@ -38,5 +40,5 @@ A pesquisa deve orientar o desenvolvimento, mas não é tratada como verdade abs
 
 - `docs/product/`: o que estamos construindo e quais princípios orientam o produto.
 - `docs/research/`: por que determinadas decisões e hipóteses estão sendo consideradas.
-- `docs/ai/`: como o agente deve se comportar.
-- `docs/technical/`: como as soluções serão implementadas.
+- [Visão geral de IA](../ai/ai-overview.md): responsabilidades e limites da integração pública.
+- [Índice da documentação](../README-Docs.md): documentos públicos disponíveis; não há diretório `technical/` nesta revisão.

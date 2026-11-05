@@ -1,5 +1,7 @@
 # User Validation
 
+**Revisão documental:** 05/11/2026.
+
 ## Objetivo
 
 Registrar os testes realizados com usuários para verificar se as principais hipóteses do Junta.ai correspondem a necessidades e comportamentos reais.
@@ -19,9 +21,17 @@ Conforme a etapa do projeto, podem ser utilizados:
 
 O método deve ser escolhido de acordo com a pergunta que precisa ser respondida.
 
+## Estado dos registros
+
+O formulário abaixo está pendente de preenchimento e não comprova a realização de um teste. Não há, neste documento, resultados consolidados que validem as hipóteses do produto.
+
+As hipóteses [H01–H06](insights-and-hypotheses.md) dependem de testes reais com usuários. Observações de outras soluções ajudam a formular hipóteses, mas não validam o uso do Junta.ai.
+
+Antes de classificar uma hipótese como validada, registrar método, participantes de forma não identificável, procedimento, resultados, limitações e referência à evidência permitida para publicação. Diferenciar o que foi observado da interpretação da equipe e da decisão de produto.
+
 ## Testes
 
-### Teste 01
+### Teste 01 — registro pendente
 
 **Data:** A preencher
 
@@ -87,4 +97,4 @@ O objetivo é manter um ciclo simples:
 
 **Pesquisar → formular hipótese → desenvolver → testar → aprender → ajustar.**
 
-Os resultados podem confirmar ou modificar decisões existentes em `docs/product/`.
+Os resultados podem confirmar ou modificar decisões existentes na [documentação de produto](../product/overview.md).

@@ -1,36 +1,50 @@
 # Documentação — Junta.ai
 
-Esta pasta reune toda a documentação técnica utilizada durante o desenvolvimento do Grana.ai.
+**Revisão documental:** 05/11/2026.
 
-A documentação está organizada em quatro grandes áreas:
+Este é o índice da documentação pública do Junta.ai. Para a sequência de leitura e as convenções, consulte o [guia da documentação](documentation-guide.md).
 
-## 📦 Product
+## Produto
 
-Documentação funcional do produto, incluindo visão, princípios, personas, roadmap e decisões relacionadas ao negócio.
+- [Visão geral e estado do MVP](product/overview.md)
+- [Visão de longo prazo](product/vision.md)
+- [Filosofia](product/philosophy.md)
+- [Princípios de produto](product/product-principles.md)
+- [Público-alvo](product/target-users.md)
+- [Jornada desejada e experiência atual](product/user-journey.md)
 
-## 🤖 AI
+## Inteligência Artificial
 
-Especificação funcional do agente financeiro, incluindo comportamento conversacional, pipeline de decisão, interpretação da linguagem natural, memória, ferramentas, regras operacionais e mecanismos de análise financeira.
+- [Visão geral pública de IA](ai/ai-overview.md)
 
-## 🛠 Technical
+## Design System
 
-Documentação técnica da solução, incluindo arquitetura, frontend, backend, banco de dados, APIs, integrações, deployment e arquitetura baseada em MCP.
+- [DS-01 · Overview](design-system/ds-01-overview.md)
+- [DS-02 · Foundations](design-system/ds-02-foundations.md)
+- [DS-03 · Colors](design-system/ds-03-colors.md)
+- [DS-04 · Typography](design-system/ds-04-typography.md)
+- [DS-05 · Spacing](design-system/ds-05-spacing.md)
+- [DS-06 · Radius](design-system/ds-06-radius.md)
+- [DS-07 · Shadows](design-system/ds-07-shadows.md)
+- [DS-08 · Icons](design-system/ds-08-icons.md)
 
-## 🧪 Testing
+## Pesquisa
 
-Estratégia de testes, validações, casos de teste, auditorias funcionais e acompanhamento da qualidade do sistema.
+- [Orientação da pesquisa](research/README-research.md)
+- [Base de pesquisa](research/research-base.md)
+- [Panorama de soluções](research/market-landscape.md)
+- [Insights e hipóteses](research/insights-and-hypotheses.md)
+- [Validação com usuários](research/user-validation.md)
 
----
+## Segurança e equipe
 
-O objetivo desta documentação é servir como referência para desenvolvimento, manutenção e evolução contínua do Grana.ai.
+- [SEC-01 · Visão geral pública](security/sec-01-overview.md)
+- [Guia de desenvolvimento](team/guia-de-desenvolvimento.md)
 
+## Escopo público
 
-## Versionamento da documentação
+Os diretórios existentes nesta revisão são `ai/`, `design-system/`, `product/`, `research/`, `security/` e `team/`. Não há diretórios públicos `technical/` ou `testing/` nesta árvore.
 
-A documentação segue versionamento independente do código-fonte.
+Registros técnicos de implementação migrados e especificações operacionais restritas não fazem parte deste índice. Uma visão conceitual não comprova integração produtiva.
 
-- **1.0** — primeira versão publicada;
-- **1.x** — revisões, correções e validações;
-- **2.0** — mudanças estruturais ou arquiteturais.
-
-Sempre que possível, alterações relevantes devem ser registradas no `technical/decisions.md` ou em um `CHANGELOG.md` da documentação.
+**Pendência:** Financial Taxonomy ainda não está disponível na main pública consultada. Sua inclusão no índice depende da integração e revisão do documento.
