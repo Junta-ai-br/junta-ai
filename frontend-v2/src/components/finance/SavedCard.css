@@ -11,3 +11,7 @@
 [data-theme="dark"] .saved-card { --saved-highlight: var(--purple-300); }
 .saved-card { --saved-highlight: var(--brand-primary); }
 .saved-card strong, .saved-card__icon, .saved-card .assistant__summary-icon { color: var(--saved-highlight); }
+
+.saved-card__position { margin: var(--spacing-16) 0 0; font-size: var(--font-small); }
+.saved-card__position > div { display: flex; justify-content: space-between; gap: var(--spacing-16); flex-wrap: wrap; }
+.saved-card__position dd { margin: 0; font-weight: var(--font-semibold); }

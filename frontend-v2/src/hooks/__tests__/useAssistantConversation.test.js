@@ -25,7 +25,7 @@ describe("real conversation lifecycle", () => {
     const selection = { option_id: "source_registered", pending_id: "18add5f0-cd0e-4e67-8844-fd08dd734afe", conversation_id: conversation.id };
     let resolveSend;
     transport = async (config) => config.method === "post" ? new Promise((resolve) => { resolveSend = () => resolve(response(config, reply(false))); })
-      : response(config, config.url === "/conversations" ? [conversation] : [{ ...assistantMessage, quickReplies: [selection] }]);
+      : response(config, config.url === "/conversations" ? [conversation] : [{ ...assistantMessage, createdAt: new Date().toISOString(), quickReplies: [selection] }]);
     const hook = await mount();
     let first, second;
     act(() => { first = hook.result.current.selectQuickReply(selection); second = hook.result.current.selectQuickReply(selection); });

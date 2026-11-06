@@ -541,3 +541,15 @@ describe("real Axios mutation contracts", () => {
     expect(commands.getSnapshot().lastResult).toBe(fresh);
   });
 });
+
+
+it("invalidates available and saved totals after a confirmed transaction write", async () => {
+  const { subscribeSaved } = await import("../saved.api");
+  const listener = vi.fn(); const off = subscribeSaved(listener);
+  try {
+    const { commands } = setup();
+    await commands.load(period);
+    await commands.createTransaction(input);
+    expect(listener).toHaveBeenCalledWith(session.getSessionSnapshot().generation);
+  } finally { off(); }
+});

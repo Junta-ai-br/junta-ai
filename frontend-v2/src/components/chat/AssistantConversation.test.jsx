@@ -22,13 +22,13 @@ describe("AssistantConversation", () => {
     const message = { id: "source", type: "assistant", text: "Esses recursos já foram registrados?", quickReplies: [option, { ...option, option_id: "source_unregistered" }] };
     const select = vi.fn();
     const view = render(<AssistantConversation messages={[message]} selectQuickReply={select} />);
-    const button = screen.getByRole("button", { name: "Sim, já registrei" });
+    const button = screen.getByRole("button", { name: "Já está no meu saldo" });
     button.focus(); await user.keyboard("{Enter}");
     expect(select).toHaveBeenCalledWith(option);
     expect(screen.getByRole("textbox", { name: "Mensagem" })).toBeEnabled();
     view.rerender(<AssistantConversation messages={[message]} selectQuickReply={select} isTyping />);
     expect(button).toBeDisabled();
-    expect(screen.getByRole("group", { name: "Origem dos recursos" })).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByRole("group", { name: "Opções para continuar a conversa" })).toHaveAttribute("aria-busy", "true");
     view.rerender(<AssistantConversation messages={[message, { id: "later", type: "assistant", text: "Proposta atual" }]} selectQuickReply={select} />);
     expect(button).toBeDisabled();
   });
@@ -208,4 +208,21 @@ describe("contextual message scrolling", () => {
     fireEvent.scroll(content);
     expect(content.scrollTop).toBe(position);
   });
+});
+
+
+it("shows actual goal names and confirmation choices, while keeping text input available", () => {
+  const choose = vi.fn();
+  const options = [{ option_id:"goal:ddc1d9ad-a438-48b9-bf3f-7bb0ab937451", display_label:"Placa de Video" }, {option_id:"confirm"}, {option_id:"cancel"}];
+  render(<AssistantConversation messages={[{id:"current",type:"assistant",text:"Escolha",createdAt:new Date().toISOString(),quickReplies:options}]} selectQuickReply={choose} />);
+  fireEvent.click(screen.getByRole("button", {name:"Placa de Video"}));
+  expect(choose).toHaveBeenCalledWith(options[0]);
+  expect(screen.getByRole("button", {name:"Confirmar"})).toBeEnabled();
+  expect(screen.getByRole("button", {name:"Cancelar"})).toBeEnabled();
+  expect(screen.getByRole("textbox", {name:"Mensagem"})).toBeEnabled();
+});
+
+it("disables an expired choice even when it is the latest message", () => {
+  render(<AssistantConversation messages={[{id:"expired",type:"assistant",text:"Confirmar?",createdAt:new Date(Date.now()-600001).toISOString(),quickReplies:[{option_id:"confirm"}]}]} selectQuickReply={vi.fn()} />);
+  expect(screen.getByRole("button", {name:"Confirmar"})).toBeDisabled();
 });

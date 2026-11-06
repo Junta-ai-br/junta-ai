@@ -53,3 +53,19 @@ it("does not invent zero on API failure and hides totals while reconciling", asy
   expect(screen.getByText("Carregando…")).toBeInTheDocument();
   expect(screen.queryByText("R$ 0,00")).not.toBeInTheDocument();
 });
+
+
+it("shows accumulated available and tracked totals without changing monthly indicators", async () => {
+  api.defaults.adapter = async (config) => ({config,status:200,headers:{},data:'{"saved":150,"availableBalance":1850,"totalTracked":2000,"reservationInconsistent":false}'});
+  render(<SavedCard />);
+  await screen.findByText("R$ 150,00");
+  expect(screen.getByText("R$ 1.850,00")).toBeInTheDocument();
+  expect(screen.getByText("R$ 2.000,00")).toBeInTheDocument();
+});
+
+it("explicitly flags legacy reserves exceeding recorded money without repairing history", async () => {
+  api.defaults.adapter = async (config) => ({config,status:200,headers:{},data:'{"saved":300,"availableBalance":-100,"totalTracked":200,"reservationInconsistent":true}'});
+  render(<SavedCard />);
+  expect(await screen.findByRole("status")).toHaveTextContent("reservado supera");
+  expect(screen.getByText("R$ 300,00")).toBeInTheDocument();
+});

@@ -1,8 +1,8 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SendHorizontal } from "lucide-react";
 import logoIcon from "@/assets/logos/logo-icon.svg";
-import { quickReplyLabels } from "@/services/conversations.api";
+import { quickReplyLabel } from "@/services/conversations.api";
 import "./QuickReplies.css";
 
 export default function AssistantConversation({
@@ -25,6 +25,15 @@ export default function AssistantConversation({
   selectQuickReply,
 }) {
   const reduceMotion = useReducedMotion();
+  const [clock, setClock] = useState(() => Date.now());
+  const latest = messages.at(-1);
+  useEffect(() => {
+    if (!latest?.quickReplies?.length || !latest.createdAt) return;
+    const remaining = Date.parse(latest.createdAt) + 600000 - Date.now();
+    if (remaining <= 0) return;
+    const timer = setTimeout(() => setClock(Date.now()), remaining);
+    return () => clearTimeout(timer);
+  }, [latest?.id, latest?.createdAt, latest?.quickReplies?.length]);
   const scrollRef = useRef(null);
   const followEnd = useRef(true);
   const previousView = useRef(null);
@@ -106,10 +115,11 @@ export default function AssistantConversation({
                   </span>
                 )}
                 <p style={{ whiteSpace: "pre-wrap" }}>{message.text}</p>
-                {message.type === "assistant" && message.quickReplies?.length > 0 && <div className="assistant__quick-replies" role="group" aria-label="Origem dos recursos" aria-busy={isTyping}>
+                {message.type === "assistant" && message.quickReplies?.length > 0 && <div className="assistant__quick-replies" role="group" aria-label="Opções para continuar a conversa" aria-busy={isTyping}>
                   {message.quickReplies.map((option) => <button type="button" key={option.option_id}
-                    disabled={loading || isTyping || !!recovery || messages.at(-1)?.id !== message.id || !selectQuickReply}
-                    onClick={() => selectQuickReply?.(option)}>{quickReplyLabels[option.option_id]}</button>)}
+                    disabled={loading || isTyping || !!recovery || messages.at(-1)?.id !== message.id || !selectQuickReply
+                      || (message.createdAt && Math.max(clock, Date.now()) - Date.parse(message.createdAt) >= 600000)}
+                    onClick={() => selectQuickReply?.(option)}>{quickReplyLabel(option)}</button>)}
                 </div>}
               </div>
             </motion.div>

@@ -25,13 +25,13 @@ export function decodeDashboard(raw) {
   if (typeof raw !== "string") throw new FinancialContractError("Expected dashboard JSON.");
   JSON.parse(raw);
   let monetary = false;
-  return JSON.parse(raw.replace(/"(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g, (token, offset) => {
+  return JSON.parse(raw.replace(/"(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|null/g, (token, offset) => {
     if (monetary) {
       monetary = false;
-      return JSON.stringify(normalizeSignedMoney(token));
+      return token === "null" ? token : JSON.stringify(normalizeSignedMoney(token));
     }
     if (token.startsWith('"') && /^\s*:/.test(raw.slice(offset + token.length))) {
-      monetary = ["totalIncome", "totalExpense", "balance", "saved"].includes(JSON.parse(token));
+      monetary = ["totalIncome", "totalExpense", "balance", "saved", "availableBalance", "totalTracked"].includes(JSON.parse(token));
     }
     return token;
   }));

@@ -82,7 +82,7 @@ export default function VisaoMes({ title = "Visão do mês", variant = "month" }
       <section className={`finance-kpis${variant === "all" ? " finance-kpis--saved" : ""}`} aria-label="Indicadores financeiros">
         <Kpi label="Receitas" value={finance.summary?.income} color="var(--success)" icon={TrendingUp} />
         <Kpi label="Despesas" value={finance.summary?.expenses} color="var(--error)" icon={TrendingDown} />
-        <Kpi label="Saldo" value={finance.summary?.balance} color={finance.summary?.balanceCents < 0n ? "var(--error)" : "var(--success)"} icon={WalletCards} />
+        <Kpi label={<>Saldo <small>do período</small></>} value={finance.summary?.balance} color={finance.summary?.balanceCents < 0n ? "var(--error)" : "var(--success)"} icon={WalletCards} />
         {variant === "all" && <SavedCard />}
         <Kpi label="Categorias" value={covered ? finance.categories.length : null} color="var(--warning)" raw />
       </section>
