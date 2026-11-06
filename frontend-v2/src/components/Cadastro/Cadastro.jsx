@@ -6,6 +6,7 @@ import { requestRegistrationCode, verifyRegistration } from '@/services/auth/aut
 import { getEmailAuthError } from '@/services/auth/auth.errors';
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/forms/Input/Input";
+import Checkbox from "@/components/forms/Checkbox";
 import "./Cadastro.css";
 
 export default function Cadastro() {
@@ -18,7 +19,8 @@ export default function Cadastro() {
     whatsapp: '',
     pergunta1: '',
     pergunta2: '',
-    pergunta3: ''
+    pergunta3: '',
+    maior18: false
   });
 
   const [erroForm, setErroForm] = useState('');
@@ -48,6 +50,12 @@ export default function Cadastro() {
     clearMessages();
   }
 
+  function handleMaiorChange(e) {
+    const { checked } = e.target;
+    setForm((prev) => ({ ...prev, maior18: checked }));
+    clearMessages();
+  }
+
   function handleProximaEtapa() {
     if (pending.current) return;
     clearMessages();
@@ -68,6 +76,10 @@ export default function Cadastro() {
     }
     if (form.whatsapp.trim().length > 20) {
       setErroForm('Número de WhatsApp inválido. Use até 20 caracteres.');
+      return;
+    }
+    if (!form.maior18) {
+      setErroForm('Confirme que você tem 18 anos ou mais para criar a conta.');
       return;
     }
 
@@ -136,6 +148,7 @@ export default function Cadastro() {
         email: form.email,
         whatsapp: form.whatsapp,
         code,
+        adultConfirmed: form.maior18,
         ...(!skipOnboarding ? {
           question1: form.pergunta1,
           question2: form.pergunta2,
@@ -241,6 +254,14 @@ export default function Cadastro() {
             placeholder="(00) 00000-0000"
             disabled={loadingAction !== null}
             required
+          />
+
+          <Checkbox
+            id="cadastro-maior18"
+            label="Declaro que tenho 18 anos ou mais."
+            checked={form.maior18}
+            onChange={handleMaiorChange}
+            disabled={loadingAction !== null}
           />
 
           <Button

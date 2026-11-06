@@ -27,6 +27,7 @@ function fillBasics() {
   fireEvent.change(screen.getByLabelText(/^Nome/), { target: { value: ' Ana Teste ' } });
   fireEvent.change(screen.getByLabelText(/^E-mail/), { target: { value: ' ana@example.com ' } });
   fireEvent.change(screen.getByLabelText(/^WhatsApp/), { target: { value: ' (11) 99999-9999 ' } });
+  fireEvent.click(screen.getByLabelText(/18 anos/));
   fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
 }
 
@@ -71,10 +72,25 @@ describe('real email registration', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
     expect(screen.getByRole('alert')).toHaveTextContent('e-mail válido');
     fireEvent.change(screen.getByLabelText(/^E-mail/), { target: { value: 'ana@example.com' } });
+    fireEvent.click(screen.getByLabelText(/18 anos/));
     fireEvent.submit(screen.getByRole('button', { name: 'Continuar' }).closest('form'));
     expect(screen.getByRole('button', { name: 'Pular por agora' })).toBeInTheDocument();
     expect(api.requestRegistrationCode).not.toHaveBeenCalled();
     expect(api.verifyRegistration).not.toHaveBeenCalled();
+  });
+
+  it('exige a declaração de 18 anos antes de avançar', () => {
+    setup();
+    fireEvent.change(screen.getByLabelText(/^Nome/), { target: { value: 'Ana' } });
+    fireEvent.change(screen.getByLabelText(/^E-mail/), { target: { value: 'ana@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^WhatsApp/), { target: { value: '11999998888' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('18 anos');
+    expect(screen.queryByRole('button', { name: 'Pular por agora' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText(/18 anos/));
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
+    expect(screen.getByRole('button', { name: 'Pular por agora' })).toBeInTheDocument();
+    expect(api.requestRegistrationCode).not.toHaveBeenCalled();
   });
 
   it('requires complete onboarding or an explicit skip', () => {
@@ -112,6 +128,7 @@ describe('real email registration', () => {
     fireEvent.submit(input.closest('form'));
     expect(api.verifyRegistration).toHaveBeenCalledExactlyOnceWith({
       name: 'Ana Teste', email: 'ana@example.com', whatsapp: '(11) 99999-9999', code: '012345',
+      adultConfirmed: true,
       ...(!skip ? { question1: 'Criar uma reserva', question2: 'Uso planilha', question3: 'Economizar' } : {}),
     });
     expect(screen.getByRole('button', { name: 'Confirmando...' })).toBeDisabled();
