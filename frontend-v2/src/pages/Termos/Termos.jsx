@@ -1,275 +1,188 @@
-import { CONTACT_EMAIL } from "@/utils/institutional-contacts";
+import { CONTACT_EMAIL, SECURITY_EMAIL } from "@/utils/institutional-contacts";
 import "./Termos.css";
 
-function Termos() {
+export default function Termos() {
   return (
-    <main className="page">
-      <div className="page__container">
-        <header className="page__header">
-          <span className="page__eyebrow">Termos de Uso</span>
-
-          <h1 className="page__title">
-            Termos de Uso
-          </h1>
-
-          <p className="page__description">
-            O junta.ai utiliza tecnologias de Inteligência Artificial para oferecer uma experiência conversacional voltada à organização e educação financeira. A Inteligência Artificial é utilizada como recurso de apoio para interpretar informações fornecidas pelo usuário, auxiliar na categorização de receitas e despesas, identificar padrões de comportamento financeiro e gerar informações e insights que possam contribuir para uma melhor compreensão da relação do usuário com seu dinheiro.
-            A utilização de Inteligência Artificial tem como objetivo tornar a experiência mais simples, intuitiva e personalizada, permitindo que o usuário interaja com suas informações financeiras por meio de uma interface conversacional, sem depender exclusivamente de planilhas ou ferramentas tradicionais de controle financeiro.
-          </p>
+    <main className="terms-page">
+      <article className="terms-page__container" aria-labelledby="terms-title">
+        <header className="terms-page__header">
+          <h1 id="terms-title">Termos de Uso</h1>
+          <p><strong>Última atualização: <time dateTime="2026-11-05">05/11/2026</time></strong></p>
+          <p>Bem-vindo(a) ao Junta.ai!</p>
+          <p>Acreditamos que compreender e organizar a vida financeira não deveria ser algo complicado, distante ou inacessível. O Junta.ai nasceu com a proposta de oferecer uma experiência mais simples, humana e acessível para quem deseja entender melhor sua relação com o dinheiro.</p>
+          <p>Estes Termos de Uso estabelecem as condições para acessar e utilizar a plataforma, incluindo seus recursos de organização financeira, acompanhamento de informações e inteligência artificial.</p>
+          <p>Antes de utilizar o Junta.ai, recomendamos a leitura deste documento e da nossa Política de Privacidade.</p>
         </header>
-
-        <div className="page__content">
-          <p>
-            <strong>1.Aceite dos Termos de Uso:</strong>
-
-            Ao acessar e utilizar o junta.ai, você concorda expressamente com os presentes Termos de Uso e com a nossa Política de Privacidade. Caso não concorde com estes termos, recomendamos que não utilize nossos serviços.
-          </p> 
-
-          <p>
-            <strong>2.Sobre o junta.ai:</strong>
-
-            O junta.ai é um assistente financeiro conversacional que transforma conversas em organização, contexto e decisões mais conscientes sobre dinheiro. 
-            Em vez de depender exclusivamente de planilhas, formulários ou interfaces complexas, a proposta é permitir que o usuário converse naturalmente sobre sua vida financeira enquanto a aplicação enquanto a aplicação organiza informações, acompanha objetivos e apresenta insights de forma simples e contextualizada. 
-          </p> 
-
-          <p>
-            <strong>3.Serviços oferecidos:</strong>
-
-            A Junta.ai oferece uma plataforma de organização e educação financeira baseada em Inteligência Artificial, desenvolvida para auxiliar o usuário na compreensão e no acompanhamento de sua vida financeira por meio de uma experiência conversacional.
-            ntre os serviços e funcionalidades disponibilizados pela plataforma, estão:
-
-            -Conversação em linguagem natural: permite que o usuário interaja com a Junta.ai por meio de mensagens, utilizando linguagem cotidiana para fornecer informações e solicitar auxílio relacionado à sua organização financeira.
-            
-            -Registro de receitas e despesas: permite registrar movimentações financeiras informadas pelo usuário, transformando as informações fornecidas em registros organizados.
-            
-            -Categorização de movimentações: a plataforma poderá utilizar recursos de Inteligência Artificial para auxiliar na identificação e classificação de receitas e despesas de acordo com as categorias financeiras adotadas pelo sistema.
-            
-            -Organização das informações financeiras: permite reunir e organizar os registros financeiros fornecidos pelo usuário, facilitando sua visualização e compreensão.
-            
-            -Metas financeiras: possibilita a criação e o acompanhamento de objetivos financeiros definidos pelo usuário.
-            
-            -Dashboard e visualização financeira: disponibiliza informações e indicadores relacionados às movimentações financeiras do usuário, incluindo receitas, despesas, saldo, categorias, períodos e acompanhamento de metas.
-            
-            -Acompanhamento da saúde financeira: poderá apresentar indicadores e informações destinadas a auxiliar o usuário na compreensão de sua situação financeira.
-            
-            -Insights e recomendações contextualizadas: a plataforma poderá utilizar os dados e informações disponíveis para apresentar sugestões, análises e insights relacionados à organização financeira do usuário.
-            
-            -Acompanhamento da evolução financeira: permite visualizar informações históricas e acompanhar mudanças e evolução dos registros financeiros ao longo do tempo.
-
-            Os serviços poderão ser disponibilizados de forma progressiva, conforme o desenvolvimento e a evolução da plataforma, podendo determinadas funcionalidades estarem indisponíveis, limitadas ou sujeitas a alterações.
-            A disponibilidade e o funcionamento de determinadas funcionalidades poderão depender de atualizações da plataforma, de serviços de terceiros, de recursos de infraestrutura ou de outras condições técnicas necessárias à sua operação.
-            A Junta.ai pode modificar, atualizar, adicionar ou remover funcionalidades, buscando preservar a finalidade principal da plataforma de oferecer apoio à organização e à educação financeira.
-            A utilização dos serviços não implica garantia de resultados financeiros específicos. As informações, análises, classificações, insights e sugestões disponibilizados pela plataforma possuem caráter de apoio à organização e à educação financeira, não substituindo a avaliação individual do usuário ou a orientação de profissionais habilitados quando necessária.
-          </p>
-
-          <p>
-            <strong>4.Cadastro e conta:</strong>
-
-            Para utilizar o junta.ai, é necessário realizar um cadastro, fornecendo informações corretas, completas e atualizadas. O usuário é responsável por manter a confidencialidade dos dados de acesso à sua conta e por todas as atividades realizadas por meio dela. O serviço é destinado exclusivamente a pessoas físicas maiores de 18 anos. 
-          </p> 
-
-          <p>
-            <strong>5.Uso adequado da plataforma:</strong>
-
-            O usuário deverá utilizar a plataforma Junta.ai de forma adequada, responsável e em conformidade com estes Termos de Uso e com a legislação aplicável, utilizando seus recursos exclusivamente para as finalidades disponibilizadas pela plataforma. O usuário é responsável pelas informações fornecidas e pela forma como utiliza os recursos e resultados disponibilizados pela Junta.ai .
-
-            É vedado ao usuário:
-            
-            -Utilizar a plataforma para atividades ilícitas, fraudulentas ou que violem a legislação vigente.
-
-            -Tentar obter acesso não autorizado a contas, sistemas, dados ou funcionalidades da Junta.ai ou de outros usuários.
-
-            -Acessar, utilizar, alterar ou tentar obter informações pertencentes a outros usuários sem autorização.
-
-            -Burlar, desativar ou tentar contornar mecanismos de segurança, autenticação, controle de acesso ou outras medidas de proteção da plataforma;
-    
-            -Explorar vulnerabilidades, falhas ou comportamentos indevidos da plataforma.
-
-            -Inserir, transmitir ou distribuir códigos maliciosos, vírus, arquivos ou conteúdos destinados a comprometer o funcionamento ou a segurança dos sistemas.
-
-            -Realizar ações que possam prejudicar a disponibilidade, integridade ou funcionamento da plataforma.
-            
-            -Utilizar mecanismos automatizados, scripts, bots ou outros meios para sobrecarregar, extrair dados ou interferir indevidamente nos serviços.
-            
-            -Realizar engenharia reversa, desmontar, descompilar ou tentar obter o código-fonte ou funcionamento interno da plataforma, salvo quando expressamente permitido pela legislação aplicável.
-
-            -Utilizar a plataforma para tentar manipular, explorar ou contornar as limitações e mecanismos de segurança dos recursos de Inteligência Artificial.
-            
-            -Utilizar os recursos de Inteligência Artificial para finalidades incompatíveis com a proposta da Junta.ai ou para gerar conteúdo destinado à prática de atividades ilícitas.
-            
-            -Utilizar a plataforma de forma que possa violar direitos, causar danos ou prejudicar outros usuários ou terceiros.
-            
-            -Fornecer informações falsas, fraudulentas ou de terceiros com o objetivo de obter acesso indevido ou utilizar funcionalidades que não estejam autorizadas ao usuário.
-            
-            -O descumprimento das regras de uso adequado poderá resultar na limitação, suspensão ou encerramento do acesso do usuário à plataforma, especialmente em situações que envolvam riscos à segurança, fraude, uso ilícito ou tentativa de acesso não autorizado, observadas as demais disposições destes Termos de Uso.
-          </p>
-
-          <p>
-            <strong>6.Responsabilidades do usuário:</strong>
-
-            O usuário é responsável pela utilização adequada da plataforma Junta.ai, pelas informações fornecidas durante o cadastro e utilização dos serviços e pelas decisões que tomar a partir das informações, análises e conteúdos disponibilizados pela plataforma. Ao utilizar a Junta.ai, o usuário deverá manter seus dados atualizados, proteger suas credenciais de acesso e utilizar a plataforma de acordo com estes Termos de Uso, a Política de Privacidade e a legislação aplicável.
-
-            São responsabilidades do usuário:
-
-            -Fornecer informações verdadeiras, completas e atualizadas durante o cadastro e utilização da plataforma.
-            
-            -Manter seus dados cadastrais atualizados sempre que houver alterações relevantes.
-            
-            -Manter em segurança suas credenciais de acesso e não compartilhá-las com terceiros.
-            
-            -Comunicar à Junta.ai, por meio dos canais disponíveis, qualquer suspeita de acesso não autorizado ou comprometimento de sua conta.
-            
-            -Utilizar a plataforma exclusivamente em nome próprio e para as finalidades para as quais os serviços são disponibilizados.
-            
-            -Responsabilizar-se pela veracidade e legitimidade das informações financeiras inseridas na plataforma.
-            
-            -Avaliar cuidadosamente as informações, análises, classificações e sugestões apresentadas pela Junta.ai antes de utilizá-las para tomar decisões.
-            
-            -Compreender que os conteúdos e respostas gerados por recursos de Inteligência Artificial podem apresentar imprecisões, limitações ou interpretações inadequadas.
-            
-            -Não considerar as informações fornecidas pela Junta.ai como aconselhamento financeiro, jurídico, contábil ou profissional, salvo quando expressamente indicado.
-            
-            -Respeitar os direitos de outros usuários, terceiros e da própria Junta.ai durante a utilização da plataforma.
-            
-            -Não utilizar informações obtidas por meio da plataforma para prejudicar, expor ou violar a privacidade de terceiros.
-            
-            -Não compartilhar, inserir ou utilizar dados de terceiros sem possuir autorização ou outra base legítima para fazê-lo.
-            
-            -Responsabilizar-se pelos dispositivos, conexão de internet e demais recursos necessários para acessar a plataforma.
-            
-            -Cumprir todas as demais obrigações estabelecidas nestes Termos de Uso e na legislação aplicável.
-            
-            O usuário reconhece que a Junta.ai é uma ferramenta destinada à educação e organização financeira, não substituindo a análise individualizada ou a orientação de profissionais habilitados. Dessa forma, as decisões tomadas pelo usuário com base nas informações disponibilizadas pela plataforma são de sua própria responsabilidade, considerando as limitações e características dos serviços oferecidos.
-          </p>
-         
-          <p>
-            <strong>7.Responsabilidades do junta.ai:</strong>
-
-            A Junta.ai compromete-se a disponibilizar a plataforma de forma adequada e a adotar medidas razoáveis para manter a segurança, a estabilidade e o funcionamento dos serviços oferecidos. A plataforma buscará fornecer uma experiência clara, acessível e compatível com sua finalidade de educação e organização financeira, respeitando as condições estabelecidas nestes Termos de Uso e na Política de Privacidade.
-            
-            São responsabilidades do junta.ai:
-            
-            -Disponibilizar as funcionalidades da plataforma de acordo com suas características e finalidades apresentadas ao usuário.
-
-            -Adotar medidas técnicas e organizacionais razoáveis para proteger a plataforma contra acessos não autorizados, falhas e usos indevidos.
-
-            -Buscar manter a disponibilidade e o funcionamento adequado dos serviços, ressalvadas interrupções decorrentes de manutenção, atualizações, falhas técnicas ou situações fora de seu controle.
-
-            -Tratar os dados pessoais dos usuários de acordo com a legislação aplicável e com a Política de Privacidade.
-
-            -Informar ao usuário, quando aplicável, alterações relevantes nos serviços, nos Termos de Uso ou na Política de Privacidade.
-            
-            -Buscar apresentar informações e resultados de forma clara, considerando as limitações dos recursos de Inteligência Artificial utilizados pela plataforma.
-
-            -Disponibilizar canais de contato e suporte conforme os recursos oferecidos pelo Junta.ai.
-
-            -Adotar medidas razoáveis para identificar e responder a situações que possam comprometer a segurança ou o funcionamento da plataforma.
-            
-            A Junta.ai não garante que a plataforma estará permanentemente disponível ou livre de erros, interrupções ou falhas, especialmente quando decorrentes de fatores externos, serviços de terceiros, manutenção, atualizações, problemas de infraestrutura ou eventos fora de seu controle.
-          </p>
-
-          <p>
-            <strong>8.Uso da Inteligência Artificial:</strong>
-
-            O junta.ai utiliza recursos de Inteligência Artificial para oferecer uma experiência conversacional e personalizada de educação e organização financeira. Esses recursos podem ser utilizados para interpretar as informações fornecidas pelo usuário, auxiliar na categorização de receitas e despesas, identificar padrões de gastos, acompanhar objetivos financeiros e gerar informações e sugestões relacionadas à organização financeira. O usuário reconhece que os conteúdos gerados pela Inteligência Artificial são produzidos de forma automatizada e podem apresentar imprecisões, limitações ou interpretações inadequadas, não devendo ser considerados, por si só, como aconselhamento financeiro, jurídico, contábil ou profissional.
-            
-            Ao utilizar os recursos de Inteligência Artificial, o usuário deverá:
-
-            -Fornecer informações verdadeiras e adequadas ao contexto de utilização da plataforma.
-            
-            -Compreender que as respostas geradas pela Inteligência Artificial podem conter erros ou não refletir integralmente sua situação financeira.
-            
-            -Avaliar as informações e sugestões apresentadas antes de tomar qualquer decisão com base nelas.
-            
-            -Não utilizar os recursos de Inteligência Artificial para finalidades ilícitas, fraudulentas ou que possam causar danos a terceiros.
-            
-            -Não tentar manipular os mecanismos da Inteligência Artificial com o objetivo de obter acesso não autorizado a informações, funcionalidades, sistemas ou dados.
-            
-            -Não inserir intencionalmente informações de terceiros sem autorização ou outra base legítima para seu tratamento.
-            
-            -Compreender que a Inteligência Artificial atua como ferramenta de apoio à educação e organização financeira, não substituindo profissionais habilitados quando sua orientação for necessária.
-            
-            -Respeitar as demais regras de utilização da plataforma estabelecidas nestes Termos de Uso.
-            
-            A Junta.ai poderá adotar medidas técnicas e de segurança para proteger seus recursos de Inteligência Artificial contra uso abusivo, manipulação, tentativas de acesso indevido e outras práticas que possam comprometer a segurança ou o funcionamento da plataforma.
-          </p>
-          
-          <p>
-            <strong>9.Limitações e responsabilidades:</strong>
-
-            Na medida permitida pela legislação aplicável, o junta.ai não será responsável por quaisquer danos diretos, indiretos, incidentais, especiais ou consequenciais decorrentes do uso ou da incapacidade de uso dos serviços oferecidos. 
-          </p>
-
-          <p>
-            <strong>10.Propriedade intelectual:</strong>
-
-            Todos os direitos relativos ao junta.ai e aos seus conteúdos, incluindo, mas não se limitando a textos, gráficos, logotipos, ícones, imagens, clipes de áudio, downloads digitais, compilações de dados e software, são de propriedade exclusiva da JUNTAAI LTDA ou de seus licenciadores. Esses direitos são protegidos pelas leis brasileiras e internacionais relativas à propriedade intelectual.
-            O usuário não adquire, por meio destes Termos de Uso ou da utilização do junta.ai, nenhum direito de propriedade intelectual ou de uso sobre as marcas, logotipos, patentes, nomes comerciais ou qualquer outro conteúdo do junta.ai, devendo respeitar integralmente tais direitos.
-          </p>
-
-          <p>
-            <strong>11.Segurança da conta:</strong>
-
-            O acesso à plataforma junta.ai será realizado por meio de autenticação utilizando uma conta Google, de acordo com os mecanismos de autenticação disponibilizados pelo serviço. O usuário é responsável por manter sua conta Google protegida e por adotar as medidas necessárias para impedir o acesso não autorizado à sua conta e à plataforma.
-            
-            Para a segurança da conta, o usuário deverá:
-            
-            -Utilizar uma conta Google de sua titularidade para acessar o junta.ai.
-            
-            -Manter suas credenciais e mecanismos de segurança da conta Google protegidos.
-            
-            -Não compartilhar sua conta ou permitir que terceiros utilizem seu acesso à Junta.ai.
-            
-            -Comunicar à Junta.ai qualquer suspeita de acesso não autorizado à sua conta.
-            
-            -Utilizar os mecanismos de segurança disponibilizados pelo Google para proteção de sua conta, quando aplicável.
-
-            -Encerrar suas sessões em dispositivos compartilhados ou que não estejam sob seu controle.
-            
-            A Junta.ai poderá adotar medidas técnicas e de segurança destinadas a proteger as contas e os acessos dos usuários contra tentativas de acesso não autorizado, fraude ou utilização indevida da plataforma.
-          </p>
-
-          <p>
-            <strong>12.Suspensão ou encerramento da conta:</strong>
-
-            O junta.ai poderá suspender, limitar ou encerrar o acesso do usuário à plataforma quando houver descumprimento destes Termos de Uso, utilização inadequada dos serviços ou situações que possam comprometer a segurança, o funcionamento da plataforma ou os direitos de outros usuários e terceiros. Sempre que aplicável e possível, a Junta.ai poderá comunicar o usuário sobre a medida adotada e seus respectivos motivos.
-            
-            A suspensão ou encerramento poderá ocorrer, entre outras situações, quando:
-            
-            -Houver violação destes Termos de Uso ou da legislação aplicável.
-            
-            -Forem identificadas tentativas de acesso não autorizado a contas, sistemas ou dados.
-            
-            -Houver utilização fraudulenta, abusiva ou indevida da plataforma.
-            
-            -Forem identificadas atividades que comprometam ou possam comprometer a segurança ou o funcionamento da Junta.ai.
-            
-            -O usuário utilizar a plataforma para finalidades ilícitas ou proibidas.
-            
-            -Houver manipulação ou exploração indevida dos recursos de Inteligência Artificial ou dos mecanismos de segurança da plataforma.
-            
-            -Houver outras circunstâncias que justifiquem a medida para proteção da Junta.ai, de seus usuários ou de terceiros.
-            
-            O encerramento ou suspensão do acesso não impede a adoção de outras medidas cabíveis quando necessárias para proteção dos direitos do junta.ai, dos usuários ou de terceiros. O tratamento e a eventual exclusão dos dados associados à conta após seu encerramento serão realizados de acordo com a Política de Privacidade e a legislação aplicável.
-          </p>
-
-          <p>
-            <strong>13.Alterações dos Termos:</strong>
-
-            O junta.ai se reserva o direito de modificar os presentes Termos de Uso a qualquer tempo. As alterações serão comunicadas ao usuário por meio do aplicativo ou por e-mail, e o uso continuado dos serviços após a modificação implica na aceitação dos novos termos. 
-          </p>
-
-          <p>
-            <strong>14.Contato e legislação aplicável:</strong>
-
-            Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de Rio de Janeiro/RJ para dirimir quaisquer questões relativas a estes termos, com renúncia expressa a qualquer outro, por mais privilegiado que seja. 
-            Em caso de dúvidas, sugestões ou reclamações, entre em contato conosco através do e-mail: {CONTACT_EMAIL}.
-          </p>
-
+        <section className="terms-page__section" aria-labelledby="terms-section-1">
+          <h2 id="terms-section-1">1. Aceite dos Termos</h2>
+          <p>Ao criar uma conta ou utilizar as funcionalidades do Junta.ai, o usuário declara ter tomado conhecimento destes Termos de Uso e concordar com as condições aplicáveis à utilização da plataforma.</p>
+          <p>Caso não concorde com estas condições, deverá deixar de utilizar os serviços.</p>
+          <p>O aceite destes Termos não substitui eventual consentimento específico para tratamento de dados pessoais, quando exigido pela legislação.</p>
+          <p>A utilização da plataforma também está sujeita à nossa Política de Privacidade, que apresenta informações sobre o tratamento e a proteção dos dados pessoais.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-2">
+          <h2 id="terms-section-2">2. Sobre o Junta.ai</h2>
+          <p>O Junta.ai é um projeto tecnológico independente, desenvolvido por uma equipe multidisciplinar, com o objetivo de facilitar a organização financeira pessoal por meio de ferramentas digitais e recursos de inteligência artificial.</p>
+          <p>A plataforma busca ajudar os usuários a registrar informações, compreender seus hábitos financeiros, acompanhar objetivos e tomar decisões mais conscientes sobre sua organização financeira.</p>
+          <p>O projeto encontra-se em desenvolvimento e poderá passar por atualizações, testes, melhorias e mudanças em suas funcionalidades.</p>
+          <p>O Junta.ai não é uma instituição financeira, banco, corretora, instituição de pagamento ou participante do Open Finance.</p>
+          <p>A plataforma não realiza movimentações bancárias, não administra recursos financeiros dos usuários e não oferece serviços profissionais de consultoria financeira, contábil, jurídica ou de investimentos.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-3">
+          <h2 id="terms-section-3">3. Serviços e Funcionalidades</h2>
+          <p>O Junta.ai foi concebido para reunir recursos de organização e acompanhamento financeiro em uma experiência integrada.</p>
+          <p>Entre as funcionalidades disponibilizadas ou previstas para sua evolução estão:</p>
+          <ul>
+            <li><strong>Assistente conversacional:</strong> interação em linguagem natural para auxiliar na organização e compreensão de informações financeiras.</li>
+            <li><strong>Registro financeiro:</strong> cadastro e acompanhamento de receitas, despesas e outras informações fornecidas pelo usuário.</li>
+            <li><strong>Categorização:</strong> organização dos registros financeiros por categorias.</li>
+            <li><strong>Metas financeiras:</strong> definição e acompanhamento de objetivos pessoais.</li>
+            <li><strong>Painéis e indicadores:</strong> visualização de informações, históricos e resumos financeiros.</li>
+            <li><strong>Saúde financeira:</strong> recursos destinados a facilitar a compreensão de hábitos e indicadores financeiros.</li>
+            <li><strong>Informações e orientações educativas:</strong> conteúdos e respostas voltados à organização e à educação financeira.</li>
+          </ul>
+          <p>As funcionalidades poderão ser disponibilizadas progressivamente, conforme as etapas de desenvolvimento do projeto.</p>
+          <p>A presença de determinada funcionalidade neste documento não representa garantia de que ela esteja disponível na versão atualmente acessada pelo usuário.</p>
+          <p>O Junta.ai poderá modificar, aprimorar, limitar ou descontinuar funcionalidades, observadas as obrigações legais aplicáveis e a comunicação adequada quando necessária.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-4">
+          <h2 id="terms-section-4">4. Cadastro e Conta do Usuário</h2>
+          <p>Para utilizar determinadas funcionalidades, poderá ser necessário criar uma conta e concluir os procedimentos de autenticação disponibilizados pela plataforma.</p>
+          <h3>Idade mínima para utilização</h3>
+          <p>O cadastro e a utilização das funcionalidades vinculadas a uma conta no Junta.ai são destinados a pessoas com 18 anos ou mais.</p>
+          <p>Ao criar uma conta, o usuário declara possuir a idade mínima exigida e capacidade legal para aceitar estes Termos de Uso.</p>
+          <p>Caso seja identificado que uma conta pertence a uma pessoa que não atende ao requisito de idade, o Junta.ai poderá restringir seu acesso e adotar as medidas cabíveis, observadas as obrigações legais relacionadas à proteção e ao tratamento de dados pessoais.</p>
+          <p>O usuário compromete-se a:</p>
+          <ul>
+            <li>Fornecer informações verdadeiras e atualizadas durante o cadastro.</li>
+            <li>Utilizar uma conta própria e não se passar por terceiros.</li>
+            <li>Manter a segurança dos mecanismos de acesso associados à sua conta.</li>
+            <li>Não compartilhar credenciais, códigos de autenticação ou outros elementos de acesso.</li>
+            <li>Comunicar suspeitas de acesso indevido ou comprometimento da conta.</li>
+          </ul>
+          <p>O usuário é responsável pelas atividades realizadas por meio de sua conta, na medida de sua participação e responsabilidade, ressalvadas falhas de segurança ou outras circunstâncias imputáveis à plataforma.</p>
+          <p>O Junta.ai poderá adotar medidas de verificação, restrição ou suspensão de acesso quando necessárias à proteção da plataforma e de seus usuários.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-5">
+          <h2 id="terms-section-5">5. Uso Adequado da Plataforma</h2>
+          <p>O Junta.ai deve ser utilizado de maneira lícita, responsável e compatível com suas finalidades.</p>
+          <p>Não é permitido:</p>
+          <ul>
+            <li>Utilizar a plataforma para atividades ilícitas, fraudulentas ou que violem direitos de terceiros.</li>
+            <li>Tentar acessar contas, informações ou recursos sem autorização.</li>
+            <li>Explorar vulnerabilidades ou interferir deliberadamente no funcionamento dos serviços.</li>
+            <li>Introduzir códigos maliciosos, automatizações abusivas ou mecanismos destinados a comprometer a segurança da aplicação.</li>
+            <li>Tentar contornar controles de autenticação, autorização ou proteção dos sistemas.</li>
+            <li>Utilizar a plataforma para disseminar conteúdo ilegal, ameaçador ou que viole direitos de terceiros.</li>
+            <li>Empregar os serviços de maneira que prejudique sua disponibilidade, integridade ou segurança.</li>
+            <li>Reproduzir, distribuir ou explorar indevidamente conteúdos, marcas ou componentes protegidos por direitos de propriedade intelectual.</li>
+          </ul>
+          <p>A identificação de condutas incompatíveis com estas regras poderá resultar em medidas proporcionais de proteção, incluindo restrições de acesso ou suspensão da conta, conforme a gravidade da situação e a legislação aplicável.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-6">
+          <h2 id="terms-section-6">6. Responsabilidades do Usuário</h2>
+          <p>O usuário é responsável pela veracidade e pela atualização das informações financeiras que fornece à plataforma.</p>
+          <p>Os registros, indicadores e respostas apresentados pelo Junta.ai dependem, entre outros fatores, da qualidade e da integridade dos dados disponibilizados.</p>
+          <p>Cabe ao usuário avaliar as informações apresentadas e considerar sua realidade financeira antes de tomar decisões.</p>
+          <p>O usuário também deverá:</p>
+          <ul>
+            <li>Conferir os registros e resultados apresentados pela plataforma.</li>
+            <li>Evitar inserir informações de terceiros sem autorização ou fundamento legítimo.</li>
+            <li>Não fornecer senhas bancárias, códigos de autenticação, dados completos de cartões ou outras informações desnecessárias ao funcionamento dos serviços.</li>
+            <li>Utilizar os recursos de maneira compatível com estes Termos e com a legislação aplicável.</li>
+          </ul>
+          <p>O Junta.ai não se responsabiliza pela veracidade de informações inseridas pelo usuário, sem prejuízo das responsabilidades que legalmente lhe sejam atribuídas pelo tratamento ou pela utilização dessas informações.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-7">
+          <h2 id="terms-section-7">7. Responsabilidades do Junta.ai</h2>
+          <p>O Junta.ai busca oferecer uma plataforma funcional, acessível e desenvolvida com atenção à segurança, à privacidade e à experiência dos usuários.</p>
+          <p>O projeto compromete-se a empregar esforços razoáveis para:</p>
+          <ul>
+            <li>Manter e aprimorar as funcionalidades disponibilizadas.</li>
+            <li>Adotar medidas técnicas e organizacionais de proteção das informações.</li>
+            <li>Corrigir falhas identificadas, considerando sua gravidade e os recursos disponíveis.</li>
+            <li>Disponibilizar informações claras sobre o funcionamento e as limitações dos serviços.</li>
+            <li>Receber e avaliar comunicações relacionadas a problemas técnicos, privacidade e segurança.</li>
+          </ul>
+          <p>Por se tratar de uma aplicação em desenvolvimento, poderão ocorrer instabilidades, interrupções, indisponibilidades temporárias ou comportamentos inesperados.</p>
+          <p>O Junta.ai não garante funcionamento ininterrupto, ausência absoluta de falhas ou compatibilidade com todos os dispositivos e ambientes tecnológicos.</p>
+          <p>Essas limitações não afastam os direitos dos usuários nem as responsabilidades estabelecidas pela legislação aplicável.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-8">
+          <h2 id="terms-section-8">8. Uso de Inteligência Artificial</h2>
+          <p>O Junta.ai utiliza ou poderá utilizar recursos de inteligência artificial para interpretar solicitações, organizar informações e produzir respostas relacionadas à experiência financeira do usuário.</p>
+          <p>Esses recursos podem apresentar limitações, incluindo interpretações incorretas, informações incompletas, respostas imprecisas ou resultados que não correspondam integralmente ao contexto apresentado.</p>
+          <p>As respostas geradas por inteligência artificial possuem caráter informativo e educativo e não substituem a avaliação individual do usuário nem a orientação de profissionais habilitados quando necessária.</p>
+          <p>O Junta.ai não garante resultados financeiros específicos, redução de despesas, aumento de patrimônio ou sucesso no cumprimento de metas em decorrência da utilização do assistente.</p>
+          <p>O usuário deverá conferir informações relevantes antes de utilizá-las como fundamento para decisões financeiras.</p>
+          <p>O processamento das solicitações poderá envolver fornecedores tecnológicos externos, conforme descrito na Política de Privacidade.</p>
+          <p>A utilização de inteligência artificial não elimina as responsabilidades legais aplicáveis ao projeto.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-9">
+          <h2 id="terms-section-9">9. Limitações de Responsabilidade</h2>
+          <p>O Junta.ai busca oferecer informações e funcionalidades úteis à organização financeira pessoal, mas reconhece que sistemas digitais podem apresentar limitações técnicas e operacionais.</p>
+          <p>Na medida permitida pela legislação aplicável, o projeto não assume responsabilidade por resultados financeiros decorrentes exclusivamente de decisões autônomas do usuário, tomadas com base em informações que deveriam ser avaliadas conforme suas circunstâncias individuais.</p>
+          <p>O Junta.ai também não garante a exatidão absoluta de todos os resultados produzidos por sistemas automatizados ou modelos de inteligência artificial.</p>
+          <p>Eventuais falhas de conectividade, indisponibilidade de serviços externos ou problemas em dispositivos e ambientes sob responsabilidade de terceiros poderão afetar o funcionamento da plataforma.</p>
+          <p>Nenhuma disposição destes Termos deverá ser interpretada como exclusão ou limitação de responsabilidade por condutas, falhas ou danos cuja reparação seja obrigatória nos termos da legislação aplicável.</p>
+          <p>Os direitos legalmente assegurados aos usuários permanecem preservados.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-10">
+          <h2 id="terms-section-10">10. Propriedade Intelectual</h2>
+          <p>O Junta.ai reúne elementos de identidade visual, marca, textos, interfaces, códigos, componentes, conteúdos e outros materiais que podem estar protegidos por direitos de propriedade intelectual.</p>
+          <p>Os direitos sobre esses elementos pertencem aos seus respectivos titulares, autores, colaboradores ou licenciadores, conforme a legislação aplicável e os instrumentos que eventualmente disciplinem sua utilização.</p>
+          <p>O acesso à plataforma não transfere ao usuário a titularidade de direitos sobre seus elementos protegidos.</p>
+          <p>É permitida a utilização regular dos recursos disponibilizados pelo Junta.ai para suas finalidades previstas, observadas as condições destes Termos.</p>
+          <p>A reprodução, distribuição, modificação ou exploração de materiais protegidos deverá respeitar as autorizações e licenças aplicáveis.</p>
+          <p>O usuário permanece titular dos direitos que eventualmente possua sobre conteúdos e informações legitimamente fornecidos à plataforma.</p>
+          <p>O tratamento desses conteúdos para disponibilização dos serviços observará as finalidades descritas na Política de Privacidade e a legislação aplicável.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-11">
+          <h2 id="terms-section-11">11. Segurança da Conta</h2>
+          <p>A proteção da conta depende de medidas adotadas tanto pela plataforma quanto pelo usuário.</p>
+          <p>O Junta.ai poderá disponibilizar mecanismos próprios ou integrados de autenticação, conforme a versão e os recursos efetivamente implementados.</p>
+          <p>O usuário deverá proteger os dispositivos e meios de acesso utilizados, evitando compartilhar códigos de verificação, credenciais ou informações que permitam o acesso indevido à sua conta.</p>
+          <p>Em caso de suspeita de comprometimento, recomenda-se interromper o uso da sessão afetada e comunicar a situação pelos canais institucionais disponíveis.</p>
+          <p>O Junta.ai poderá aplicar medidas de proteção, como invalidação de sessões, restrição temporária de acesso ou procedimentos adicionais de verificação, conforme os mecanismos efetivamente disponíveis.</p>
+          <p>Nenhum mecanismo de autenticação elimina completamente os riscos de segurança digital.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-12">
+          <h2 id="terms-section-12">12. Suspensão e Encerramento da Conta</h2>
+          <p>O Junta.ai poderá restringir ou suspender o acesso a determinadas funcionalidades quando houver indícios razoáveis de:</p>
+          <ul>
+            <li>Utilização fraudulenta ou ilícita da plataforma.</li>
+            <li>Comprometimento da segurança da conta.</li>
+            <li>Tentativas de acesso não autorizado ou exploração de vulnerabilidades.</li>
+            <li>Violações relevantes destes Termos.</li>
+            <li>Necessidade de cumprimento de obrigação legal ou determinação de autoridade competente.</li>
+          </ul>
+          <p>As medidas adotadas deverão considerar a natureza e a gravidade da situação, sempre que possível com comunicação adequada ao usuário.</p>
+          <p>O usuário poderá solicitar o encerramento de sua conta e o tratamento das informações associadas, observadas as funcionalidades disponíveis e os procedimentos aplicáveis.</p>
+          <p>A exclusão de dados pessoais observará a Política de Privacidade, as condições técnicas e as hipóteses de conservação permitidas pela legislação.</p>
+          <p>O encerramento da conta não afasta direitos ou obrigações que, por sua natureza ou por determinação legal, devam permanecer aplicáveis.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-13">
+          <h2 id="terms-section-13">13. Alterações dos Termos de Uso</h2>
+          <p>Estes Termos poderão ser atualizados para refletir mudanças no projeto, nas funcionalidades, nas condições de utilização ou nas exigências legais aplicáveis.</p>
+          <p>A versão atualizada será disponibilizada nesta página, acompanhada da respectiva data de atualização.</p>
+          <p>Alterações relevantes serão comunicadas por meios adequados, considerando sua natureza e os canais disponíveis.</p>
+          <p>Quando uma alteração exigir novo aceite ou outra providência específica, serão observados os requisitos legais correspondentes.</p>
+          <p>O usuário poderá consultar a versão vigente dos Termos sempre que desejar.</p>
+        </section>
+        <section className="terms-page__section" aria-labelledby="terms-section-14">
+          <h2 id="terms-section-14">14. Contato e Legislação Aplicável</h2>
+          <p>O Junta.ai é um projeto tecnológico independente, desenvolvido por uma equipe multidisciplinar, ainda sem pessoa jurídica formalmente constituída.</p>
+          <p>Para dúvidas, sugestões ou comunicações relacionadas à utilização da plataforma, o usuário poderá entrar em contato pelo endereço:</p>
+          <p><strong><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></strong></p>
+          <p>Para solicitações relacionadas à privacidade, proteção de dados pessoais ou comunicações de segurança, o canal institucional é:</p>
+          <p><strong><a href={`mailto:${SECURITY_EMAIL}`}>{SECURITY_EMAIL}</a></strong></p>
+          <p>Estes Termos são interpretados conforme a legislação brasileira aplicável, incluindo, quando pertinentes, a Lei Geral de Proteção de Dados Pessoais, o Marco Civil da Internet e as normas de proteção do consumidor.</p>
+          <p>Eventuais controvérsias serão tratadas conforme as regras de competência estabelecidas pela legislação aplicável, preservados os direitos legalmente assegurados aos usuários.</p>
+        </section>
+        <div className="terms-page__closing">
+          <p><strong>Junta.ai — Converse. Entenda. Planeje.</strong></p>
         </div>
-      </div>
+      </article>
     </main>
   );
 }
-
-export default Termos;
