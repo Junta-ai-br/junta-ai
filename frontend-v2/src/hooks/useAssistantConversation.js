@@ -89,7 +89,7 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
     const optimisticId = retry ? recovery.current.optimisticId : `pending-${crypto.randomUUID()}`;
     setState((value) => ({ ...value, isTyping: true, error: null,
       inputValue: "",
-      messages: retry ? value.messages : [...value.messages, { id: optimisticId, type: "user", text: message, fresh: true }],
+      messages: retry ? value.messages : [...value.messages, { id: optimisticId, type: "user", text: quickReply ? conversations.quickReplyLabel(quickReply) : message, fresh: true }],
     }));
     let operation = retry ? recovery.current : null;
     try {

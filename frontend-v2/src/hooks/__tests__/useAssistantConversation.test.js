@@ -148,3 +148,18 @@ describe("real conversation lifecycle", () => {
   });
 
 });
+
+
+it("shows the chosen goal name while preserving its internal identity in the request", async () => {
+  const selection={option_id:"goal:ddc1d9ad-a438-48b9-bf3f-7bb0ab937451",display_label:"Placa de Video",pending_id:"18add5f0-cd0e-4e67-8844-fd08dd734afe",conversation_id:conversation.id};
+  let finish;
+  transport=async config=>config.method==="post" ? new Promise(resolve=>{finish=()=>resolve(response(config,{...reply(),userMessage:{...userMessage,content:selection.display_label}}));})
+    : response(config,config.url==="/conversations"?[conversation]:[{...assistantMessage,createdAt:new Date().toISOString(),quickReplies:[selection]}]);
+  const hook=await mount(); let sending;
+  act(()=>{sending=hook.result.current.selectQuickReply(selection);});
+  await waitFor(()=>expect(posts()).toHaveLength(1));
+  expect(hook.result.current.messages.find(m=>m.type==="user").text).toBe("Placa de Video");
+  expect(JSON.parse(posts()[0].data)).toMatchObject({message:selection.option_id,quickReply:selection});
+  await act(async()=>{finish();await sending;});
+  expect(hook.result.current.messages.find(m=>m.type==="user").text).toBe("Placa de Video");
+});
