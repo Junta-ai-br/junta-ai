@@ -148,7 +148,7 @@ export default function Cadastro() {
         email: form.email,
         whatsapp: form.whatsapp,
         code,
-        adultConfirmed: true,
+        adultConfirmed: form.maior18,
         ...(!skipOnboarding ? {
           question1: form.pergunta1,
           question2: form.pergunta2,
