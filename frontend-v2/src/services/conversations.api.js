@@ -4,12 +4,17 @@ import { isTimestamp, isUuid } from "./financial-contracts";
 
 const fail = (code) => Object.assign(new Error("Unexpected conversation contract or session."), { code });
 const validConversation = (value) => isUuid(value?.id) && (value.title === null || typeof value.title === "string") && isTimestamp(value.updatedAt);
-export const quickReplyLabels = Object.freeze({ source_registered: "Sim, já registrei", source_unregistered: "Não, é dinheiro novo" });
-export const validQuickReply = (value) => !!value && Object.hasOwn(quickReplyLabels, value.option_id)
-  && isUuid(value.pending_id) && isUuid(value.conversation_id);
+export const quickReplyLabels = Object.freeze({ source_registered: "Já está no meu saldo", source_unregistered: "Ainda não registrei", confirm: "Confirmar", cancel: "Cancelar" });
+export const quickReplyText = (option) => option.option_id.startsWith("goal:") ? option.option_id
+  : ({ source_registered: "Sim, já registrei", source_unregistered: "Não, é dinheiro novo", confirm: "confirmo", cancel: "cancelar" })[option.option_id];
+export const quickReplyLabel = (option) => quickReplyLabels[option.option_id] ?? option.display_label;
+export const validQuickReply = (value) => !!value && isUuid(value.pending_id) && isUuid(value.conversation_id)
+  && (Object.hasOwn(quickReplyLabels, value.option_id) || (typeof value.option_id === "string"
+    && value.option_id.startsWith("goal:") && isUuid(value.option_id.slice(5))
+    && typeof value.display_label === "string" && value.display_label.trim().length > 0 && value.display_label.length <= 150));
 const validMessage = (value) => isUuid(value?.id) && ["USER", "ASSISTANT", "SYSTEM"].includes(value.role)
   && typeof value.content === "string" && isTimestamp(value.createdAt)
-  && (value.quickReplies == null || (Array.isArray(value.quickReplies) && value.quickReplies.length <= 2
+  && (value.quickReplies == null || (Array.isArray(value.quickReplies) && value.quickReplies.length <= 1000
     && value.quickReplies.every(validQuickReply)));
 export const validChatInput = (text) => typeof text === "string" && text.length <= 2000 && [...text].some((char) => char.charCodeAt(0) > 32);
 const path = (id) => { if (!isUuid(id)) throw fail("ERR_CHAT_REQUEST"); return `/conversations/${encodeURIComponent(id)}/messages`; };

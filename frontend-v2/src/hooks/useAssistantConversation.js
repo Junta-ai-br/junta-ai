@@ -6,7 +6,7 @@ import { invalidateSaved } from "@/services/saved.api";
 
 const generation = () => getSessionSnapshot()?.generation ?? null;
 const empty = (owner) => ({ owner, inputValue: "", messages: [], conversations: [], conversationId: null, loading: true, isTyping: false, error: null, recovery: null });
-const bubble = (message, fresh = false) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content, fresh, ...(message.quickReplies?.length ? { quickReplies: message.quickReplies } : {}) });
+const bubble = (message, fresh = false) => ({ id: message.id, type: message.role.toLowerCase(), text: message.content, createdAt: message.createdAt, fresh, ...(message.quickReplies?.length ? { quickReplies: message.quickReplies } : {}) });
 const history = (messages) => messages.filter((message) => message.role !== "SYSTEM").map((message) => bubble(message));
 const errorMessage = (error, sending) => {
   if (["ECONNABORTED", "ETIMEDOUT"].includes(error?.code)) return "O tempo de espera terminou. O servidor pode ter processado a mensagem. Retome o envio anterior com a mesma identidade.";
@@ -89,7 +89,7 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
     const optimisticId = retry ? recovery.current.optimisticId : `pending-${crypto.randomUUID()}`;
     setState((value) => ({ ...value, isTyping: true, error: null,
       inputValue: "",
-      messages: retry ? value.messages : [...value.messages, { id: optimisticId, type: "user", text: message, fresh: true }],
+      messages: retry ? value.messages : [...value.messages, { id: optimisticId, type: "user", text: quickReply ? conversations.quickReplyLabel(quickReply) : message, fresh: true }],
     }));
     let operation = retry ? recovery.current : null;
     try {
@@ -149,10 +149,11 @@ export default function useAssistantConversation({ refreshFinancialData } = {}) 
     setInputValue: (inputValue) => { if (owner && generation() === owner && active.current?.owner === owner) setState((value) => ({ ...value, inputValue })); },
     handleSubmit: (event) => { event?.preventDefault?.(); return send(typeof event === "string" ? event : view.inputValue); },
     selectQuickReply: (selection) => {
-      if (!conversations.validQuickReply(selection) || selection.conversation_id !== view.conversationId
+      if ((view.messages.at(-1)?.createdAt && Date.now() - Date.parse(view.messages.at(-1).createdAt) >= 600000)
+          || !conversations.validQuickReply(selection) || selection.conversation_id !== view.conversationId
           || !view.messages.at(-1)?.quickReplies?.some((option) => option.option_id === selection.option_id
             && option.pending_id === selection.pending_id && option.conversation_id === selection.conversation_id)) return;
-      return send(conversations.quickReplyLabels[selection.option_id], false, selection);
+      return send(conversations.quickReplyText(selection), false, selection);
     },
     retryMessage: () => send(null, true),
     acknowledgeUncertain: async () => {

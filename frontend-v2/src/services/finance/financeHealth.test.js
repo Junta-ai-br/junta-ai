@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.hoisted(() => vi.stubEnv("VITE_API_URL", "https://backend.example.test"));
 import { api } from "@/services/api";
 import { saveSession, clearSession } from "@/services/auth/session";
-import { isOfficialHealthScore, loadOfficialHealthScore } from "./financeHealth";
+import { decodeDashboard, isOfficialHealthScore, loadOfficialHealthScore } from "./financeHealth";
 
 const period = { from: "2026-10-01", to: "2026-10-31" };
 const official = { methodology: "mvp-monthly-v1", status: "CALCULATED", score: 65, classification: "No caminho certo", ...period };
@@ -22,4 +22,10 @@ describe("official Health Score contract (no local formula)", () => {
     const value = await loadOfficialHealthScore(period, { income: "99999999999999999.99", expenses: "0.01", balance: "99999999999999999.98" });
     expect(value).toEqual(official);
   });
+});
+
+
+it("preserves optional legacy nulls and exact accumulated monetary values", () => {
+  expect(decodeDashboard('{"availableBalance":null,"totalTracked":null,"reservationInconsistent":null,"saved":150}')).toMatchObject({availableBalance:null,totalTracked:null,saved:"150.00"});
+  expect(decodeDashboard('{"availableBalance":999999999999999.99,"totalTracked":1000000000000000.01}')).toEqual({availableBalance:"999999999999999.99",totalTracked:"1000000000000000.01"});
 });

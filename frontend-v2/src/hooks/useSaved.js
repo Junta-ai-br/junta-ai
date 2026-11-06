@@ -14,8 +14,8 @@ export default function useSaved() {
     const current = () => active.current === lease && generation() === lease.owner && sequence === lease.sequence;
     setRead({ owner: lease.owner, status: "loading" });
     try {
-      const value = await loadSaved(lease.owner, lease.controller.signal);
-      if (current()) setRead({ owner: lease.owner, status: "ready", value });
+      const value = await loadSaved(lease.owner, lease.controller.signal, { withPosition: true });
+      if (current()) setRead({ owner: lease.owner, status: "ready", ...value });
     } catch {
       if (current()) setRead({ owner: lease.owner, status: "error" });
     }

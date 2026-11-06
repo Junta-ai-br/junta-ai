@@ -130,7 +130,7 @@ describe("official monthly assistant panel", () => {
     const { container } = mount();
     await screen.findByRole("button", { name: "Nova conversa" });
     const cards = summary().getAllByRole("article");
-    expect(cards.map((card) => card.querySelector(".assistant__summary-label").textContent.trim())).toEqual(["Receitas", "Despesas", "Saldo", "Guardado"]);
+    expect(cards.map((card) => card.querySelector(".assistant__summary-label").textContent.trim())).toEqual(["Receitas", "Despesas", "Saldo do período", "Guardado"]);
     expect(container.querySelectorAll(".saved-card")).toHaveLength(1);
     expect(container.querySelector(".assistant__sidebar .saved-card")).toBeNull();
   });

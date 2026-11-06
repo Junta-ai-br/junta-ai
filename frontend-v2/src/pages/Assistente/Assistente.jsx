@@ -182,7 +182,7 @@ export default function Assistente({
           </div>
 
           <span className="assistant__summary-label">
-            Saldo
+            Saldo <small>do período</small>
           </span>
 
           <strong

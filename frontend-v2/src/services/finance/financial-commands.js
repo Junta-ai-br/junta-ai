@@ -1,3 +1,4 @@
+import { invalidateSaved } from "../saved.api";
 import { getSessionSnapshot, subscribeSession } from "../auth/session";
 import * as transactionApi from "../transactions.api";
 import * as categoryApi from "../categories.api";
@@ -192,6 +193,7 @@ export function createFinancialCommands({ loader = createFinancialLoader(), serv
       jobs.delete(job);
     }
     if (!current(job)) return obsoleteResult(job);
+    if (job.operation.endsWith("Transaction") && ["confirmed", "indeterminate"].includes(completed.status)) invalidateSaved(job.generation);
     if (latestIntent === job.intent) lastResult = completed;
     emit();
     return current(job) ? completed : obsoleteResult(job);
