@@ -4,12 +4,17 @@ import userEvent from "@testing-library/user-event";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 vi.hoisted(() => { vi.stubEnv("VITE_API_URL", "https://backend.example.test"); vi.stubEnv("VITE_GOOGLE_CLIENT_ID", ""); });
+import { Pie } from "recharts";
+import { categoryColor } from "@/utils/category-colors";
 import AppRoutes from "@/app/routes";
 import { renderWithFinanceProvider } from "@/test-utils";
 import { api } from "@/services/api";
 import { clearSession, saveSession } from "@/services/auth/session";
 import { currentCivilMonth } from "@/services/finance/finance-provider-store";
-vi.mock("recharts", async () => import("@/test/rechartsMock"));
+vi.mock("recharts", async () => {
+  const charts = await import("@/test/rechartsMock");
+  return { ...charts, Pie: vi.fn(charts.Pie) };
+});
 const period = currentCivilMonth();
 const cat = { id: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", name: "Trabalho", type: "BOTH", createdAt: "2026-10-18T12:00:00Z" };
 const id = "ec17e3c2-b24a-4e17-9ff5-58d370cc9862";
@@ -160,6 +165,22 @@ it.each(["light", "dark"])("renders category titles and original details with in
   expect(accounts.A.transactions[1].description).toBe("paguei uber 25 reais");
 });
 
+
+it.each([["/dashboard", 0], ["/visao-mes", 72]])("isolates category chart geometry on %s", async (route, innerRadius) => {
+  accounts.A.transactions = [{ ...entry, type: "EXPENSE", amount: "351.00", description: "Compra no mercado" }];
+  saveSession(tokens("A"));
+  const { container } = renderWithFinanceProvider(<AppRoutes />, { route });
+  await waitFor(() => kpi("Despesas", "R$ 351,00"));
+  const props = Pie.mock.calls.at(-1)[0];
+  expect(props).toMatchObject({ innerRadius, outerRadius: 105, dataKey: "plot", nameKey: "name" });
+  expect(props.data).toHaveLength(1);
+  expect(props.data[0]).toMatchObject({ id: cat.id, name: cat.name, expenses: "351.00", plot: 100, color: categoryColor(cat.id) });
+  expect(props.children[0].props.fill).toBe(categoryColor(cat.id));
+  const legend = container.querySelector(".category-rows");
+  expect(legend).toHaveTextContent(cat.name);
+  expect(legend).toHaveTextContent("351,00");
+  expect(calls.every((call) => call.method === "get")).toBe(true);
+});
 
 it.each([["/dashboard", "Evolu\u00e7\u00e3o financeira acumulada por dia"], ["/visao-mes", "Evolu\u00e7\u00e3o mensal no per\u00edodo consultado"]])("isolates daily history on %s", async (route, title) => {
   accounts.A.transactions = [{ ...entry, type: "EXPENSE", amount: "351.00", description: "Mercado" }];
