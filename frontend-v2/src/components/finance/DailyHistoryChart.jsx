@@ -1,7 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { dailyCumulative } from "@/services/finance/daily-cumulative";
 import { formatMoneyBRL } from "@/services/finance/signed-money";
+
+import { historyAxisTicks } from "./history-axis";
 
 const compactMoney = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact", maximumFractionDigits: 1 });
 const MAX = 1_000_000;
@@ -23,6 +25,7 @@ export function CumulativeTooltip({ active, payload }) {
 }
 
 export default function DailyHistoryChart({ transactions, period }) {
+  const [width, setWidth] = useState(800);
   const days = useMemo(() => dailyCumulative(transactions, period), [transactions, period]);
   const maximum = days.reduce((max, day) => [day.incomeCents, day.expensesCents].reduce((m, value) => value > m ? value : m, max), 0n) || 1n;
   const data = days.map((day) => ({ ...day, incomePlot: Number(day.incomeCents * BigInt(MAX) / maximum), expensesPlot: Number(day.expensesCents * BigInt(MAX) / maximum) }));
@@ -31,10 +34,10 @@ export default function DailyHistoryChart({ transactions, period }) {
   return <>
     <p className="finance-chart-caption">Evolução acumulada até hoje. Os indicadores consideram todo o período selecionado, incluindo movimentações futuras.</p>
     <p className="finance-chart-caption">Acumulado diário desde {dateBR(period.from)} até {dateBR(last.date)}, em reais. Dias sem movimentações mantêm o acumulado; datas futuras não são exibidas. A granularidade permanece diária também em períodos com vários meses.</p>
-    <ResponsiveContainer width="100%" height={380}>
+    <ResponsiveContainer width="100%" height={380} onResize={(nextWidth) => setWidth(nextWidth)}>
       <LineChart data={data} accessibilityLayer margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
         <CartesianGrid stroke="var(--border)" />
-        <XAxis dataKey="date" tickFormatter={(date) => period.from.slice(0, 4) === period.to.slice(0, 4) ? dateBR(date).slice(0, 5) : dateBR(date)} minTickGap={32} interval="preserveStartEnd" tick={{ fill: "var(--text-secondary)", fontSize: 12 }} />
+        <XAxis dataKey="date" ticks={historyAxisTicks(days, width)} tickFormatter={(date) => period.from.slice(0, 4) === period.to.slice(0, 4) ? dateBR(date).slice(0, 5) : dateBR(date)} minTickGap={16} interval="preserveStartEnd" tick={{ fill: "var(--text-secondary)", fontSize: 12 }} />
         <YAxis domain={[0, MAX]} ticks={[0, MAX / 2, MAX]} width={100} tickFormatter={(value) => moneyTick(value, maximum)} tick={{ fill: "var(--text-secondary)", fontSize: 12 }} />
         <Tooltip content={<CumulativeTooltip />} />
         <Legend />
