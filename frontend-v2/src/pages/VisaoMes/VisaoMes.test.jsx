@@ -159,3 +159,20 @@ it.each(["light", "dark"])("renders category titles and original details with in
   expect(list.querySelector(".expense")).toHaveTextContent("25,00");
   expect(accounts.A.transactions[1].description).toBe("paguei uber 25 reais");
 });
+
+
+it.each([["/dashboard", "Evolu\u00e7\u00e3o financeira acumulada por dia"], ["/visao-mes", "Evolu\u00e7\u00e3o mensal no per\u00edodo consultado"]])("isolates daily history on %s", async (route, title) => {
+  accounts.A.transactions = [{ ...entry, type: "EXPENSE", amount: "351.00", description: "Mercado" }];
+  saveSession(tokens("A"));
+  const user = userEvent.setup();
+  renderWithFinanceProvider(<AppRoutes />, { route });
+  await waitFor(() => kpi("Despesas", "R$ 351,00"));
+  await user.click(screen.getByRole("button", { name: "Hist\u00f3rico" }));
+  expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+  if (route === "/dashboard") {
+    expect(screen.getByText(/Acumulado di\u00e1rio desde/)).toBeInTheDocument();
+    expect(screen.queryByText(/Gr\u00e1ficos em escala relativa/)).not.toBeInTheDocument();
+  } else expect(screen.queryByText(/Acumulado di\u00e1rio desde/)).not.toBeInTheDocument();
+  kpi("Despesas", "R$ 351,00");
+  expect(calls.every((call) => call.method === "get")).toBe(true);
+});
