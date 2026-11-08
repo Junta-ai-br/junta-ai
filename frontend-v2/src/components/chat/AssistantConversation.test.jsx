@@ -226,3 +226,35 @@ it("disables an expired choice even when it is the latest message", () => {
   render(<AssistantConversation messages={[{id:"expired",type:"assistant",text:"Confirmar?",createdAt:new Date(Date.now()-600001).toISOString(),quickReplies:[{option_id:"confirm"}]}]} selectQuickReply={vi.fn()} />);
   expect(screen.getByRole("button", {name:"Confirmar"})).toBeDisabled();
 });
+
+
+it("exposes the restored recovery action to keyboard and preserves confirmation", async () => {
+  const user = userEvent.setup();
+  const acknowledge = vi.fn();
+  const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+  try {
+    render(<AssistantConversation recovery={{ reloaded: true }} acknowledgeUncertain={acknowledge} />);
+    const action = screen.getByRole("button", { name: "J\u00e1 conferi; encerrar aviso do chat" });
+    expect(action).toHaveClass("assistant__recovery-action");
+    expect(action).toBeVisible();
+    expect(action).toBeEnabled();
+    expect(screen.getByRole("alert")).toHaveTextContent("resultado incerto");
+    expect(screen.getByRole("textbox", { name: "Mensagem" })).toBeDisabled();
+    await user.tab();
+    expect(action).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(acknowledge).not.toHaveBeenCalled();
+    confirm.mockReturnValue(true);
+    await user.keyboard(" ");
+    expect(acknowledge).toHaveBeenCalledOnce();
+  } finally { confirm.mockRestore(); }
+});
+
+it.each([{ loading: true }, { isTyping: true }])("keeps recovery visible but unavailable while busy: %o", (busy) => {
+  render(<AssistantConversation recovery={{ reloaded: true }} {...busy} />);
+  const action = screen.getByRole("button", { name: "J\u00e1 conferi; encerrar aviso do chat" });
+  expect(action).toBeVisible();
+  expect(action).toBeDisabled();
+  expect(screen.getByRole("textbox", { name: "Mensagem" })).toBeDisabled();
+});

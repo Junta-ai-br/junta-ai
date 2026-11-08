@@ -79,7 +79,7 @@ export default function AssistantConversation({
       {loading && <p role="status">Carregando histórico persistido…</p>}
       {(error || recovery) && <div role="alert">{error && <p>{error}</p>}{recovery && !recovery.creationUnknown && !recovery.reloaded && <button type="button" disabled={isTyping} onClick={retryMessage}>Retomar envio anterior</button>}
         {recovery?.reloaded && <><p>Um envio anterior tem resultado incerto. Confira o histórico e as metas atualizadas antes de enviar novamente. Nada foi reenviado automaticamente.</p>
-          <button type="button" disabled={loading || isTyping} onClick={() => {
+          <button type="button" className="assistant__recovery-action" disabled={loading || isTyping} onClick={() => {
             if (window.confirm("Você conferiu o histórico e as metas? Encerrar o aviso não repete nem desfaz o envio. Enviar a mesma mensagem novamente poderá duplicar um aporte.")) acknowledgeUncertain?.();
           }}>Já conferi; encerrar aviso do chat</button></>}
         {recovery?.creationUnknown && <p>Atualize o histórico antes de iniciar outra conversa; a criação pode ter sido processada.</p>}</div>}
