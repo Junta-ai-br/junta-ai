@@ -16,7 +16,7 @@ vi.mock("recharts", async () => {
   return { ...charts, Pie: vi.fn(charts.Pie) };
 });
 const period = currentCivilMonth();
-const cat = { id: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", name: "Trabalho", type: "BOTH", createdAt: "2026-10-18T12:00:00Z" };
+const cat = { id: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", name: "Trabalho", type: "BOTH", standardKey: "FOOD", createdAt: "2026-10-18T12:00:00Z" };
 const id = "ec17e3c2-b24a-4e17-9ff5-58d370cc9862";
 const entry = { id: "76870c4b-f8df-4eab-b3c2-de1738a07a4e", categoryId: cat.id, categoryName: cat.name, type: "INCOME", amount: "100.00", description: "Receita real", transactionDate: period.from, createdAt: cat.createdAt };
 const tokens = (account) => ({ accessToken: account, refreshToken: `refresh-${account}`, expiresInSeconds: 900 });
@@ -174,8 +174,8 @@ it.each([["/dashboard", 0], ["/visao-mes", 72]])("isolates category chart geomet
   const props = Pie.mock.calls.at(-1)[0];
   expect(props).toMatchObject({ innerRadius, outerRadius: 105, dataKey: "plot", nameKey: "name" });
   expect(props.data).toHaveLength(1);
-  expect(props.data[0]).toMatchObject({ id: cat.id, name: cat.name, expenses: "351.00", plot: 100, color: categoryColor(cat.id) });
-  expect(props.children[0].props.fill).toBe(categoryColor(cat.id));
+  expect(props.data[0]).toMatchObject({ id: cat.id, name: cat.name, expenses: "351.00", plot: 100, color: categoryColor(cat) });
+  expect(props.children[0].props.fill).toBe(categoryColor(cat));
   const legend = container.querySelector(".category-rows");
   expect(legend).toHaveTextContent(cat.name);
   expect(legend).toHaveTextContent("351,00");

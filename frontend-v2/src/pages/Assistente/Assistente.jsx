@@ -65,7 +65,7 @@ export default function Assistente({
   const categoryData = groupByCategoryId(transactions).filter((item) => item.expensesCents > 0n)
     .sort((a, b) => a.expensesCents > b.expensesCents ? -1 : a.expensesCents < b.expensesCents ? 1 : a.categoryId.localeCompare(b.categoryId))
     .map((item) => ({ ...item, name: finance.categories.find((category) => category.id.toLowerCase() === item.categoryId.toLowerCase())?.name,
-      color: categoryColor(item.categoryId), emoji: "↘",
+      color: categoryColor(finance.categories.find((category) => category.id.toLowerCase() === item.categoryId.toLowerCase()) ?? item.categoryId), emoji: "↘",
       percentage: Number(item.expensesCents * 1000n / summary.expensesCents) / 10 }));
   const monthlyBalanceClass = balance < 0n ? "assistant__widget-month-value--negative" : "assistant__widget-month-value--positive";
   const monthlyBalanceFormatted = money(summary?.balance);

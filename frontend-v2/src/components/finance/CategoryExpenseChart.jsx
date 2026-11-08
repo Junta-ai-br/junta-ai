@@ -79,7 +79,7 @@ export default function CategoryExpenseChart({ categories, totalExpensesCents })
               tick={{ fill: "var(--text-secondary)", fontSize: 12 }} tickFormatter={(coordinate) => moneyTick(coordinate, maximumCents)} />
             <Tooltip portal={tooltipPortal} cursor={{ fill: "var(--surface-hover)", opacity: 0.4 }} content={<ExpenseTooltip totalExpensesCents={totalExpensesCents} />} />
             <Bar dataKey="height" name="Despesas" radius={[5, 5, 0, 0]} maxBarSize={64} minPointSize={2}>
-              {data.map((category) => <Cell key={category.id} fill={categoryColor(category.id)} />)}
+              {data.map((category) => <Cell key={category.id} fill={categoryColor(category)} />)}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
