@@ -1851,3 +1851,41 @@
 .assistant__conversation-tools,
 .assistant__conversation > [role="alert"],
 .assistant__conversation > [role="status"] { flex-shrink: 0; }
+
+
+.assistant__recovery-action {
+  display: block;
+  max-width: 100%;
+  min-height: 44px;
+  margin-block: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--button-primary-bg);
+  border-radius: var(--radius-sm);
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  font-weight: 600;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.assistant__recovery-action:hover:not(:disabled) {
+  background: var(--button-primary-bg-hover);
+  border-color: var(--button-primary-bg-hover);
+}
+
+.assistant__recovery-action:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.assistant__recovery-action:disabled {
+  cursor: not-allowed;
+}
+
+
+/* Keep the recovery action reachable when enlarged text exceeds the chat height. */
+.assistant__conversation:has(.assistant__recovery-action) {
+  contain: none;
+  min-height: min-content;
+}
