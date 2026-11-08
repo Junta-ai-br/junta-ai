@@ -238,3 +238,13 @@ describe("HTTP financial services", () => {
     expect(api.defaults.adapter).toHaveBeenCalledOnce();
   });
 });
+
+it.each([undefined, null, "FOOD", "FUTURE_KEY"])("accepts category response metadata %j without adding it to writes", async (standardKey) => {
+  const item = { ...category, standardKey };
+  respond(JSON.stringify([item]));
+  expect(await categories.listCategories()).toEqual([standardKey === undefined ? category : item]);
+  respond(JSON.stringify(item));
+  await categories.updateCategory(categoryId, { name: category.name, type: category.type, standardKey: "SALARY" });
+  const config = api.defaults.adapter.mock.calls[0][0];
+  expect(JSON.parse(config.data)).toEqual({ name: category.name, type: category.type });
+});

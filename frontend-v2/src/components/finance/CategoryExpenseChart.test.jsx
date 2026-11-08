@@ -25,8 +25,8 @@ vi.mock("recharts", async () => {
 });
 
 const categories = [
-  { id: "home", name: "Moradia", expensesCents: 50000n },
-  { id: "food", name: "Alimentação", expensesCents: 12656n },
+  { id: "home", standardKey: "HOUSING", name: "Moradia", expensesCents: 50000n },
+  { id: "food", standardKey: "FOOD", name: "Alimentação", expensesCents: 12656n },
 ];
 const mount = (items = categories, total = 62656n) => render(<CategoryExpenseChart categories={items} totalExpensesCents={total} />);
 afterEach(() => { cleanup(); chart.selectedId = null; });
@@ -53,11 +53,11 @@ describe("CategoryExpenseChart", () => {
   });
   it("keeps ID colors across sorting, renaming and filtering", () => {
     const view = mount();
-    screen.getAllByTestId("column-color").forEach((column, index) => expect(column).toHaveStyle({ backgroundColor: categoryColor(categories[index].id) }));
+    screen.getAllByTestId("column-color").forEach((column, index) => expect(column).toHaveStyle({ backgroundColor: categoryColor(categories[index]) }));
     view.rerender(<CategoryExpenseChart categories={[{ ...categories[1], name: "Novo nome" }]} totalExpensesCents={62656n} />);
-    expect(screen.getByTestId("column-color")).toHaveStyle({ backgroundColor: categoryColor("food") });
+    expect(screen.getByTestId("column-color")).toHaveStyle({ backgroundColor: categoryColor(categories[1]) });
     view.rerender(<CategoryExpenseChart categories={categories.toReversed()} totalExpensesCents={62656n} />);
-    screen.getAllByTestId("column-color").forEach((column, index) => expect(column).toHaveStyle({ backgroundColor: categoryColor(categories.toReversed()[index].id) }));
+    screen.getAllByTestId("column-color").forEach((column, index) => expect(column).toHaveStyle({ backgroundColor: categoryColor(categories.toReversed()[index]) }));
   });
   it.each([{ items: [] }, { items: [{ id: "none", name: "Sem gastos", expensesCents: 0n }] }])("shows an empty state without an invalid chart", ({ items }) => {
     mount(items, 0n);

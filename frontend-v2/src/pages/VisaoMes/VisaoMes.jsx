@@ -41,7 +41,7 @@ export default function VisaoMes({ title = "Visão do mês", variant = "month" }
     .sort((left, right) => right.transactionDate.localeCompare(left.transactionDate) || left.id.localeCompare(right.id)), [finance.transactions, filter]);
   const categories = useMemo(() => {
     const groups = groupByCategoryId(finance.transactions);
-    return finance.categories.map((category) => ({ ...category, color: categoryColor(category.id),
+    return finance.categories.map((category) => ({ ...category, color: categoryColor(category),
       ...groups.find((item) => item.categoryId === category.id) }));
   }, [finance.categories, finance.transactions]);
   const months = useMemo(() => groupByMonth(finance.transactions), [finance.transactions]);

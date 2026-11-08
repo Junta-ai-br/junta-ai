@@ -1,3 +1,4 @@
+import { categoryColor } from "@/utils/category-colors";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -17,7 +18,7 @@ const conversation = { id: "e71a8f14-a7e5-41e2-b0ac-1c5398f949a3", title: "HistÃ
 const userMessage = { id: "76870c4b-f8df-4eab-b3c2-de1738a07a4e", role: "USER", content: "Mensagem persistida", createdAt: conversation.updatedAt };
 const assistantMessage = { ...userMessage, id: "ec17e3c2-b24a-4e17-9ff5-58d370cc9862", role: "ASSISTANT", content: "Resposta recebida da API" };
 const response = (config, data) => ({ config, status: 200, headers: {}, data: JSON.stringify(data).replace(/"(amount|totalIncome|totalExpense|balance)":"(-?[0-9.]+)"/g, '"$1":$2') });
-const category = { id: "a0d3efc5-222f-4576-99d1-1694c80445cf", name: "Categoria real", type: "BOTH", createdAt: conversation.updatedAt };
+const category = { id: "a0d3efc5-222f-4576-99d1-1694c80445cf", name: "Categoria real", type: "BOTH", standardKey: "FOOD", createdAt: conversation.updatedAt };
 const transaction = (fields = {}) => ({ id: "8e38acc5-b6ec-464f-8e09-a743a623154b", categoryId: category.id,
   categoryName: category.name, type: "INCOME", description: "Receita oficial", amount: "1234.56",
   transactionDate: currentCivilMonth().from, createdAt: conversation.updatedAt, ...fields });
@@ -141,7 +142,7 @@ describe("official monthly assistant panel", () => {
       if (config.url === "/transactions") return response(config, page([records[config.params.page]], config.params.page, 2, 2));
       return financialResponse(config) ?? response(config, []);
     };
-    mount();
+    const { container } = mount();
     expect(await screen.findByText("Receita oficial")).toBeInTheDocument();
     expect(screen.getByText("Despesa oficial")).toBeInTheDocument();
     const info = screen.getByText("Receita oficial").closest(".assistant__transaction-info");
@@ -154,6 +155,7 @@ describe("official monthly assistant panel", () => {
       expect.objectContaining({ ...currentCivilMonth(), page: 0 }), expect.objectContaining({ ...currentCivilMonth(), page: 1 }),
     ]);
     expect(screen.getAllByText(category.name).length).toBeGreaterThan(0);
+    expect(container.querySelector(".assistant__category-dot")).toHaveStyle({ backgroundColor: categoryColor(category) });
   });
 
   it("shows loading without zeros and handles an initial API failure without local fallback", async () => {
