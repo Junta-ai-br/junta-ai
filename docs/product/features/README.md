@@ -33,3 +33,16 @@ Este levantamento não executou testes nem validação em produção. A presenç
 **Estado do conjunto inventariado:** as funcionalidades financeiras e conversacionais apresentam capacidades implementadas no código, com dependências de integração e limitações identificadas no gerenciamento de conta. O funcionamento completo em produção não foi validado neste levantamento.
 
 Para contexto geral, consulte a [visão do produto](../overview.md) e o [índice público](../../README-Docs.md).
+
+## Documentação técnica
+
+Detalhes de implementação, regras de negócio, decisões técnicas, testes e escala das telas de finanças. Comece pelo [índice técnico](tecnico-visao-geral.md).
+
+| Documento | Conteúdo |
+|---|---|
+| [Visão geral técnica](tecnico-visao-geral.md) | Arquitetura, tecnologias, decisões técnicas, manutenibilidade e escala |
+| [Assistente](tecnico-assistente.md) | Tela `/assistente`, fluxo do chat e fontes de dados |
+| [Saúde Financeira](tecnico-saude-financeira.md) | Regra de negócio e fórmula do score, passo a passo e com fontes |
+| [Visão do mês e Dashboard](tecnico-visao-do-mes-e-dashboard.md) | Lançamentos, categorias, período e gráficos |
+| [Metas e Guardado](tecnico-metas-e-guardado.md) | Metas, aportes, retiradas, saldo disponível e total acompanhado |
+| [Relatórios](tecnico-relatorios.md) | Períodos, comparação, gráfico semanal e exportações |
