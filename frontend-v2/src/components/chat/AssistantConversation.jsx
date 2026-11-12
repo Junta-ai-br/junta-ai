@@ -1,7 +1,15 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SendHorizontal } from "lucide-react";
 import logoIcon from "@/assets/logos/logo-icon.svg";
+import "@/components/common/Button/Button.css";
+
+// Exact assistant lines only. This is not general URL/Markdown interpretation.
+const INSTITUTIONAL_LINKS = new Map([
+  ["Conhecer os planos: https://junta-ai.com/planos", ["Conhecer os planos", "https://junta-ai.com/planos"]],
+  ["Política de Privacidade: https://junta-ai.com/privacidade", ["Política de Privacidade", "https://junta-ai.com/privacidade"]],
+  ["Termos de Uso: https://junta-ai.com/termos", ["Termos de Uso", "https://junta-ai.com/termos"]],
+]);
 import { quickReplyLabel } from "@/services/conversations.api";
 import "./QuickReplies.css";
 
@@ -114,7 +122,14 @@ export default function AssistantConversation({
                     <img src={logoIcon} alt="" width="20" height="20" /> Junta.ai
                   </span>
                 )}
-                <p style={{ whiteSpace: "pre-wrap" }}>{message.text}</p>
+                <p style={{ whiteSpace: "pre-wrap" }}>{message.type === "assistant"
+                  ? message.text.split("\n").map((line, index) => {
+                    const destination = INSTITUTIONAL_LINKS.get(line);
+                    return <Fragment key={index}>{index > 0 ? "\n" : null}{destination
+                      ? <a className="button button--secondary button--sm" href={destination[1]}>{destination[0]}</a>
+                      : line}</Fragment>;
+                  })
+                  : message.text}</p>
                 {message.type === "assistant" && message.quickReplies?.length > 0 && <div className="assistant__quick-replies" role="group" aria-label="Opções para continuar a conversa" aria-busy={isTyping}>
                   {message.quickReplies.map((option) => <button type="button" key={option.option_id}
                     disabled={loading || isTyping || !!recovery || messages.at(-1)?.id !== message.id || !selectQuickReply
