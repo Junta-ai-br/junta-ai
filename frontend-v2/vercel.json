@@ -8,6 +8,12 @@
   ],
   "headers": [
     {
+      "source": "/(feedback|login|cadastro|assistente|dashboard|visao-mes|relatorios|planejador|planejador/historico|perfil|perfil/excluir-conta)(/?)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
